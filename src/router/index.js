@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+
+const TrialList = () => import('../pages/TrialList.vue')
 
 Vue.use(Router)
 
+const routes = [
+  {path: '/', 'redirect': '/triallist'},
+  {path: '/triallist', name: 'TrialList', component: TrialList},
+]
+
 export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
-    }
-  ]
+  routes
 })
