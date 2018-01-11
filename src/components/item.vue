@@ -1,16 +1,16 @@
 <template>
   <div class="item">
     <div class="item_banner">
-      <img class="item_banner_img" src="../images/banner@2x.png" alt="">
+      <img class="item_banner_img" src="" v-lazy="product.src" alt="">
     </div>
     <div class="item_info">
-      <h3 class="item_title">【免费试用】网易严选，每日坚果</h3>
+      <h3 class="item_title">{{product.title}}</h3>
       <div class="item_detail clearfix">
-        <span class="limit_num">限20份</span>
+        <span class="limit_num">限{{product.limitNum}}份</span>
         <div class="deadline">
           <i class="icon"></i>
           <span>距结束：</span>
-          <span class="time">01</span>天<span class="time">20</span>时<span class="time">25</span>分
+          <span class="time">{{remainingTime.leftDays}}</span>天<span class="time">{{remainingTime.leftHours}}</span>时<span class="time">{{remainingTime.leftMinytes}}</span>分
         </div>
       </div>
     </div>
@@ -19,11 +19,37 @@
 
 <script>
   export default {
+    props: ['product'],
     data() {
-      return {}
+      return {
+        deadline: this.product.deadline,
+        remainingTime: {},
+      }
     },
     computed: {},
-    methods: {}
+    methods: {
+      getRemainingTime() {
+        //2018-01-15 18:26:36
+        let deadlineArr = this.deadline.match(/(\d{4})-(\d{1,2})-(\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})/).slice(1)
+        deadlineArr.splice(1,1,deadlineArr[1] - 1)
+        const leftTime = new Date(...deadlineArr) - new Date()
+        let leftDays = parseInt(leftTime/1000/60/60/24, 10)
+        let leftHours = parseInt(leftTime/1000/60/60%24, 10)
+        let leftMinytes = parseInt(leftTime/1000/60%60, 10)
+        leftDays = this.addZero(leftDays)
+        leftHours = this.addZero(leftHours)
+        leftMinytes = this.addZero(leftMinytes)
+        this.remainingTime = Object.assign({},{leftDays, leftHours, leftMinytes})
+        setTimeout(this.getRemainingTime, 60000)
+      },
+      addZero(time) {
+        return time < 10 ? '0' + time : time
+      }
+    },
+    created() {
+      this.getRemainingTime()
+      console.log(this);
+    }
   }
 </script>
 

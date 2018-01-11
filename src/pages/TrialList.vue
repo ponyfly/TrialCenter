@@ -9,15 +9,7 @@
     </div>
     <div class="wrapper" ref="wrapper">
     <ul class="content">
-      <li is="self-item"></li>
-      <li is="self-item"></li>
-      <li is="self-item"></li>
-      <li is="self-item"></li>
-      <li is="self-item"></li>
-      <!--<li v-for="product in productLists">
-        <div class="name">{{product.name}}</div>
-        <img class="product_img" src="" v-lazy="product.src" alt="">
-      </li>-->
+      <li is="self-item" v-for="(product, index) in productLists" :product="product" :key="index"></li>
     </ul>
   </div>
   </div>
@@ -41,7 +33,8 @@
     methods: {
       loadData() {
         getProducts().then(res => {
-          this.productLists = [...res.data.data, ...this.productLists]
+          this.productLists = res.data.data
+//          this.productLists = [...res.data.data, ...this.productLists]
           this.$nextTick(() => {
             if(!this.scroll) {
               this.scroll = new BScroll(this.$refs.wrapper, {
@@ -55,6 +48,7 @@
                 this.scroll.finishPullDown()
               })
               this.scroll.on('pullingUp', () => {
+                console.log('up');
 //                this.loadData()
                 this.scroll.finishPullUp()
               })
