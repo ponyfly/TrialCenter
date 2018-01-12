@@ -32,6 +32,7 @@
   .header
     width 750px
     position fixed
+    top 0
     height 90px
     line-height 90px
     font-size 34px

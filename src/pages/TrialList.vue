@@ -3,13 +3,18 @@
     <div class="header">
       <i class="back el-icon-arrow-left"></i>
       <h2>试用中心</h2>
-      <el-button class="my_trial_btn" @click="gotoMyTrial">我的试用
+      <el-button class="my_trial_btn" @click="goToMyTrial">我的试用
         <i class="el-icon-arrow-right"></i>
       </el-button>
     </div>
     <div class="wrapper" ref="wrapper">
     <ul class="content">
-      <li is="self-item" v-for="(product, index) in productLists" :product="product" :key="index"></li>
+      <li is="self-item"
+          v-for="(product, index) in productLists"
+          :product="product"
+          :key="product.id"
+          @click.native="goToProduct(product.id)">
+      </li>
     </ul>
   </div>
   </div>
@@ -58,11 +63,17 @@
           })
         })
       },
-      gotoMyTrial() {
+      goToMyTrial() {
         this.$router.push({
           name: 'MyTrial'
         })
-      }
+      },
+      goToProduct(productId) {
+        this.$router.push({
+          name: 'Product',
+          params: {productId}
+        })
+      },
     },
     components: {
       'el-button': Button,
