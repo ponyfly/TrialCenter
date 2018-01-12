@@ -1,19 +1,27 @@
 <template>
   <div class="header">
-    <div class="back"></div>
-    <h3>{{title}}</h3>
+    <i class="back el-icon-arrow-left" @click="goBack"></i>
+    <h2>{{headerTitle}}</h2>
   </div>
 </template>
 
 <script>
   import {Button } from 'element-ui'
   export default {
-    props:['title'],
+    props:{
+      headerTitle: {
+        type: String
+      }
+    },
     data() {
       return {}
     },
     computed: {},
-    methods: {},
+    methods: {
+      goBack() {
+        this.$router.back()
+      }
+    },
     components: {
       'el-button': Button
     }
@@ -24,8 +32,17 @@
   .header
     width 750px
     position fixed
-    height 100px
+    height 90px
+    line-height 90px
+    font-size 34px
     background-color #fff
-    line-height 100px
     z-index 999
+    .back
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 44px;
+      padding: 23px;
+    h2
+      color #000
 </style>

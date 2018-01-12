@@ -1,16 +1,18 @@
 <template>
-  <div class="item">
+  <div class="item" v-if="Object.keys(product).length">
     <div class="item_banner">
       <img class="item_banner_img" src="" v-lazy="product.src" alt="">
     </div>
     <div class="item_info">
       <h3 class="item_title">{{product.title}}</h3>
       <div class="item_detail clearfix">
-        <span class="limit_num">限{{product.limitNum}}份</span>
+        <span class="limit_num" :style="isOverDeadline ? '' : {color: '#ff6666'}">限{{product.limitNum}}份</span>
         <div class="deadline">
-          <i class="icon"></i>
-          <span>距结束：</span>
-          <span class="time">{{remainingTime.leftDays}}</span>天<span class="time">{{remainingTime.leftHours}}</span>时<span class="time">{{remainingTime.leftMinytes}}</span>分
+          <i class="icon_clock"></i>
+          <span>{{isOverDeadline ? '已结束' : '距结束：'}}</span>
+          <div v-if="!isOverDeadline" class="time_wrapper">
+            <span class="time">{{remainingTime.leftDays}}</span>天<span class="time">{{remainingTime.leftHours}}</span>时<span class="time">{{remainingTime.leftMinutes}}</span>分
+          </div>
         </div>
       </div>
     </div>
@@ -19,14 +21,26 @@
 
 <script>
   export default {
-    props: ['product'],
+    props: {
+      product: {
+        type: Object,
+        default: {}
+      }
+    },
     data() {
       return {
         deadline: this.product.deadline,
         remainingTime: {},
       }
     },
-    computed: {},
+    computed: {
+      isOverDeadline() {
+        if(!Object.keys(this.product).length) return
+        let deadlineArr = this.deadline.match(/(\d{4})-(\d{1,2})-(\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})/).slice(1)
+        deadlineArr.splice(1,1,deadlineArr[1] - 1)
+        return new Date(...deadlineArr) < new Date()
+      }
+    },
     methods: {
       getRemainingTime() {
         //2018-01-15 18:26:36
@@ -35,35 +49,44 @@
         const leftTime = new Date(...deadlineArr) - new Date()
         let leftDays = parseInt(leftTime/1000/60/60/24, 10)
         let leftHours = parseInt(leftTime/1000/60/60%24, 10)
-        let leftMinytes = parseInt(leftTime/1000/60%60, 10)
+        let leftMinutes = parseInt(leftTime/1000/60%60, 10)
         leftDays = this.addZero(leftDays)
         leftHours = this.addZero(leftHours)
-        leftMinytes = this.addZero(leftMinytes)
-        this.remainingTime = Object.assign({},{leftDays, leftHours, leftMinytes})
+        leftMinutes = this.addZero(leftMinutes)
+        this.remainingTime = Object.assign({},{leftDays, leftHours, leftMinutes})
         setTimeout(this.getRemainingTime, 60000)
       },
       addZero(time) {
         return time < 10 ? '0' + time : time
-      }
+      },
     },
     created() {
-      this.getRemainingTime()
-      console.log(this);
+      if(Object.keys(this.product).length){
+        this.getRemainingTime()
+      }
     }
   }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+  @import "../style/mixin.styl"
   .item
     margin-bottom 60px
     .item_banner
-      display block
+      position relative
       .item_banner_img
+        display block
+        wh(100%, 350px)
         margin 0 auto
       .item_banner_img[lazy=loading]
-        display block
+        border none
       .item_banner_img[lazy=loaded]
-        display block
+        border none
+      &:after
+        content ''
+        bl(0, 30px)
+        border 20px solid transparent
+        border-bottom-color #fff
     .item_info
       .item_title
         height 100px
@@ -76,11 +99,36 @@
         padding 0 45px
         box-sizing border-box
         font-size 28px
+        color #707070
         .limit_num
           float left
-          color #ff6666
         .deadline
           float right
-          .time
-            color: #ff6666
+          .icon_clock
+            display: inline-block;
+            border: 1px solid #000;
+            wh(22px,22px)
+            border-radius: 50%;
+            position relative
+            top 1px
+            &:before
+              content ''
+              position absolute
+              top 11px
+              left 11px
+              wh(1px, 7px)
+              background-color #000
+              transform-origin top
+              transform rotateZ(-40deg)
+            &:after
+              content ''
+              position absolute
+              top 4px
+              left 11px
+              wh(1px, 7px)
+              background-color #000
+          .time_wrapper
+            display inline
+            .time
+              color: #ff6666
 </style>

@@ -5,3 +5,6 @@ import axios from 'axios'
 export function getProducts() {
   return axios.get('/api/getproducts')
 }
+export function getMytrial() {
+  return axios.get('/api/getmytrial')
+}

@@ -2,8 +2,8 @@
   <div class="trial_list">
     <div class="header">
       <i class="back el-icon-arrow-left"></i>
-      <h3>试用中心</h3>
-      <el-button class="my_trial">我的试用
+      <h2>试用中心</h2>
+      <el-button class="my_trial_btn" @click="gotoMyTrial">我的试用
         <i class="el-icon-arrow-right"></i>
       </el-button>
     </div>
@@ -57,6 +57,11 @@
             }
           })
         })
+      },
+      gotoMyTrial() {
+        this.$router.push({
+          name: 'MyTrial'
+        })
       }
     },
     components: {
@@ -89,7 +94,7 @@
         left: 0;
         font-size: 44px;
         padding: 23px;
-      .my_trial
+      .my_trial_btn
         position: absolute;
         top: 20px;
         right: 20px;
