@@ -1,5 +1,5 @@
 <template>
-  <div class="my_trial_item" v-if="Object.keys(product).length">
+  <div class="my_trial_item" v-if="Object.keys(product).length" @click="goToProduct(product.id)">
     <div class="item_banner">
       <img class="item_banner_img" src="" v-lazy="product.src" alt="">
     </div>
@@ -11,8 +11,8 @@
           申请时间：{{product.applyTime}}
         </div>
         <div class="apply_state">
-          <i class="icon_state"></i>
-          {{applyText}}
+          <i class="icon_state" :class="applyInfos.stateClass"></i>
+          {{applyInfos.text}}
         </div>
       </div>
     </div>
@@ -33,19 +33,35 @@
     },
     computed: {
       //申请时间：2018年01月10日15时 快递信息：顺丰 20180192873
-      applyText() {
+      applyInfos() {
         let {applyState} = this.product
         applyState = parseInt(applyState)
         if(applyState === 0) {
-          return '申请状态：申请失败'
+          return {
+            text: '申请状态：申请失败',
+            stateClass: 'icon_fail'
+          }
         } else if(applyState === 1) {
-          return '快递信息：顺丰 20180192873'
+          return {
+            text: '快递信息：顺丰 20180192873',
+            stateClass: 'icon_success'
+          }
         } else if(applyState === 2) {
-          return '申请状态：申请中'
+          return {
+            text: '申请状态：申请中',
+            stateClass: 'icon_applying'
+          }
         }
       }
     },
     methods: {
+      goToProduct(productId) {
+        console.log(productId)
+        this.$router.push({
+          name: 'Product',
+
+        })
+      }
     },
     created() {
 
@@ -91,11 +107,27 @@
         height 46px
         line-height 46px
         .icon_clock
+          display inline-block
+          position: relative
+          top 4px
           wh(28px,28px)
           background url(../images/apply_state.png)  no-repeat
           background-position 0 -28px
       .apply_state
         height 46px
         line-height 46px
+        .icon_state
+          display inline-block
+          position: relative
+          top 4px
+          wh(28px,28px)
+          background url(../images/apply_state.png)  no-repeat
+        .icon_success
+          background-position 0 0
+        .icon_fail
+          background-position 0 -84px
+        .icon_applying
+          background-position 0 -56px
+
 
 </style>

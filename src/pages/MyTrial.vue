@@ -36,13 +36,13 @@
         activeName: 'first',
         //申请时间：2018年01月10日15时 申请状态：审核中 0失败 1成功 2审核
         myTrials: [
-          {name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
+          {id: 12, name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
             applyTime: '2018年01月10日21时', applyState: 0},
-          {name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
+          {id: 13, name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
             applyTime: '2018年01月12日16时', applyState: 1},
-          {name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
+          {id: 14, name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
             applyTime: '2018年01月05日01时', applyState: 2},
-          {name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
+          {id: 15, name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
             applyTime: '2018年01月01日15时', applyState: 1},
         ]
       }

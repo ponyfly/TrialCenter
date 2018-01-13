@@ -1,6 +1,6 @@
 <template>
   <div class="trial_rule">
-    <self-header headerTitle="试用规则"></self-header>
+    <self-header headerTitle="试用规则" class="header"></self-header>
     <div class="content">
       <div class="steps clearfix">
         <div class="step">免费<br/>申请</div>
@@ -12,7 +12,7 @@
         <div class="step">试用<br/>报告</div>
       </div>
       <ul class="questions">
-        <li v-for="question in questions">
+        <li v-for="question in questions" @click="toAnswer">
           <span>{{question}}</span>
           <i class="el-icon-arrow-right"></i>
         </li>
@@ -35,20 +35,31 @@
           '如何提交试用报告？',
           '申请免费试用需要邮费吗？',
           '免职声明',
+          '免职声明',
+          '免职声明',
         ]
       }
     },
     computed: {},
-    methods: {},
+    methods: {
+      toAnswer() {
+        console.log('go to answer')
+      }
+    },
     components: {
       'self-header': Header
     }
   }
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus">
+<style scoped lang="stylus" rel="stylesheet/stylus">
   @import '../style/mixin.styl'
   .trial_rule
+    height: 100%;
+    overflow-y: scroll;
+    .header
+      -moz-box-shadow 0 10px 30px -10px #e2e0de
+      box-shadow 0 10px 30px -10px #e2e0de
     .content
       margin-top 90px
       padding 0 50px 0 42px

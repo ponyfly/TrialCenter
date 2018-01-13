@@ -9,7 +9,7 @@ const TrialRule = () => import('../pages/TrialRule.vue')
 Vue.use(Router)
 
 const routes = [
-  {path: '/', redirect: {name: 'TrialRule'}},
+  {path: '/', redirect: {name: 'TrialList'}},
   {path: '/triallist', name: 'TrialList', component: TrialList},
   {path: '/mytrial', name: 'MyTrial', component: MyTrial},
   {path: '/product', name: 'Product', component: Product},
