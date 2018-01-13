@@ -5,6 +5,7 @@ const TrialList = () => import('../pages/TrialList.vue')
 const MyTrial = () => import('../pages/Mytrial.vue')
 const Product = () => import('../pages/Product.vue')
 const TrialRule = () => import('../pages/TrialRule.vue')
+const Address = () => import('../pages/Address.vue')
 
 Vue.use(Router)
 
@@ -14,6 +15,7 @@ const routes = [
   {path: '/mytrial', name: 'MyTrial', component: MyTrial},
   {path: '/product', name: 'Product', component: Product},
   {path: '/trialrule', name: 'TrialRule', component: TrialRule},
+  {path: '/address', name: 'Address', component: Address},
 ]
 
 export default new Router({

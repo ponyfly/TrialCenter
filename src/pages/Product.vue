@@ -20,24 +20,27 @@
       <div class="apply_info">
         <div class="apply_state" :class="{apply_success: success}">
           <i class="icon_state"></i>
-          <span>申请状态：</span>未申请
+          <span>申请状态：</span>申请成功
           <span v-if="success" class="express_info">快递信息</span>
         </div>
         <div class="write_post">
-          <el-button type="danger" round class="write_post_btn">填写报告</el-button>
+          20金币
+          <el-button type="danger" round class="write_post_btn" @click="goToAdressOrPost">填写报告</el-button>
         </div>
       </div>
     </div>
     <div class="info_post">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="商品详情" name="first">
-          <h2>详情</h2>
+          <div class="product_detail">
+            <h2>详情</h2>
+          </div>
         </el-tab-pane>
         <el-tab-pane label="试用报告" name="second">
           <ul class="post_list">
             <li v-for="postItem in posts">
               <p>{{postItem.text}}</p>
-              <div v-if="postItem.src.length" class="img_wrapper">
+              <div v-if="postItem.src.length" class="img_wrapper clearfix">
                 <div v-for="postImg in postItem.src" class="img_item">
                   <img :src="postImg" alt="">
                 </div>
@@ -56,8 +59,8 @@
   export default {
     data() {
       return {
-        success: false,
         activeName: 'first',
+        success: true,
         posts: [
           {text: '大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看,大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看', src: [
             'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
@@ -70,14 +73,24 @@
           ]},
           {text: '大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看,大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看', src: []},
           {text: '大家好，', src: ['http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114']},
-        ]
+        ],
+        hasApplied: false
       }
     },
     computed: {},
     methods: {
+      goToAdressOrPost() {
+        if(this.hasApplied) {
+
+        } else {
+          this.$router.push({
+            name: 'Address'
+          })
+        }
+      },
       handleClick(tab, event) {
         console.log(tab, event);
-      }
+      },
     },
     created() {
       console.log(this.$route.params);
@@ -180,16 +193,25 @@
         font-size 30px
         line-height 48px
         li
-          p
+          padding 30px 0
+          border-bottom  1px solid #ccc
+        p
             text-align left
             display -webkit-box
             -webkit-box-orient vertical
             -webkit-line-clamp 2
             overflow hidden
           .img_wrapper
-            display flex
+            margin-top 20px
             .img_item
-              flex 1
+              float left
+              wh(212px, 148px)
+              &+.img_item
+                margin-left 15px
+              img
+                wh(100%, 100%)
+    .product_detail
+      height 300px
     .el-tabs__nav
       width 100%
       .el-tabs__item
