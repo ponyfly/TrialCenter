@@ -41,10 +41,35 @@ const data3 = {
     {"id": 36,"itemTitle": "【免费试用】网易严选，每日坚果5", "itemCoverUrl":"http://cangdu.org:8001/img/16018a6492334.jpeg", "stockNum": 60, "endTime": "2018-01-16 18:26:36", "startTime": '2018-01-01 16:25:36'},
   ],
 }
+const itemDetail = {
+  item: {
+    id:'12',//商品id
+    itemTitle: '【免费试用】网易严选，每日坚果5',//商品名字
+    itemCoverUrl : 'http://cangdu.org:8001/img/16018a6492334.jpeg',//商品图片
+    startTime: '2018-01-01 16:25:36',//商品开始时间
+    endTime: '2018-01-16 18:26:36',//商品结束时间
+    stockNum: '60',//商品限制数量
+    deductCoin: '200', //商品消耗金币数
+    detailPostId: '89757' , //商品描述,返回帖子id
+    trialPostIds: [12,13,16], //试用报告，返回帖子id
+    applyNum:'169'//申请人数
+  },
+  userApplyInfo: {
+    applyStatus: '', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
+    applyInfo: '', //applyStatus状态的对应信息
+    expressStatus:'',//0未发货，1已发货
+    expressInfo:'',//expressStatus 状态对应信息
+    expressName:'',//快递名称
+    expressNo:''//快递单号
+  },
+  errorcode:'',//-1商品id不存在
+  msg:''//结果提示信息
+}
 // 通过mockjs向外暴露1个接口
 Mock.mock('/api/trialCenter/listItems?pageNo=1', {code: 0, data:data1})
 Mock.mock('/api/trialCenter/listItems?pageNo=2', {code: 0, data:data2})
 Mock.mock('/api/trialCenter/listItems?pageNo=3', {code: 0, data:data3})
+Mock.mock('/api/trialCenter/itemDetail?ItemId=11&userId=123456789', {code: 0, data:data3})
 
 // export default ???  不用向外暴露什么
 

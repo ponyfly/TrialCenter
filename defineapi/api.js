@@ -45,7 +45,6 @@ const itemDetail = {
   },
   errorcode:'',//-1商品id不存在
   msg:''//结果提示信息
-
 }
 /**
  param:long userId,int status,int pageNo

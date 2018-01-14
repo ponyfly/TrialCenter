@@ -10,3 +10,8 @@ export function getProducts(pageNo) {
 export function getMytrial() {
   return axios.get('/api/getmytrial')
 }
+export function getDetail(ItemId, userId) {
+  return axios.get('/api/trialCenter/itemDetail',{
+    params: {ItemId, userId}
+  })
+}

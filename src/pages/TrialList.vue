@@ -37,6 +37,7 @@
         isPullUp: false,
         isPullDown: false,
         isPulling: true,
+
       }
     },
     computed: {
@@ -83,31 +84,36 @@
         }
 
       },
+      onGetDeadline() {
+
+      },
       loadData() {
-        getProducts(this.curPage).then(res => {
-          this.totalPage = parseInt(res.data.data.totalPage, 10)
-          if(this.firstEnter) {
-            this.productLists = res.data.data.items
-            this.firstEnter = false
-          }
-          if(this.isPulling) {
-            if(this.isPullDown) {
-              this.scroll.finishPullDown()
-              this.productLists.splice(0)
+        getProducts(this.curPage)
+          .then(res => {
+            this.totalPage = parseInt(res.data.data.totalPage, 10)
+            if(this.firstEnter) {
               this.productLists = res.data.data.items
-              this.isPullDown = false
+              this.firstEnter = false
             }
-            if(this.isPullUp) {
-              this.scroll.finishPullUp()
-              this.productLists = [...this.productLists, ...res.data.data.items]
-              this.isPullUp = false
+            if(this.isPulling) {
+              if(this.isPullDown) {
+                this.scroll.finishPullDown()
+                this.productLists.splice(0)
+                this.productLists = res.data.data.items
+                this.isPullDown = false
+              }
+              if(this.isPullUp) {
+                this.scroll.finishPullUp()
+                this.productLists = [...this.productLists, ...res.data.data.items]
+                this.isPullUp = false
+              }
+              this.isPulling = false
             }
-            this.isPulling = false
-          }
-          this.$nextTick(() => {
-            this._initScroll()
+            this.$nextTick(() => {
+              this._initScroll()
+            })
           })
-        })
+          .catch(console.log)
       },
       goToMyTrial() {
         this.$router.push({
@@ -115,6 +121,7 @@
         })
       },
       goToProduct(productId) {
+        console.log(this);
         this.$router.push({
           name: 'Product',
           params: {productId}
