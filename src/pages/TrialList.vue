@@ -30,36 +30,82 @@
   export default {
     data() {
       return {
-        productLists: []
+        firstEnter: true,
+        curPage:1,
+        totalPage: 0,
+        productLists: [],
+        isPullUp: false,
+        isPullDown: false,
+        isPulling: true,
       }
     },
     computed: {
     },
     methods: {
-      loadData() {
-        getProducts().then(res => {
-          this.productLists = res.data.data
-//          this.productLists = [...res.data.data, ...this.productLists]
-          this.$nextTick(() => {
-            if(!this.scroll) {
-              this.scroll = new BScroll(this.$refs.wrapper, {
-                click: true,
-                probeType: 3,
-                pullDownRefresh: true,
-                pullUpLoad: true,
-              })
-              this.scroll.on('pullingDown', () => {
-                console.log('down')
-                this.scroll.finishPullDown()
-              })
-              this.scroll.on('pullingUp', () => {
-                console.log('up');
-//                this.loadData()
-                this.scroll.finishPullUp()
-              })
-            } else {
-              this.scroll.refresh()
+      _initScroll() {
+        if(!this.scroll) {
+          console.log('initscroll');
+          this.scroll = new BScroll(this.$refs.wrapper, {
+            click: true,
+            probeType: 3,
+            pullDownRefresh: {
+              threshold:80,
+              stop:60,
+            },
+            pullUpLoad: {
+              threshold: -60,
+              stop: 60
+            },
+          })
+          this.scroll.on('pullingDown', () => {
+            console.log('pullingDown');
+            this.curPage = 1
+            this.totalPage = 0
+            this.isPulling = true
+            this.isPullDown = true
+            this.loadData()
+            console.log(this.scroll);
+          })
+          this.scroll.on('pullingUp', () => {
+            console.log('pullingUp');
+            if(this.curPage !== this.totalPage){
+              this.isPulling = true
+              this.isPullUp = true
+              this.curPage++
+              this.loadData()
+            }else {
+              console.log('我们是有底线的');
             }
+          })
+        } else {
+          console.log('refresh');
+          this.scroll.refresh()
+        }
+
+      },
+      loadData() {
+        getProducts(this.curPage).then(res => {
+          this.totalPage = parseInt(res.data.data.totalPage, 10)
+          if(this.firstEnter) {
+            this.productLists = res.data.data.items
+            this.firstEnter = false
+          }
+          if(this.isPulling) {
+            if(this.isPullDown) {
+              this.scroll.finishPullDown()
+              this.productLists.splice(0)
+              this.productLists = res.data.data.items
+              this.isPullDown = false
+            }
+            if(this.isPullUp) {
+              this.scroll.finishPullUp()
+              this.productLists = [...this.productLists, ...res.data.data.items]
+              this.isPullUp = false
+            }
+            this.isPulling = false
+          }
+          this.$nextTick(() => {
+            this._initScroll()
           })
         })
       },
@@ -83,7 +129,9 @@
       this.loadData()
     },
     mounted() {},
-    watch: {}
+    watch: {
+
+    }
   }
 </script>
 

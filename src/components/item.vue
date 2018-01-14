@@ -1,12 +1,12 @@
 <template>
   <div class="item" v-if="Object.keys(product).length">
     <div class="item_banner">
-      <img class="item_banner_img" src="" v-lazy="product.src" alt="">
+      <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl" alt="">
     </div>
     <div class="item_info">
-      <h3 class="item_title">{{product.title}}</h3>
+      <h3 class="item_title">{{product.itemTitle}}</h3>
       <div class="item_detail clearfix">
-        <span class="limit_num" :style="isOverDeadline ? '' : {color: '#ff6666'}">限{{product.limitNum}}份</span>
+        <span class="limit_num" :style="isOverDeadline ? '' : {color: '#ff6666'}">限{{product.stockNum}}份</span>
         <div class="deadline">
           <i class="icon_clock"></i>
           <span>{{isOverDeadline ? '已结束' : '距结束：'}}</span>
@@ -29,7 +29,7 @@
     },
     data() {
       return {
-        deadline: this.product.deadline,
+        deadline: this.product.endTime,
         remainingTime: {},
       }
     },
@@ -105,28 +105,12 @@
         .deadline
           float right
           .icon_clock
-            display: inline-block;
-            border: 1px solid #000;
-            wh(22px,22px)
-            border-radius: 50%;
-            position relative
-            top 1px
-            &:before
-              content ''
-              position absolute
-              top 11px
-              left 11px
-              wh(1px, 7px)
-              background-color #000
-              transform-origin top
-              transform rotateZ(-40deg)
-            &:after
-              content ''
-              position absolute
-              top 4px
-              left 11px
-              wh(1px, 7px)
-              background-color #000
+            display inline-block
+            position: relative
+            top 4px
+            wh(28px,28px)
+            background url(../images/apply_state.png)  no-repeat
+            background-position 0 -28px
           .time_wrapper
             display inline
             .time
