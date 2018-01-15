@@ -2,17 +2,13 @@
   <div class="address">
     <self-header headerTitle="我的收获地址"></self-header>
     <div class="content">
-      <el-form ref="form" :model="form">
-        <el-form-item label="收货人：" label-width="172px">
-          <el-input v-model="form.name"></el-input>
+      <!--<el-form ref="addressForm" :model="form" :rules="rules">
+        <el-form-item label="收货人：" label-width="172px" prop="username">
+          <el-input v-model="form.userName" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="手机号码：" label-width="172px">
-          <el-input v-model="form.phoneNo"></el-input>
-        </el-form-item>
-        <el-form-item label="所在地区：" label-width="172px" @click.native="dialogVisible = true">
-          <el-input v-model="form.location" :disabled="true"></el-input>
-          <i class="el-icon-arrow-right"></i>
-        </el-form-item>
+        <el-input v-model="form.telephone"></el-input>
+      </el-form-item>
         <el-form-item label="详细地址：" label-width="172px">
           <el-input v-model="form.detailAddress" placeholder="街道、楼牌号等"></el-input>
         </el-form-item>
@@ -21,24 +17,15 @@
           <router-link :to="{name: 'TrialRule'}">试用规则</router-link>
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" @click="onSubmit" class="confirm">确定</el-button>
+          <el-button type="danger" @click="onSubmit('addressForm')" class="confirm">确定</el-button>
           <el-button type="info" class="cancel">取消</el-button>
         </el-form-item>
+      </el-form>-->
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="活动名称" prop="name">
+          <el-input v-model="ruleForm.name"></el-input>
+        </el-form-item>
       </el-form>
-      <el-dialog
-          class="location_dialog"
-          :visible.sync="dialogVisible"
-          width="660px"
-          top="34vh"
-          :before-close="handleClose">
-        <div>
-          <v-distpicker type="mobile" @selected="onSelected"></v-distpicker>
-        </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="danger" @click="confirmLocation">确 定</el-button>
-        </span>
-      </el-dialog>
     </div>
   </div>
 </template>
@@ -52,60 +39,65 @@
     CheckboxGroup,
     Checkbox,
   } from 'element-ui'
-  import VDistpicker from 'v-distpicker'
   import Header from '../components/header.vue'
-  import {Dialog } from 'element-ui'
   export default {
     data() {
       return {
         form: {
-          name: '',
-          phoneNo: '',
+          itemId: '',
+          userId: '',
+          userName: '',
+          telephone: '',
           checked: true,
-          location: '',
+          addressId: '',
           detailAddress: '',
         },
-        dialogVisible: false,
-        tempLocation: {
-          province:'',
-          city:'',
-          area:'',
+        rules: {
+          username: [
+            {required: true, message: '请输入性命', trigger: 'blur'}
+          ]
         }
       }
     },
     computed: {},
     methods: {
-      onSubmit() {
-        console.log('submit!');
+      onSubmit(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       },
-      handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
+      _initData() {
+        const {userId, itemId, addressList} = this.$route.params
+        console.log(userId, itemId, addressList)
+
+        if(!userId || !itemId) return
+        this.form.itemId = itemId
+        this.form.userId = userId
+        if (addressList !== 'null' && addressList.length) {
+          const {id, userName, address, telephone} = addressList[0]
+          this.form.addressId = id
+          this.form.userName = userName
+          this.form.detailAddress = address
+          this.form.telephone = telephone
+        }
       },
-      confirmLocation(){
-        const {province, city, area} = this.tempLocation
-        this.dialogVisible = false
-        this.form.location = `${province} ${city} ${area}`
-      },
-      onSelected(locationData) {
-        this.tempLocation.province = locationData.province.value
-        this.tempLocation.city = locationData.city.value
-        this.tempLocation.area = locationData.area.value
-      }
     },
     components: {
       'self-header': Header,
-      'v-distpicker': VDistpicker,
       'el-button': Button,
       'el-form': Form,
       'el-form-item': FormItem,
       'el-input': Input,
       'el-checkbox-group': CheckboxGroup,
       'el-checkbox': Checkbox,
-      'el-dialog': Dialog
+    },
+    created() {
+//      this._initData()
     }
   }
 </script>
@@ -113,7 +105,8 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import '../style/mixin.styl'
   .address
-    .content
+    padding-top 100px
+    /*.content
       box-sizing border-box
       padding 90px 30px 0
       height 100%
@@ -136,11 +129,7 @@
             input
               border none
               font-size 32px
-          &:nth-of-type(3)
-            .el-input.is-disabled .el-input__inner
-              background-color #fff
-              color #606266
-          &:nth-of-type(5)
+          &:nth-of-type(4)
             .el-checkbox__inner
               wh(25px, 25px)
               &:hover
@@ -165,7 +154,8 @@
               padding-left 5px
               font-size 26px
               vertical-align middle
-          &:nth-of-type(6)
+          &:nth-of-type(5)
+            border none
             .confirm, .cancel
               wh(295px, 100px)
               font-size 38px
@@ -185,19 +175,5 @@
               border-color #cdcdcd
             .el-button--info:active
               background #a6a9ad
-              border-color #a6a9ad
-    .location_dialog
-      .el-dialog__body
-        font-size 28px
-        .distpicker-address-wrapper .address-container ul li
-          padding-top 20px
-          padding-bottom 20px
-        .address-container
-          height 195px
-          overflow-y scroll
-      .el-dialog__footer
-        .dialog-footer
-          .el-button
-            font-size 28px
-
+              border-color #a6a9ad*/
 </style>

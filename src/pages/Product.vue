@@ -124,10 +124,15 @@
         }else {
           if(parseInt(this.userApplyInfo.applyStatus, 10) === -999) {
             this.$router.push({
-              name: 'Address'
+              name: 'Address',
+              params: {
+                itemId: this.itemId,
+                userId: this.userId,
+                addressList: this.userApplyInfo.addressList
+              },
             })
           } else if (parseInt(this.userApplyInfo.applyStatus, 10) === 1) {
-           alert('填写报告')
+            alert('填写报告')
 //            window.location.href = '#'
           }
         }
@@ -147,9 +152,9 @@
     },
     watch: {},
     created() {
-      const itemId = this.$route.params.productId || 11
+      this.itemId = this.$route.params.productId || 11
       this.userId = Tool._GetQueryString('userId') || '123456789'
-      getDetail(itemId, this.userId)
+      getDetail(this.itemId, this.userId)
         .then(res => {
           res = {
             item: {
@@ -162,6 +167,7 @@
               deductCoin: '200', //商品消耗金币数
               detailPostId: '89757' , //商品描述,返回帖子id
               trialPostIds: [12,13,16], //试用报告，返回帖子id
+              detailGroupId: '', //发验收报告圈子id
               applyNum:'169'//申请人数
             },
             userApplyInfo: {
@@ -170,7 +176,15 @@
               expressStatus:'1',//0未发货，1已发货
               expressInfo:'已发货',//expressStatus 状态对应信息
               expressName:'三通',//快递名称
-              expressNo:'666'//快递单号
+              expressNo:'666',//快递单号,
+              addressList: [
+                {
+                  id: '01',
+                  userName: '张三',
+                  address: '北京',
+                  telephone: '133333333'
+                }
+              ],
             },
             errorcode: '1',//-1商品id不存在
             msg: '' //提示信息
@@ -188,7 +202,15 @@
             expressStatus:'0',//0未发货，1已发货
             expressInfo:'',//expressStatus 状态对应信息
             expressName:'',//快递名称
-            expressNo:''//快递单号
+            expressNo:'',//快递单号
+            addressList: [
+              {
+                id: '',
+                userName: '',
+                address: '',
+                telephone: ''
+              }
+            ]
           }
           this.msg =res.msg //提示信息
         })
@@ -223,7 +245,7 @@
       .banner
         height 750px
         img
-         wh(100%, 100%)
+          wh(100%, 100%)
       .product_title
         height 100px
         line-height 100px
@@ -302,20 +324,20 @@
           padding 30px 0
           border-bottom  1px solid #ccc
         p
-            text-align left
-            display -webkit-box
-            -webkit-box-orient vertical
-            -webkit-line-clamp 2
-            overflow hidden
-          .img_wrapper
-            margin-top 20px
-            .img_item
-              float left
-              wh(212px, 148px)
-              &+.img_item
-                margin-left 15px
-              img
-                wh(100%, 100%)
+          text-align left
+          display -webkit-box
+          -webkit-box-orient vertical
+          -webkit-line-clamp 2
+          overflow hidden
+        .img_wrapper
+          margin-top 20px
+          .img_item
+            float left
+            wh(212px, 148px)
+            &+.img_item
+              margin-left 15px
+            img
+              wh(100%, 100%)
     .no_post
       font-size 30px
       padding 10px 0
