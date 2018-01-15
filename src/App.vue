@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <router-view/>
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"/>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
   </div>
 </template>
 
@@ -22,4 +25,13 @@ export default {
     text-align center
     color #2c3e50
     overflow hidden
+    .slide-enter
+      transform translateX(750px)
+    .slide-enter-active ,.slide-leave-active
+      transition transform .6s
+    .slide-leave-active
+      position absolute
+      z-index -999
+    .slide-enter-to, .slide-leave, .slide-leave-to
+      transform translateX(0px)
 </style>

@@ -57,6 +57,7 @@
   .trial_rule
     height: 100%;
     overflow-y: scroll;
+    background-color #fff
     .header
       -moz-box-shadow 0 10px 30px -10px #e2e0de
       box-shadow 0 10px 30px -10px #e2e0de

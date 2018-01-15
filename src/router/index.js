@@ -6,18 +6,16 @@ const MyTrial = () => import('../pages/Mytrial.vue')
 const Product = () => import('../pages/Product.vue')
 const TrialRule = () => import('../pages/TrialRule.vue')
 const Address = () => import('../pages/Address.vue')
-const Form = () => import('../../test/Form.vue')
 
 Vue.use(Router)
 
 const routes = [
-  {path: '/', redirect: {name: 'TrialList'}},
-  {path: '/triallist', name: 'TrialList', component: TrialList},
-  {path: '/mytrial', name: 'MyTrial', component: MyTrial},
-  {path: '/product', name: 'Product', component: Product},
-  {path: '/trialrule', name: 'TrialRule', component: TrialRule},
-  {path: '/address', name: 'Address', component: Address},
-  {path: '/form', name: 'Form', component: Form},
+  {path: '/', redirect: {name: 'TrialList'}, meta: {keepAlive: true}},
+  {path: '/triallist', name: 'TrialList', component: TrialList, meta: {keepAlive: true}},
+  {path: '/mytrial', name: 'MyTrial', component: MyTrial, meta: {keepAlive: true}},
+  {path: '/product', name: 'Product', component: Product, meta: {keepAlive: false}},
+  {path: '/trialrule', name: 'TrialRule', component: TrialRule, meta: {keepAlive: true}},
+  {path: '/address', name: 'Address', component: Address, meta: {keepAlive: true}},
 ]
 
 export default new Router({

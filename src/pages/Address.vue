@@ -2,28 +2,23 @@
   <div class="address">
     <self-header headerTitle="我的收获地址"></self-header>
     <div class="content">
-      <!--<el-form ref="addressForm" :model="form" :rules="rules">
-        <el-form-item label="收货人：" label-width="172px" prop="username">
-          <el-input v-model="form.userName" auto-complete="off"></el-input>
+      <el-form ref="addressForm" :model="form" :rules="rules">
+        <el-form-item label="收货人：" label-width="172px" prop="userName">
+          <el-input v-model="form.userName"></el-input>
         </el-form-item>
-        <el-form-item label="手机号码：" label-width="172px">
-        <el-input v-model="form.telephone"></el-input>
+        <el-form-item label="手机号码：" label-width="172px" prop="telephone">
+        <el-input v-model.number="form.telephone"></el-input>
       </el-form-item>
-        <el-form-item label="详细地址：" label-width="172px">
+        <el-form-item label="详细地址：" label-width="175px" prop="detailAddress">
           <el-input v-model="form.detailAddress" placeholder="街道、楼牌号等"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-checkbox name="type" v-model="form.checked" label="">我已了解</el-checkbox>
+        <el-form-item prop="checked">
+          <el-checkbox name="type" v-model="form.checked">我已了解</el-checkbox>
           <router-link :to="{name: 'TrialRule'}">试用规则</router-link>
         </el-form-item>
         <el-form-item>
           <el-button type="danger" @click="onSubmit('addressForm')" class="confirm">确定</el-button>
           <el-button type="info" class="cancel">取消</el-button>
-        </el-form-item>
-      </el-form>-->
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="活动名称" prop="name">
-          <el-input v-model="ruleForm.name"></el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -38,10 +33,36 @@
     Input,
     CheckboxGroup,
     Checkbox,
+    Message,
   } from 'element-ui'
   import Header from '../components/header.vue'
+  import {postApplyItem } from '../api/index.js'
   export default {
     data() {
+      const validateTel = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('电话不能为空'))
+        } else {
+          setTimeout(() => {
+            if (!Number.isInteger(value)) {
+              callback(new Error('请输入数字值'))
+            } else {
+              if (/^1\d{10}$/.test(value)) {
+                callback()
+              } else {
+                callback(new Error('手机格式不正确'))
+              }
+            }
+          }, 600)
+        }
+      }
+      const validateChecked = (rule, value, callback) => {
+        if (!value) {
+          callback(new Error('请同意使用规则'))
+        } else{
+          callback()
+        }
+      }
       return {
         form: {
           itemId: '',
@@ -53,8 +74,17 @@
           detailAddress: '',
         },
         rules: {
-          username: [
-            {required: true, message: '请输入性命', trigger: 'blur'}
+          userName: [
+            {required: true, message: '请输入姓名', trigger: 'blur'}
+          ],
+          detailAddress: [
+            {required: true, message: '请输入收货地址', trigger: 'blur'}
+          ],
+          telephone: [
+            {validator: validateTel, trigger: 'blur'}
+          ],
+          checked: [
+            {validator: validateChecked, trigger: 'change'}
           ]
         }
       }
@@ -64,7 +94,15 @@
       onSubmit(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            console.log(this.form)
+            postApplyItem(this.form)
+              .then(res => {
+                if(parseInt(res.data.status, 10) === 1) {
+                  this.openSuccess()
+                  this.$router.back()
+                }
+              })
+              .catch(console.log)
           } else {
             console.log('error submit!!');
             return false;
@@ -74,7 +112,6 @@
       _initData() {
         const {userId, itemId, addressList} = this.$route.params
         console.log(userId, itemId, addressList)
-
         if(!userId || !itemId) return
         this.form.itemId = itemId
         this.form.userId = userId
@@ -83,9 +120,16 @@
           this.form.addressId = id
           this.form.userName = userName
           this.form.detailAddress = address
-          this.form.telephone = telephone
+          this.form.telephone = parseInt(telephone, 10)
         }
       },
+      openSuccess() {
+        Message({
+          message: '牛逼了，申请成功',
+          type: 'success',
+          duration: 1600
+        })
+      }
     },
     components: {
       'self-header': Header,
@@ -97,7 +141,14 @@
       'el-checkbox': Checkbox,
     },
     created() {
-//      this._initData()
+      console.log('created')
+      this._initData()
+    },
+    activated() {
+      console.log('activated')
+    },
+    mounted() {
+      console.log('mounted')
     }
   }
 </script>
@@ -105,8 +156,9 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import '../style/mixin.styl'
   .address
-    padding-top 100px
-    /*.content
+    background-color #fff
+    height 100%
+    .content
       box-sizing border-box
       padding 90px 30px 0
       height 100%
@@ -132,6 +184,7 @@
           &:nth-of-type(4)
             .el-checkbox__inner
               wh(25px, 25px)
+              border-color #f66
               &:hover
                 border-color #f66
               &:after
@@ -175,5 +228,8 @@
               border-color #cdcdcd
             .el-button--info:active
               background #a6a9ad
-              border-color #a6a9ad*/
+              border-color #a6a9ad
+    .el-form-item.is-required .el-form-item__label:before
+      content ''
+      margin 0
 </style>

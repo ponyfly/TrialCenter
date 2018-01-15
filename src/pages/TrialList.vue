@@ -87,6 +87,7 @@
       loadData() {
         getProducts(this.curPage)
           .then(res => {
+            console.log('getList')
             this.totalPage = parseInt(res.data.data.totalPage, 10)
             if(this.firstEnter) {
               this.productLists = res.data.data.items
@@ -133,11 +134,15 @@
       'self-item': Item
     },
     created() {
+      console.log('created')
       this.loadData()
     },
-    mounted() {},
-    watch: {
-
+    mounted() {
+      console.log('mounted')
+    },
+    watch: {},
+    activated() {
+      console.log('activated')
     }
   }
 </script>

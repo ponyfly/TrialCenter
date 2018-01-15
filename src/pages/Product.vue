@@ -152,10 +152,12 @@
     },
     watch: {},
     created() {
+      console.log('created')
       this.itemId = this.$route.params.productId || 11
       this.userId = Tool._GetQueryString('userId') || '123456789'
       getDetail(this.itemId, this.userId)
         .then(res => {
+          console.log('getItemDetail')
           res = {
             item: {
               id:'12',//商品id
@@ -182,7 +184,7 @@
                   id: '01',
                   userName: '张三',
                   address: '北京',
-                  telephone: '133333333'
+                  telephone: '15066668888'
                 }
               ],
             },
@@ -217,9 +219,7 @@
         .catch(console.log)
     },
     mounted() {
-      /*this.$nextTick(() => {
-        this.initHeight = this.$refs.infoPost.clientHeight
-      })*/
+      console.log('mounted')
     },
     components: {
       'self-header': Header,
@@ -227,6 +227,9 @@
       'el-button': Button,
       'el-tabs': Tabs,
       'el-tab-pane': TabPane
+    },
+    activated() {
+      console.log('activated')
     }
   }
 </script>
@@ -238,6 +241,7 @@
     height 100%
     box-sizing border-box
     overflow-y scroll
+    background-color #fff
     .overview
       background-color #f3f3f3
       padding-bottom 10px

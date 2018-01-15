@@ -70,6 +70,7 @@ Mock.mock('/api/trialCenter/listItems?pageNo=1', {code: 0, data:data1})
 Mock.mock('/api/trialCenter/listItems?pageNo=2', {code: 0, data:data2})
 Mock.mock('/api/trialCenter/listItems?pageNo=3', {code: 0, data:data3})
 Mock.mock('/api/trialCenter/itemDetail?ItemId=11&userId=123456789', {code: 0, data:data3})
+Mock.mock(/\/api\/trialCenter\/applyIte/, {status: 1})
 
 // export default ???  不用向外暴露什么
 
