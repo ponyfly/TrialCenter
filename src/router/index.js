@@ -15,6 +15,7 @@ const routes = [
   {path: '/mytrial', name: 'MyTrial', component: MyTrial},
   {path: '/product', name: 'Product', component: Product},
   {path: '/trialrule', name: 'TrialRule', component: TrialRule},
+  {path: '/address', name: 'Address', component: Address},
 ]
 
 export default new Router({

@@ -1,7 +1,7 @@
 <template>
   <div class="product_info">
     <self-header headerTitle="详情"></self-header>
-    <div class="overview">
+    <div class="overview" v-if="errorcode !== -1">
       <div class="banner">
         <img :src="item.itemCoverUrl" alt="">
       </div>
@@ -12,25 +12,29 @@
           <span>申请人数：{{item.applyNum}}人</span>
         </div>
         <div class="info_2 clearfix">
-          <!--<i class="icon_clock"></i>
-          已结束-->
-          <self-backtime :endTime="item.endTime" class="endtime"></self-backtime>
+          <self-backtime :endTime="item.endTime" class="endtime" v-if="item.endTime"></self-backtime>
           <router-link :to="{name:'TrialRule'}" class="trail_rule_btn">试用规则</router-link>
         </div>
       </div>
       <div class="apply_info">
-        <div class="apply_state" :class="{apply_success: success}">
+        <div class="apply_state" :class="{apply_success: applySuccess}">
           <i class="icon_state"></i>
           <span>申请状态：</span>{{userApplyInfo.applyInfo}}
-          <span v-if="userApplyInfo.expressStatus" class="express_info">快递信息：{{userApplyInfo.expressName}} {{userApplyInfo.expressNo}}</span>
+          <span v-if="applySuccess" class="express_info">快递信息：{{expressContent}}</span>
         </div>
         <div class="write_post">
           <span class="deductCoin">{{item.deductCoin}}</span>金币
-          <el-button type="danger" round class="write_post_btn" @click="goToAdressOrPost">{{parseInt(userApplyInfo.applyStatus, 10) === 1 ? '填写报告' : '马上申请'}}</el-button>
+          <el-button
+              type="danger"
+              round
+              class="write_post_btn"
+              v-if="showGoToAdressOrPost"
+              @click="goToAdressOrPost">
+            {{parseInt(userApplyInfo.applyStatus, 10) === 1 ? '填写报告' : '马上申请'}}</el-button>
         </div>
       </div>
     </div>
-    <div class="info_post">
+    <div class="info_post" ref="infoPost" v-if="errorcode !== -1">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="商品详情" name="first">
           <div class="product_detail">
@@ -38,7 +42,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="试用报告" name="second">
-          <ul class="post_list">
+          <ul class="post_list" v-if="posts.length">
             <li v-for="postItem in posts">
               <p>{{postItem.text}}</p>
               <div v-if="postItem.src.length" class="img_wrapper clearfix">
@@ -48,8 +52,12 @@
               </div>
             </li>
           </ul>
+          <div class="no_post" v-else>暂时没有报告，小主等等再来看吧~</div>
         </el-tab-pane>
       </el-tabs>
+    </div>
+    <div class="no_product" v-if="errorcode === -1">
+      找不到商品
     </div>
   </div>
 </template>
@@ -59,6 +67,7 @@
   import Header from '../components/header.vue'
   import BackTime from '../components/backtime.vue'
   import {getDetail } from  '../api/index.js'
+  import Tool from '../plugins/tools.js'
   export default {
     data() {
       return {
@@ -79,54 +88,116 @@
         ],
         hasApplied: false,
         userId: '',
-        item: {
-          id:'12',//商品id
-          itemTitle: '【免费试用】网易严选，每日坚果5',//商品名字
-          itemCoverUrl : 'http://cangdu.org:8001/img/16018a6492334.jpeg',//商品图片
-          startTime: '2018-01-01 16:25:36',//商品开始时间
-          endTime: '2018-01-16 18:26:36',//商品结束时间
-          stockNum: '60',//商品限制数量
-          deductCoin: '200', //商品消耗金币数
-          detailPostId: '89757' , //商品描述,返回帖子id
-          trialPostIds: [12,13,16], //试用报告，返回帖子id
-          applyNum:'169'//申请人数
-        },
-        userApplyInfo: {
-          applyStatus: '1', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
-          applyInfo: '申请中', //applyStatus状态的对应信息
-          expressStatus:'1',//0未发货，1已发货
-          expressInfo:'',//expressStatus 状态对应信息
-          expressName:'中筒',//快递名称
-          expressNo:'666666666'//快递单号
-        },
+        item: {},
+        userApplyInfo: {},
         errorcode:'',//-1商品id不存在
-        msg:'',//提示信息
+        msg:'',//提示信息,
+        tmpHeight: 0
       }
     },
-    computed: {},
+    computed: {
+      applySuccess() {
+        return parseInt(this.userApplyInfo.applyStatus, 10) === 1
+      },
+      showGoToAdressOrPost() {
+        return parseInt(this.userApplyInfo.applyStatus, 10) === -999 || parseInt(this.userApplyInfo.applyStatus) === 1
+      },
+      expressContent() {
+        const {expressStatus, expressInfo, expressName, expressNo} = this.userApplyInfo
+        let tmpText = ''
+        if (parseInt(expressStatus, 10)) {
+          tmpText = expressInfo
+          if(expressName && expressNo) {
+            tmpText = ` ${expressName} ${expressNo}`
+          }
+        } else {
+          tmpText = expressInfo
+        }
+        return tmpText
+      }
+    },
     methods: {
       goToAdressOrPost() {
-        if(this.hasApplied) {
-
-        } else {
-          this.$router.push({
-            name: 'Address'
-          })
+        if(!this.userId) {
+          alert('跳转登陆')
+//          window.location.href = '#'
+        }else {
+          if(parseInt(this.userApplyInfo.applyStatus, 10) === -999) {
+            this.$router.push({
+              name: 'Address'
+            })
+          } else if (parseInt(this.userApplyInfo.applyStatus, 10) === 1) {
+           alert('填写报告')
+//            window.location.href = '#'
+          }
         }
       },
       handleClick(tab, event) {
-        console.log(tab, event);
+        if (tab.name === 'second') {
+          console.log('second')
+          this.tabInfoHeight = this.$refs.infoPost.clientHeight
+        }
+        if (this.tabInfoHeight) {
+          if (tab.name === 'first') {
+            this.tabPostHeight = this.$refs.infoPost.clientHeight
+            this.$refs.infoPost.style.height = `${this.tabInfoHeight > this.tabPostHeight ? this.tabInfoHeight : this.tabPostHeight}px`
+          }
+        }
       },
     },
+    watch: {},
     created() {
-      console.log(this.$route.params);
       const itemId = this.$route.params.productId || 11
-      this.userId = '123456789' //getqueryString(userid)
+      this.userId = Tool._GetQueryString('userId') || '123456789'
       getDetail(itemId, this.userId)
         .then(res => {
-//          this.item  = res.data
+          res = {
+            item: {
+              id:'12',//商品id
+              itemTitle: '【免费试用】网易严选，每日坚果5',//商品名字
+              itemCoverUrl : 'http://cangdu.org:8001/img/16018a6492334.jpeg',//商品图片
+              startTime: '2018-01-01 16:25:36',//商品开始时间
+              endTime: '2018-01-16 18:26:36',//商品结束时间
+              stockNum: '60',//商品限制数量
+              deductCoin: '200', //商品消耗金币数
+              detailPostId: '89757' , //商品描述,返回帖子id
+              trialPostIds: [12,13,16], //试用报告，返回帖子id
+              applyNum:'169'//申请人数
+            },
+            userApplyInfo: {
+              applyStatus: '-999', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
+              applyInfo: '未申请', //applyStatus状态的对应信息
+              expressStatus:'1',//0未发货，1已发货
+              expressInfo:'已发货',//expressStatus 状态对应信息
+              expressName:'三通',//快递名称
+              expressNo:'666'//快递单号
+            },
+            errorcode: '1',//-1商品id不存在
+            msg: '' //提示信息
+          }
+
+          this.errorcode = res.errorcode
+          if(parseInt(res.errorcode, 10) === -1) {
+            return
+          }
+          this.item = res.item
+//          this.userId = ''
+          this.userApplyInfo = this.userId ? res.userApplyInfo : {
+            applyStatus: '-999', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
+            applyInfo: '未申请', //applyStatus状态的对应信息
+            expressStatus:'0',//0未发货，1已发货
+            expressInfo:'',//expressStatus 状态对应信息
+            expressName:'',//快递名称
+            expressNo:''//快递单号
+          }
+          this.msg =res.msg //提示信息
         })
         .catch(console.log)
+    },
+    mounted() {
+      /*this.$nextTick(() => {
+        this.initHeight = this.$refs.infoPost.clientHeight
+      })*/
     },
     components: {
       'self-header': Header,
@@ -215,6 +286,7 @@
           line-height 43px
         .write_post
           float right
+          line-height 60px
           span.deductCoin
             color #f66
           .write_post_btn
@@ -244,6 +316,9 @@
                 margin-left 15px
               img
                 wh(100%, 100%)
+    .no_post
+      font-size 30px
+      padding 10px 0
     .product_detail
       height 300px
     .el-tabs__nav
@@ -257,4 +332,6 @@
           color #f66
     .el-tabs__active-bar
       background-color #f66
+    .no_product
+      font-size 32px
 </style>

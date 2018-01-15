@@ -65,7 +65,6 @@
             this.isPulling = true
             this.isPullDown = true
             this.loadData()
-            console.log(this.scroll);
           })
           this.scroll.on('pullingUp', () => {
             console.log('pullingUp');
@@ -76,15 +75,13 @@
               this.loadData()
             }else {
               console.log('我们是有底线的');
+              this.scroll.finishPullUp()
             }
           })
         } else {
           console.log('refresh');
           this.scroll.refresh()
         }
-
-      },
-      onGetDeadline() {
 
       },
       loadData() {
@@ -101,11 +98,14 @@
                 this.productLists.splice(0)
                 this.productLists = res.data.data.items
                 this.isPullDown = false
+                console.log('finishdown')
               }
               if(this.isPullUp) {
                 this.scroll.finishPullUp()
                 this.productLists = [...this.productLists, ...res.data.data.items]
                 this.isPullUp = false
+                console.log('finishup')
+
               }
               this.isPulling = false
             }

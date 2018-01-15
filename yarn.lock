@@ -5551,7 +5551,7 @@ uuid@^3.0.0:
 
 v-distpicker@^1.0.16:
   version "1.0.16"
-  resolved "http://registry.npm.taobao.org/v-distpicker/download/v-distpicker-1.0.16.tgz#8f264cab775ca06aaa0a37db073d311e6cb011c3"
+  resolved "https://registry.yarnpkg.com/v-distpicker/-/v-distpicker-1.0.16.tgz#8f264cab775ca06aaa0a37db073d311e6cb011c3"
   dependencies:
     vue "^2.2.2"
 
