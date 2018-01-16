@@ -35,7 +35,9 @@ const itemDetail = {
     deductCoin: '', //商品消耗金币数
     detailPostId: '', //商品描述,返回帖子id
     detailGroupId: '', //发验收报告圈子id
-    applyNum: ''//申请人数
+    applyNum: '',//申请人数
+    detailTagId: '',//标签id用来查询试用报告id
+    itemDetailUrl: ''//滚动图，逗号分隔
   },
   userApplyInfo: {
     applyStatus: '', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
@@ -84,4 +86,22 @@ const trialList = {
     }
   ],
   totalPage: ''//总页数
+}
+//postId,isDetail//查询详情1，0是返回文本内容，和三图
+postContent = {
+  content: "",//内容isDetail==0 返回纯文本
+  picUrls: []//图片，isDetail==0才有此值
+}
+
+
+//tagId
+trialReports = {
+  trialReports: []//tagId==0,返回空串
+}
+
+
+//userId,itemId,userName,address,telephone
+summitApply = {
+  errorcode: 1,//1成功
+  msg: "申请成功"
 }

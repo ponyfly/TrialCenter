@@ -1,14 +1,14 @@
 <template>
   <div class="my_trial_item" v-if="Object.keys(product).length" @click="goToProduct(product.id)">
     <div class="item_banner">
-      <img class="item_banner_img" src="" v-lazy="product.src" alt="">
+      <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl" alt="">
     </div>
     <div class="item_info">
-      <h3 class="item_title">{{product.name}}</h3>
+      <h3 class="item_title">{{product.itemTitle}}</h3>
       <div class="item_apply_info">
         <div class="apply_time">
           <i class="icon_clock"></i>
-          申请时间：{{product.applyTime}}
+          申请时间：{{product.applyTime | formatDate}}
         </div>
         <div class="apply_state">
           <i class="icon_state" :class="applyInfos.stateClass"></i>
@@ -34,21 +34,27 @@
     computed: {
       //申请时间：2018年01月10日15时 快递信息：顺丰 20180192873
       applyInfos() {
-        let {applyState} = this.product
-        applyState = parseInt(applyState)
-        if(applyState === 0) {
+        let {userApplyInfo} = this.product
+        let applyStatus = parseInt(userApplyInfo.applyStatus, 10)
+        if(applyStatus === -1) {
           return {
-            text: '申请状态：申请失败',
+            text: userApplyInfo.applyInfo,
             stateClass: 'icon_fail'
           }
-        } else if(applyState === 1) {
+        } else if(applyStatus === 1) {
+          let tmpText = ''
+          if (userApplyInfo.expressStatus) {
+            tmpText = parseInt(userApplyInfo.expressStatus, 10) ? userApplyInfo.expressName + ' ' + userApplyInfo.expressNo : userApplyInfo.expressInfo
+          } else {
+            tmpText = userApplyInfo.applyInfo
+          }
           return {
-            text: '快递信息：顺丰 20180192873',
+            text: tmpText,
             stateClass: 'icon_success'
           }
-        } else if(applyState === 2) {
+        } else if(applyStatus === 0) {
           return {
-            text: '申请状态：申请中',
+            text: userApplyInfo.applyInfo,
             stateClass: 'icon_applying'
           }
         }
@@ -59,12 +65,40 @@
         console.log(productId)
         this.$router.push({
           name: 'Product',
-
         })
       }
     },
     created() {
-
+    },
+    filters: {
+      formatDate(timestamp) {
+        if(!timestamp) return
+        timestamp = parseInt(timestamp);
+        let newDate = new Date(timestamp);
+        Date.prototype.format = function (format) {
+          let date = {
+            'M+': this.getMonth() + 1,
+            'd+': this.getDate(),
+            'h+': this.getHours(),
+            'm+': this.getMinutes(),
+            's+': this.getSeconds(),
+            'q+': Math.floor((this.getMonth() + 3) / 3),
+            'S+': this.getMilliseconds()
+          };
+          if (/(y+)/i.test(format)) {
+            format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+          }
+          for (let k in date) {
+            if (new RegExp('(' + k + ')').test(format)) {
+              format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                ? date[k] : ('00' + date[k]).substr(('' + date[k]).length));
+            }
+          }
+          return format;
+        }
+        let curTime =  newDate.format('yyyy年MM月dd日hh时');
+        return curTime
+      }
     }
   }
 </script>
@@ -72,7 +106,7 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../style/mixin.styl"
   .my_trial_item
-    margin-bottom 60px
+    padding-bottom 60px
     .item_banner
       position relative
       .item_banner_img

@@ -8,9 +8,18 @@
 </template>
 
 <script>
-export default {
-  name: 'app'
-}
+  import Tool from './plugins/tools.js'
+  export default {
+    name: 'app',
+    data() {
+      return {
+        userId: ''
+      }
+    },
+    created() {
+//      this.userId = Tool._GetQueryString('userId') || '17192'
+    }
+  }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

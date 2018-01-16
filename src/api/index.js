@@ -2,13 +2,21 @@
 发送ajax请求的模块
  */
 import axios from 'axios'
+//获取列表
 export function getProducts(pageNo) {
   return axios.get('/api/trialCenter/listItems', {
     params: {pageNo}
   })
 }
-export function getMytrial() {
-  return axios.get('/api/getmytrial')
+//获取我的试用
+export function getMytrial(pageNo, userId, status) {
+  return axios.get('/api/trialCenter/getMyTrial', {
+    params: {
+      pageNo,
+      userId,
+      status
+    }
+  })
 }
 //获取商品详情
 export function getDetail(ItemId, userId) {

@@ -1,54 +1,64 @@
 <template>
-  <div class="trial_list">
-    <div class="header">
-      <i class="back el-icon-arrow-left"></i>
-      <h2>试用中心</h2>
-      <el-button class="my_trial_btn" @click="goToMyTrial">我的试用
-        <i class="el-icon-arrow-right"></i>
-      </el-button>
+  <div class="my_trial">
+    <self-header headerTitle="我的试用"></self-header>
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+      <el-menu-item index="999">全部</el-menu-item>
+      <el-menu-item index="0">申请中</el-menu-item>
+      <el-menu-item index="1">申请成功</el-menu-item>
+      <el-menu-item index="-1">申请失败</el-menu-item>
+    </el-menu>
+    <div class="my_trial_wrapper" ref="myTrialWrapper">
+      <ul>
+        <li is="self-mytrial-item" v-for="myTrial in trialList" :product="myTrial"></li>
+      </ul>
     </div>
-    <div class="wrapper" ref="wrapper">
-    <ul class="content">
-      <li is="self-item"
-          v-for="(product, index) in productLists"
-          :product="product"
-          :key="product.id"
-          @click.native="goToProduct(product.id)">
-      </li>
-    </ul>
-  </div>
   </div>
 </template>
 
 <script>
-  import {Button} from 'element-ui'
+  import {
+    Menu,
+    MenuItem } from 'element-ui'
   import BScroll from 'better-scroll'
-  import {getProducts} from '../api/index'
-
-  import Item from '../components/item.vue'
+  import Header from '../components/header.vue'
+  import MyTrialItem from '../components/mytrialitem.vue'
   import Tool from '../plugins/tools.js'
-
+  import {getMytrial } from '../api/index.js'
   export default {
     data() {
       return {
+        userId: '',
+        activeIndex: '999',
+        trialList: [],
         firstEnter: true,
         curPage:1,
         totalPage: 0,
-        productLists: [],
         isPullUp: false,
         isPullDown: false,
         isPulling: true,
         scrollPositionY: 0,
-        userId: '',
       }
     },
-    computed: {
-    },
+    computed: {},
     methods: {
+      setTabsContentHeight() {
+        const bodyHeight = document.body.clientHeight || document.documentElement.clientHeight
+        this.$nextTick(() => {
+          document.querySelector('.my_trial_wrapper').style.height = `${bodyHeight - 180}px`
+          document.querySelector('.my_trial_wrapper').style.overflow = 'scroll'
+        })
+      },
+      handleSelect(key, keyPath) {
+        console.log(key, keyPath, this.activeIndex);
+        this.activeIndex = key
+        this.curPage = 1
+        this.firstEnter = true
+        this.loadData()
+      },
       _initScroll() {
         if(!this.scroll) {
           console.log('initscroll');
-          this.scroll = new BScroll(this.$refs.wrapper, {
+          this.scroll = new BScroll(this.$refs.myTrialWrapper, {
             click: true,
             probeType: 3,
             pullDownRefresh: {
@@ -89,28 +99,27 @@
         }
       },
       loadData() {
-        getProducts(this.curPage)
+        getMytrial(this.curPage, this.userId, this.activeIndex)
           .then(res => {
-            console.log('getList')
+            console.log('getmytrial')
             this.totalPage = parseInt(res.data.data.totalPage, 10)
             if(this.firstEnter) {
-              this.productLists = res.data.data.items
+              this.trialList = res.data.data.trialList
               this.firstEnter = false
             }
             if(this.isPulling) {
               if(this.isPullDown) {
                 this.scroll.finishPullDown()
-                this.productLists.splice(0)
-                this.productLists = res.data.data.items
+                this.trialList.splice(0)
+                this.trialList = res.data.data.trialList
                 this.isPullDown = false
                 console.log('finishdown')
               }
               if(this.isPullUp) {
                 this.scroll.finishPullUp()
-                this.productLists = [...this.productLists, ...res.data.data.items]
+                this.trialList = [...this.trialList, ...res.data.data.trialList]
                 this.isPullUp = false
                 console.log('finishup')
-
               }
               this.isPulling = false
             }
@@ -120,80 +129,43 @@
           })
           .catch(console.log)
       },
-      goToMyTrial() {
-        if (this.userId) {
-          this.$router.push({
-            name: 'MyTrial'
-          })
-        } else {
-          alert('跳转登陆')
-          window.location.href = '#'
-        }
-      },
-      goToProduct(productId) {
-        console.log(this);
-        this.$router.push({
-          name: 'Product',
-          params: {productId}
-        })
-      },
     },
     components: {
-      'el-button': Button,
-      'self-item': Item
+      'self-header': Header,
+      'el-menu': Menu,
+      'el-menu-item': MenuItem,
+      'self-mytrial-item': MyTrialItem
     },
     created() {
-      console.log('created')
-      this.userId = Tool._GetQueryString('userId') || 17192
+      this.userId = Tool._GetQueryString('userId') || '17192'
+      this.setTabsContentHeight()
       this.loadData()
     },
     mounted() {
-      console.log('mounted')
-    },
-    watch: {},
-    activated() {
-      console.log('activated')
-      if (this.scroll) {
-        this.scroll.scrollTo(0, this.scrollPositionY)
-      }
     }
   }
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style lang="stylus" rel="stylesheet/stylus">
   @import "../style/mixin.styl"
-  .trial_list
-    font-size 34px
-    wh(100%, 100%)
-    .header
-      width 750px
+  .my_trial
+    background-color #fff
+    height 100%
+    .el-menu-demo
       position fixed
-      height 90px
+      top 90px
+      width 750px
       background-color #fff
-      line-height 90px
       z-index 999
-      .back
-        position: absolute;
-        top: 0;
-        left: 0;
-        font-size: 44px;
-        padding: 23px;
-      .my_trial_btn
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        width: 180px;
-        font-size: 30px;
-        border: none;
-        color: #ff6666
-        i
-          color #ff1653
-    .wrapper
-      background-color #fff
+      .el-menu-item
+        width 25%
+        font-size 30px
+        height 90px
+        line-height 90px
+    .my_trial_wrapper
       wh(100%, 100%)
-      padding-top 90px
-      overflow-y scroll
-      .content
-        font-size 36px
-        padding-bottom 180px
+      margin-top 180px
+    .el-menu--horizontal>.el-menu-item.is-active, .el-menu--horizontal>.el-submenu.is-active .el-submenu__title
+      border-bottom 2px solid #f66
+      color #f66
 </style>
