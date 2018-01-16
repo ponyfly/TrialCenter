@@ -37,11 +37,7 @@
     <div class="info_post" ref="infoPost" v-if="errorcode !== -1">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="商品详情" name="first">
-          <div class="product_detail">
-            <div>
-              {{this.productDesc}}
-            </div>
-          </div>
+          <div class="product_detail" v-html="productDesc"></div>
         </el-tab-pane>
         <el-tab-pane label="试用报告" name="second">
           <ul class="post_list" v-if="reports.length">
@@ -83,8 +79,7 @@
         reports: [],
         item: {},
         userApplyInfo: {},
-        errorcode:'',//-1商品id不存在
-        //msg:'',//提示信息,
+        errorcode:'',
         productDesc: '',
         reportCurPage: 1,
         reportTotalPage: 0,
@@ -102,9 +97,10 @@
         const {expressStatus, expressInfo, expressName, expressNo} = this.userApplyInfo
         let tmpText = ''
         if (parseInt(expressStatus, 10)) {
-          tmpText = expressInfo
           if(expressName && expressNo) {
             tmpText = ` ${expressName} ${expressNo}`
+          } else {
+            tmpText = expressInfo
           }
         } else {
           tmpText = expressInfo
@@ -112,7 +108,61 @@
         return tmpText
       }
     },
+    components: {
+      'self-header': Header,
+      'self-backtime': BackTime,
+      'el-button': Button,
+      'el-tabs': Tabs,
+      'el-tab-pane': TabPane
+    },
     methods: {
+      _initData() {
+        this.itemId = this.$route.params.productId
+        getDetail(this.itemId, this.userId)
+          .then(res => {
+            console.log('getItemDetail')
+            this.errorcode = parseInt(res.data.errorcode, 10)
+            if(this.errorcode === -1) {
+              return new Error('没有商品')
+            }
+            this.item = res.data.item
+            this.userApplyInfo = this.userId ? res.data.userApplyInfo : {
+              applyStatus: '-999', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
+              applyInfo: '未申请', //applyStatus状态的对应信息
+              expressStatus:'0',//0未发货，1已发货
+              expressInfo:'',//expressStatus 状态对应信息
+              expressName:'',//快递名称
+              expressNo:'',//快递单号
+              totalCoin: 0,
+              addressList: [
+                {
+                  id: '',
+                  userName: '',
+                  address: '',
+                  telephone: ''
+                }
+              ]
+            }
+            return this.item.detailPostId
+          })
+          .then(detailPostId => {
+            detailPostId = 354210219 //测试id
+            return getProductDesc(detailPostId, 1)
+          })
+          .then(res => {
+            if(res.error) {
+              return new Error('没有详情')
+            }
+            if (res.data.content.indexOf('[img]') !== -1) {
+              let desc = res.data.content.replace(/(jpeg|png|jpg|gif).*?(\[\/img\])/ig,'$1$2')
+              desc = desc.replace(/\[img\]([^\[]*)\[\/img\]/ig,'<img src="$1" border="0" width="100%"/>')
+              this.productDesc = desc
+            } else {
+              this.productDesc = res.data.content
+            }
+          })
+          .catch(console.log)
+      },
       goToAdressOrPost() {
         if(!this.userId) {
           alert('跳转登陆')
@@ -133,16 +183,7 @@
         }
       },
       handleClick(tab, event) {
-        if (tab.name === 'second') {
-          console.log('second')
-          this.tabInfoHeight = this.$refs.infoPost.clientHeight
-        }
-        if (this.tabInfoHeight) {
-          if (tab.name === 'first') {
-            this.tabPostHeight = this.$refs.infoPost.clientHeight
-            this.$refs.infoPost.style.height = `${this.tabInfoHeight > this.tabPostHeight ? this.tabInfoHeight : this.tabPostHeight}px`
-          }
-        }
+        this.setInfoPostHeight(tab)
         if (tab.name === 'second') {
           getProductReports(this.item.detailTagId, this.reportCurPage)
             .then(res => {
@@ -165,70 +206,26 @@
             .catch(console.log)
         }
       },
+      setInfoPostHeight(tab) {
+        if (tab.name === 'second') {
+          this.tabInfoHeight = this.$refs.infoPost.clientHeight
+        }
+        if (this.tabInfoHeight) {
+          if (tab.name === 'first') {
+            this.tabPostHeight = this.$refs.infoPost.clientHeight
+            this.$refs.infoPost.style.height = `${this.tabInfoHeight > this.tabPostHeight ? this.tabInfoHeight : this.tabPostHeight}px`
+          }
+        }
+      }
     },
     watch: {},
     created() {
-      console.log('created')
-      this.itemId = this.$route.params.productId
-      //this.userId = ''
-      console.log(this.itemId, this.userId)
       if(!this.itemId) return
-      getDetail(this.itemId, this.userId)
-        .then(res => {
-          console.log('getItemDetail')
-          this.errorcode = parseInt(res.data.errorcode, 10)
-          if(this.errorcode === -1) return
-          this.item = res.data.item
-          console.log(this.item)
-          this.userApplyInfo = this.userId ? res.data.userApplyInfo : {
-            applyStatus: '-999', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
-            applyInfo: '未申请', //applyStatus状态的对应信息
-            expressStatus:'0',//0未发货，1已发货
-            expressInfo:'',//expressStatus 状态对应信息
-            expressName:'',//快递名称
-            expressNo:'',//快递单号
-            totalCoin: 0,
-            addressList: [
-              {
-                id: '',
-                userName: '',
-                address: '',
-                telephone: ''
-              }
-            ]
-          }
-          //this.msg =res.data.msg //提示信息
-          return this.item.detailPostId
-        })
-        .then(detailPostId => {
-          detailPostId = 354210219 //测试id
-          return getProductDesc(detailPostId, 1)
-        })
-        .then(res => {
-          if(res.error) return new Error('没有详情')
-          if (res.data.content.indexOf('[img]') !== -1) {
-            let a = res.data.content
-            a = a.replace(/jpg(.*)*\[\/img\]/gm, '.jpg[/img]')
-            this.productDesc = res.data.content
-          } else {
-            this.productDesc = res.data.content
-          }
-        })
-        .catch(console.log)
+      console.log(this.itemId, this.userId)
+      this._initData()
     },
-    mounted() {
-      console.log('mounted')
-    },
-    components: {
-      'self-header': Header,
-      'self-backtime': BackTime,
-      'el-button': Button,
-      'el-tabs': Tabs,
-      'el-tab-pane': TabPane
-    },
-    activated() {
-      console.log('activated')
-    }
+    mounted() {},
+    activated() {},
   }
 </script>
 
