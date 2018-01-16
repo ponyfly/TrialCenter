@@ -4,7 +4,7 @@
 import axios from 'axios'
 //获取列表
 export function getProducts(pageNo) {
-  return axios.get('/api/trialCenter/listItems', {
+  return axios.get('http://114.112.164.36:64080/api/listItems', {
     params: {pageNo}
   })
 }
@@ -19,12 +19,23 @@ export function getMytrial(pageNo, userId, status) {
   })
 }
 //获取商品详情
-export function getDetail(ItemId, userId) {
-  return axios.get('/api/trialCenter/itemDetail',{
-    params: {ItemId, userId}
+export function getDetail(itemId, userId) {
+  return axios.get('http://114.112.164.36:64080/api/itemDetail',{
+    params: {itemId, userId}
   })
 }
-//发送申请试用的请求
-export function postApplyItem(form) {
-  return axios.post('/api/trialCenter/applyItem', form)
+//获取内容
+export function getProductDesc(postId, isDetail) {
+  return axios.get('http://114.112.164.36:64080/api/postContent',{
+    params: {postId, isDetail}
+  })
+}
+//获取评论
+export function getProductReports(tagId, pageNo) {
+  return axios.get('http://114.112.164.36:64080/api/trialReports',{
+    params: {tagId, pageNo}
+  })
+}
+export function postApplyItem(formData) {
+  return axios.post('http://114.112.164.36:64080/api/summitApply', formData)
 }

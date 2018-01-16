@@ -38,16 +38,18 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="商品详情" name="first">
           <div class="product_detail">
-            <h2>详情</h2>
+            <div>
+              {{this.productDesc}}
+            </div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="试用报告" name="second">
-          <ul class="post_list" v-if="posts.length">
-            <li v-for="postItem in posts">
-              <p>{{postItem.text}}</p>
-              <div v-if="postItem.src.length" class="img_wrapper clearfix">
-                <div v-for="postImg in postItem.src" class="img_item">
-                  <img :src="postImg" alt="">
+          <ul class="post_list" v-if="reports.length">
+            <li v-for="report in reports">
+              <p>{{report.content}}</p>
+              <div v-if="report.picUrls.length" class="img_wrapper clearfix">
+                <div v-for="picUrl in report.picUrls" class="img_item">
+                  <img :src="picUrl" alt="">
                 </div>
               </div>
             </li>
@@ -66,37 +68,31 @@
   import {Button, Tabs, TabPane } from 'element-ui'
   import Header from '../components/header.vue'
   import BackTime from '../components/backtime.vue'
-  import {getDetail } from  '../api/index.js'
+  import {getDetail, getProductDesc, getProductReports } from  '../api/index.js'
   import Tool from '../plugins/tools.js'
   export default {
+    props: {
+      userId: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       return {
         activeName: 'first',
-        success: true,
-        posts: [
-          {text: '大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看,大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看', src: [
-            'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-            'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-            'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-          ]},
-          {text: '大家好，我是小se，都说手势女人的第二张脸，不知道小主平常', src: [
-            'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-            'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-          ]},
-          {text: '大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看,大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看', src: []},
-          {text: '大家好，', src: ['http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114']},
-        ],
-        hasApplied: false,
-        userId: '',
+        reports: [],
         item: {},
         userApplyInfo: {},
         errorcode:'',//-1商品id不存在
-        msg:'',//提示信息,
-        tmpHeight: 0
+        //msg:'',//提示信息,
+        productDesc: '',
+        reportCurPage: 1,
+        reportTotalPage: 0,
       }
     },
     computed: {
       applySuccess() {
+        console.log(this.userApplyInfo)
         return parseInt(this.userApplyInfo.applyStatus, 10) === 1
       },
       showGoToAdressOrPost() {
@@ -127,7 +123,6 @@
               name: 'Address',
               params: {
                 itemId: this.itemId,
-                userId: this.userId,
                 addressList: this.userApplyInfo.addressList
               },
             })
@@ -148,63 +143,51 @@
             this.$refs.infoPost.style.height = `${this.tabInfoHeight > this.tabPostHeight ? this.tabInfoHeight : this.tabPostHeight}px`
           }
         }
+        if (tab.name === 'second') {
+          getProductReports(this.item.detailTagId, this.reportCurPage)
+            .then(res => {
+              console.log(res) //试用报告帖子列表
+              this.reports = res.data.postList
+              this.reports = [
+                {postId: '32', content: '大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看,大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看', picUrls: [
+                  'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
+                  'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
+                  'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
+                ]},
+                {postId: '33', content: '大家好，我是小se，都说手势女人的第二张脸，不知道小主平常', picUrls: [
+                  'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
+                  'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
+                ]},
+                {postId: '34', content: '大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看,大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看', picUrls: []},
+                {postId: '35', content: '大家好，', picUrls: ['http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114']},
+              ]
+            })
+            .catch(console.log)
+        }
       },
     },
     watch: {},
     created() {
       console.log('created')
-      this.itemId = this.$route.params.productId || 11
-      this.userId = Tool._GetQueryString('userId') || '123456789'
+      this.itemId = this.$route.params.productId
+      //this.userId = ''
+      console.log(this.itemId, this.userId)
+      if(!this.itemId) return
       getDetail(this.itemId, this.userId)
         .then(res => {
           console.log('getItemDetail')
-          res = {
-            item: {
-              id:'12',//商品id
-              itemTitle: '【免费试用】网易严选，每日坚果5',//商品名字
-              itemCoverUrl : 'http://cangdu.org:8001/img/16018a6492334.jpeg',//商品图片
-              startTime: '2018-01-01 16:25:36',//商品开始时间
-              endTime: '2018-01-16 18:26:36',//商品结束时间
-              stockNum: '60',//商品限制数量
-              deductCoin: '200', //商品消耗金币数
-              detailPostId: '89757' , //商品描述,返回帖子id
-              trialPostIds: [12,13,16], //试用报告，返回帖子id
-              detailGroupId: '', //发验收报告圈子id
-              applyNum:'169'//申请人数
-            },
-            userApplyInfo: {
-              applyStatus: '-999', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
-              applyInfo: '未申请', //applyStatus状态的对应信息
-              expressStatus:'1',//0未发货，1已发货
-              expressInfo:'已发货',//expressStatus 状态对应信息
-              expressName:'三通',//快递名称
-              expressNo:'666',//快递单号,
-              addressList: [
-                {
-                  id: '01',
-                  userName: '张三',
-                  address: '北京',
-                  telephone: '15066668888'
-                }
-              ],
-            },
-            errorcode: '1',//-1商品id不存在
-            msg: '' //提示信息
-          }
-
-          this.errorcode = res.errorcode
-          if(parseInt(res.errorcode, 10) === -1) {
-            return
-          }
-          this.item = res.item
-//          this.userId = ''
-          this.userApplyInfo = this.userId ? res.userApplyInfo : {
+          this.errorcode = parseInt(res.data.errorcode, 10)
+          if(this.errorcode === -1) return
+          this.item = res.data.item
+          console.log(this.item)
+          this.userApplyInfo = this.userId ? res.data.userApplyInfo : {
             applyStatus: '-999', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
             applyInfo: '未申请', //applyStatus状态的对应信息
             expressStatus:'0',//0未发货，1已发货
             expressInfo:'',//expressStatus 状态对应信息
             expressName:'',//快递名称
             expressNo:'',//快递单号
+            totalCoin: 0,
             addressList: [
               {
                 id: '',
@@ -214,7 +197,22 @@
               }
             ]
           }
-          this.msg =res.msg //提示信息
+          //this.msg =res.data.msg //提示信息
+          return this.item.detailPostId
+        })
+        .then(detailPostId => {
+          detailPostId = 354210219 //测试id
+          return getProductDesc(detailPostId, 1)
+        })
+        .then(res => {
+          if(res.error) return new Error('没有详情')
+          if (res.data.content.indexOf('[img]') !== -1) {
+            let a = res.data.content
+            a = a.replace(/jpg(.*)*\[\/img\]/gm, '.jpg[/img]')
+            this.productDesc = res.data.content
+          } else {
+            this.productDesc = res.data.content
+          }
         })
         .catch(console.log)
     },

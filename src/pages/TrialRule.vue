@@ -12,8 +12,8 @@
         <div class="step">试用<br/>报告</div>
       </div>
       <ul class="questions">
-        <li v-for="question in questions" @click="toAnswer">
-          <span>{{question}}</span>
+        <li v-for="(question, index) in questions" @click="toAnswer(index)">
+          <span>{{question.name}}</span>
           <i class="el-icon-arrow-right"></i>
         </li>
       </ul>
@@ -27,23 +27,22 @@
     data() {
       return {
         questions: [
-          '申请试用需要什么条件？',
-          '在哪里可以看到申请进度？',
-          '申请试用会扣除金币吗？',
-          '试用冻结的金币什么时候返还？',
-          '如何提试用中奖率？',
-          '如何提交试用报告？',
-          '申请免费试用需要邮费吗？',
-          '免职声明',
-          '免职声明',
-          '免职声明',
+          {name: '申请试用需要什么条件？', answer: 'answer0'},
+          {name: '在哪里可以看到申请进度？', answer: 'answer1'},
+          {name: '申请试用会扣除金币吗？', answer: 'answer2'},
+          {name: '试用冻结的金币什么时候返还？', answer: 'answer3'},
+          {name: '如何提试用中奖率？', answer: 'answer4'},
+          {name: '如何提交试用报告？', answer: 'answer5'},
+          {name: '申请免费试用需要邮费吗？', answer: 'answer6'},
+          {name: '免职声明', answer: 'answer7'},
         ]
       }
     },
     computed: {},
     methods: {
-      toAnswer() {
-        console.log('go to answer')
+      toAnswer(index) {
+        console.log(this.questions[index].answer)
+        //window.location.href = '#'
       }
     },
     components: {

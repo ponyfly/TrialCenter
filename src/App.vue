@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <keep-alive>
-      <router-view v-if="$route.meta.keepAlive"/>
+      <router-view v-if="$route.meta.keepAlive" :userId="userId" />
     </keep-alive>
-    <router-view v-if="!$route.meta.keepAlive"></router-view>
+    <router-view v-if="!$route.meta.keepAlive" :userId="userId" ></router-view>
   </div>
 </template>
 
@@ -17,7 +17,7 @@
       }
     },
     created() {
-//      this.userId = Tool._GetQueryString('userId') || '17192'
+      this.userId = Tool._GetQueryString('userId') || '199999999999'
     }
   }
 </script>

@@ -22,3 +22,4 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 1. 用户金币
 2. 商品描述，试用报告
+3. reports报告一次拿多个报告

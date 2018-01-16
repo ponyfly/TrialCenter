@@ -12,7 +12,7 @@
   export default {
     props: {
       endTime: {
-        type: String,
+        type: Number,
       }
     },
     data() {
@@ -24,17 +24,13 @@
     computed: {
       isOverDeadline() {
         if(!this.deadline) return
-        let deadlineArr = this.deadline.match(/(\d{4})-(\d{1,2})-(\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})/).slice(1)
-        deadlineArr.splice(1,1,deadlineArr[1] - 1)
-        return new Date(...deadlineArr) < new Date()
+        return this.deadline < new Date()
       }
     },
     methods: {
       getRemainingTime() {
         //2018-01-15 18:26:36
-        let deadlineArr = this.deadline.match(/(\d{4})-(\d{1,2})-(\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})/).slice(1)
-        deadlineArr.splice(1,1,deadlineArr[1] - 1)
-        const leftTime = new Date(...deadlineArr) - new Date()
+        const leftTime = this.deadline - new Date()
         let leftDays = parseInt(leftTime/1000/60/60/24, 10)
         let leftHours = parseInt(leftTime/1000/60/60%24, 10)
         let leftMinutes = parseInt(leftTime/1000/60%60, 10)
@@ -50,7 +46,6 @@
     },
     created() {
       if(this.deadline){
-        console.log(this.deadline);
         this.getRemainingTime()
       }
     }

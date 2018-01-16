@@ -29,6 +29,12 @@
   import Tool from '../plugins/tools.js'
 
   export default {
+    props: {
+      userId: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       return {
         firstEnter: true,
@@ -39,7 +45,6 @@
         isPullDown: false,
         isPulling: true,
         scrollPositionY: 0,
-        userId: '',
       }
     },
     computed: {
@@ -92,22 +97,22 @@
         getProducts(this.curPage)
           .then(res => {
             console.log('getList')
-            this.totalPage = parseInt(res.data.data.totalPage, 10)
+            this.totalPage = parseInt(res.data.totalPage, 10)
             if(this.firstEnter) {
-              this.productLists = res.data.data.items
+              this.productLists = res.data.items
               this.firstEnter = false
             }
             if(this.isPulling) {
               if(this.isPullDown) {
                 this.scroll.finishPullDown()
                 this.productLists.splice(0)
-                this.productLists = res.data.data.items
+                this.productLists = res.data.items
                 this.isPullDown = false
                 console.log('finishdown')
               }
               if(this.isPullUp) {
                 this.scroll.finishPullUp()
-                this.productLists = [...this.productLists, ...res.data.data.items]
+                this.productLists = [...this.productLists, ...res.data.items]
                 this.isPullUp = false
                 console.log('finishup')
 
@@ -144,7 +149,6 @@
     },
     created() {
       console.log('created')
-      this.userId = Tool._GetQueryString('userId') || 17192
       this.loadData()
     },
     mounted() {
