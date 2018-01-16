@@ -9,17 +9,17 @@
       </el-tab-pane>
       <el-tab-pane class="tab_pane" label="申请中" name="second">
         <ul>
-          <li is="self-mytrial-item" v-for="myTrial in applying" :product="myTrial"></li>
+          <li is="self-mytrial-item" v-for="myTrialAppling in applying" :product="myTrialAppling"></li>
         </ul>
       </el-tab-pane>
       <el-tab-pane class="tab_pane" label="申请成功" name="third">
         <ul>
-          <li is="self-mytrial-item" v-for="myTrial in successApply" :product="myTrial"></li>
+          <li is="self-mytrial-item" v-for="myTrialSuccess in successApply" :product="myTrialSuccess"></li>
         </ul>
       </el-tab-pane>
       <el-tab-pane class="tab_pane" label="申请失败" name="fourth">
         <ul>
-          <li is="self-mytrial-item" v-for="myTrial in failApply" :product="myTrial"></li>
+          <li is="self-mytrial-item" v-for="myTrialFail in failApply" :product="myTrialFail"></li>
         </ul>
       </el-tab-pane>
     </el-tabs>

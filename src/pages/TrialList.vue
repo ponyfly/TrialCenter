@@ -26,6 +26,7 @@
   import {getProducts} from '../api/index'
 
   import Item from '../components/item.vue'
+  import Tool from '../plugins/tools.js'
 
   export default {
     data() {
@@ -37,7 +38,8 @@
         isPullUp: false,
         isPullDown: false,
         isPulling: true,
-
+        scrollPositionY: 0,
+        userId: '',
       }
     },
     computed: {
@@ -78,6 +80,9 @@
               this.scroll.finishPullUp()
             }
           })
+          this.scroll.on('scrollEnd', (pos) => {
+            this.scrollPositionY = pos.y
+          })
         } else {
           console.log('refresh');
           this.scroll.refresh()
@@ -117,9 +122,14 @@
           .catch(console.log)
       },
       goToMyTrial() {
-        this.$router.push({
-          name: 'MyTrial'
-        })
+        if (this.userId) {
+          this.$router.push({
+            name: 'MyTrial'
+          })
+        } else {
+          alert('跳转登陆')
+          window.location.href = '#'
+        }
       },
       goToProduct(productId) {
         console.log(this);
@@ -135,6 +145,7 @@
     },
     created() {
       console.log('created')
+      this.userId = Tool._GetQueryString('userId') || 11
       this.loadData()
     },
     mounted() {
@@ -143,6 +154,9 @@
     watch: {},
     activated() {
       console.log('activated')
+      if (this.scroll) {
+        this.scroll.scrollTo(0, this.scrollPositionY)
+      }
     }
   }
 </script>
