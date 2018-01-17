@@ -1,67 +1,82 @@
 <template>
   <div class="product_info">
     <self-header headerTitle="详情"></self-header>
-    <div class="overview" v-if="errorcode !== -1">
-      <div class="banner">
-        <img :src="item.itemCoverUrl" alt="">
+    <div class="product_info_wrapper" ref="productInfoWrapper">
+      <div class="productScrollContent">
+        <div class="overview" v-if="errorcode !== -1">
+          <div class="banner">
+            <img :src="item.itemCoverUrl" alt="">
+          </div>
+          <h3 class="product_title">{{item.itemTitle}}</h3>
+          <div class="product_body">
+            <div class="info_1">
+              <span class="limit_num">限量：{{item.stockNum}}份</span>
+              <span>申请人数：{{item.applyNum}}人</span>
+            </div>
+            <div class="info_2 clearfix">
+              <self-backtime
+                  :endTime="item.endTime"
+                  class="endtime"
+                  v-if="item.endTime">
+              </self-backtime>
+              <router-link :to="{name:'TrialRule'}" class="trail_rule_btn">试用规则</router-link>
+            </div>
+          </div>
+          <div class="apply_info">
+            <div class="apply_state" :class="{apply_success: applySuccess}">
+              <i class="icon_state"></i>
+              <span>申请状态：</span>{{userApplyInfo.applyInfo}}
+              <span v-if="applySuccess" class="express_info">快递信息：{{expressContent}}</span>
+            </div>
+            <div class="write_post">
+              <span class="deductCoin">{{item.deductCoin}}</span>金币
+              <el-button
+                  type="danger"
+                  round
+                  class="write_post_btn"
+                  v-if="showAddressOrPostBtn.isShow"
+                  @click="goToAdressOrPost">
+                {{showAddressOrPostBtn.btnText}}</el-button>
+            </div>
+          </div>
+        </div>
+        <div class="info_post" ref="infoPost" v-if="errorcode !== -1">
+          <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="商品详情" name="first">
+              <div class="product_detail" v-html="productDesc"></div>
+            </el-tab-pane>
+            <el-tab-pane label="试用报告" name="second">
+              <ul class="post_list" v-if="reports.length">
+                <li v-for="report in reports">
+                  <p>{{report.content}}</p>
+                  <div v-if="report.picUrls.length" class="img_wrapper clearfix">
+                    <div v-for="picUrl in report.picUrls" class="img_item">
+                      <img :src="picUrl" alt="">
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div class="no_post" v-else>暂时没有报告，小主等等再来看吧~</div>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+        <div class="no_product" v-if="errorcode === -1">
+          找不到商品
+        </div>
       </div>
-      <h3 class="product_title">{{item.itemTitle}}</h3>
-      <div class="product_body">
-        <div class="info_1">
-          <span class="limit_num">限量：{{item.stockNum}}份</span>
-          <span>申请人数：{{item.applyNum}}人</span>
-        </div>
-        <div class="info_2 clearfix">
-          <self-backtime :endTime="item.endTime" class="endtime" v-if="item.endTime"></self-backtime>
-          <router-link :to="{name:'TrialRule'}" class="trail_rule_btn">试用规则</router-link>
-        </div>
-      </div>
-      <div class="apply_info">
-        <div class="apply_state" :class="{apply_success: applySuccess}">
-          <i class="icon_state"></i>
-          <span>申请状态：</span>{{userApplyInfo.applyInfo}}
-          <span v-if="applySuccess" class="express_info">快递信息：{{expressContent}}</span>
-        </div>
-        <div class="write_post">
-          <span class="deductCoin">{{item.deductCoin}}</span>金币
-          <el-button
-              type="danger"
-              round
-              class="write_post_btn"
-              v-if="showGoToAdressOrPost"
-              @click="goToAdressOrPost">
-            {{parseInt(userApplyInfo.applyStatus, 10) === 1 ? '填写报告' : '马上申请'}}</el-button>
-        </div>
-      </div>
-    </div>
-    <div class="info_post" ref="infoPost" v-if="errorcode !== -1">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="商品详情" name="first">
-          <div class="product_detail" v-html="productDesc"></div>
-        </el-tab-pane>
-        <el-tab-pane label="试用报告" name="second">
-          <ul class="post_list" v-if="reports.length">
-            <li v-for="report in reports">
-              <p>{{report.content}}</p>
-              <div v-if="report.picUrls.length" class="img_wrapper clearfix">
-                <div v-for="picUrl in report.picUrls" class="img_item">
-                  <img :src="picUrl" alt="">
-                </div>
-              </div>
-            </li>
-          </ul>
-          <div class="no_post" v-else>暂时没有报告，小主等等再来看吧~</div>
-        </el-tab-pane>
-      </el-tabs>
-    </div>
-    <div class="no_product" v-if="errorcode === -1">
-      找不到商品
     </div>
   </div>
 </template>
 
 <script>
-  import {Button, Tabs, TabPane } from 'element-ui'
+  import {
+    Button,
+    Tabs,
+    TabPane,
+    Carousel,
+    CarouselItem,
+  } from 'element-ui'
+  import BScroll from 'better-scroll'
   import Header from '../components/header.vue'
   import BackTime from '../components/backtime.vue'
   import {getDetail, getProductDesc, getProductReports } from  '../api/index.js'
@@ -83,16 +98,57 @@
         productDesc: '',
         reportCurPage: 1,
         reportTotalPage: 0,
+        lastPostY: 0,
       }
     },
     computed: {
       applySuccess() {
-        console.log(this.userApplyInfo)
         return parseInt(this.userApplyInfo.applyStatus, 10) === 1
       },
-      showGoToAdressOrPost() {
-        return parseInt(this.userApplyInfo.applyStatus, 10) === -999 || parseInt(this.userApplyInfo.applyStatus) === 1
+      //申请期已结束
+      isOverDeadLine() {
+        return this.item.endTime < new Date()
       },
+      //是否显示右侧按钮
+      showAddressOrPostBtn() {
+        const applyStatus = parseInt(this.userApplyInfo.applyStatus, 10)
+        if (this.isOverDeadLine) {
+          if (applyStatus === 1) {
+            return {
+              isShow: true,
+              btnText: '填写报告'
+            }
+          } else if (applyStatus >= 2) {
+            return {
+              isShow: false,
+              btnText: '已填报告'
+            }
+          } else {
+            return {
+              isShow: false,
+              btnText: ''
+            }
+          }
+        } else {
+          if (applyStatus === -999) {
+            return {
+              isShow: true,
+              btnText: '马上申请'
+            }
+          } else if (applyStatus === 1 ) {
+            return {
+              isShow: true,
+              btnText: '填写报告'
+            }
+          } else {
+            return {
+              isShow: false,
+              btnText: ''
+            }
+          }
+        }
+      },
+      //快递信息
       expressContent() {
         const {expressStatus, expressInfo, expressName, expressNo} = this.userApplyInfo
         let tmpText = ''
@@ -113,14 +169,38 @@
       'self-backtime': BackTime,
       'el-button': Button,
       'el-tabs': Tabs,
-      'el-tab-pane': TabPane
+      'el-tab-pane': TabPane,
+      'el-carousel': Carousel,
+      'el-carousel-item': CarouselItem,
     },
     methods: {
+      _initScroll() {
+        if (!this.scroll) {
+          this.scroll = new BScroll(this.$refs.productInfoWrapper, {
+            click: true,
+            probeType: 3,
+          })
+          this.scroll.on('touchEnd', (pos) => {
+            if (this.activeName === 'second') {
+              if(this.reportCurPage !== this.reportTotalPage) {
+                if(Math.abs(pos.y) - this.lastPostY > 300) {
+                  this.lastPostY = Math.abs(pos.y)
+                  this.getReports()
+                }
+              } else {
+                console.log('没有报告了')
+              }
+            }
+          })
+        } else {
+          this.scroll.refresh()
+        }
+      },
       _initData() {
-        this.itemId = this.$route.params.productId
         getDetail(this.itemId, this.userId)
           .then(res => {
             console.log('getItemDetail')
+            console.log(res.data)
             this.errorcode = parseInt(res.data.errorcode, 10)
             if(this.errorcode === -1) {
               return new Error('没有商品')
@@ -146,7 +226,6 @@
             return this.item.detailPostId
           })
           .then(detailPostId => {
-            detailPostId = 354210219 //测试id
             return getProductDesc(detailPostId, 1)
           })
           .then(res => {
@@ -154,7 +233,9 @@
               return new Error('没有详情')
             }
             if (res.data.content.indexOf('[img]') !== -1) {
+//              console.log(res.data.content)
               let desc = res.data.content.replace(/(jpeg|png|jpg|gif).*?(\[\/img\])/ig,'$1$2')
+//              console.log(desc)
               desc = desc.replace(/\[img\]([^\[]*)\[\/img\]/ig,'<img src="$1" border="0" width="100%"/>')
               this.productDesc = desc
             } else {
@@ -165,8 +246,9 @@
       },
       goToAdressOrPost() {
         if(!this.userId) {
-          alert('跳转登陆')
-//          window.location.href = '#'
+          if(window.app_interface) {
+            window.app_interface.appLogin(0)
+          }
         }else {
           if(parseInt(this.userApplyInfo.applyStatus, 10) === -999) {
             this.$router.push({
@@ -177,54 +259,51 @@
               },
             })
           } else if (parseInt(this.userApplyInfo.applyStatus, 10) === 1) {
-            alert('填写报告')
-//            window.location.href = '#'
+            window.location.href = `jcnhers://list_post/groupId=${this.item.detailGroupId}`
           }
         }
       },
       handleClick(tab, event) {
-        this.setInfoPostHeight(tab)
+        this.setInfoPostHeight()
         if (tab.name === 'second') {
-          getProductReports(this.item.detailTagId, this.reportCurPage)
-            .then(res => {
-              console.log(res) //试用报告帖子列表
-              this.reports = res.data.postList
-              this.reports = [
-                {postId: '32', content: '大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看,大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看', picUrls: [
-                  'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-                  'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-                  'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-                ]},
-                {postId: '33', content: '大家好，我是小se，都说手势女人的第二张脸，不知道小主平常', picUrls: [
-                  'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-                  'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-                ]},
-                {postId: '34', content: '大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看,大家好，我是小se，都说手势女人的第二张脸，不知道小主平常是否有精心护理过，想想看', picUrls: []},
-                {postId: '35', content: '大家好，', picUrls: ['http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114']},
-              ]
-            })
-            .catch(console.log)
+          this.getReports()
         }
       },
-      setInfoPostHeight(tab) {
-        if (tab.name === 'second') {
+      setInfoPostHeight() {
+        if (this.activeName === 'second') {
           this.tabInfoHeight = this.$refs.infoPost.clientHeight
         }
         if (this.tabInfoHeight) {
-          if (tab.name === 'first') {
+          if (this.activeName === 'first') {
             this.tabPostHeight = this.$refs.infoPost.clientHeight
             this.$refs.infoPost.style.height = `${this.tabInfoHeight > this.tabPostHeight ? this.tabInfoHeight : this.tabPostHeight}px`
           }
         }
+      },
+      getReports() {
+        getProductReports(this.item.detailTagId, this.reportCurPage)
+          .then(res => {
+            this.reportCurPage ++
+            this.reportTotalPage = parseInt(res.data.totalPage, 10)
+            console.log(res) //试用报告帖子列表
+            this.reports = [...this.reports, ...res.data.postList]
+          })
+          .catch(console.log)
       }
     },
     watch: {},
     created() {
+      appLoginFinish()
+      this.itemId = this.$route.params.productId
       if(!this.itemId) return
       console.log(this.itemId, this.userId)
       this._initData()
     },
-    mounted() {},
+    mounted() {
+      this.$nextTick(() => {
+        this._initScroll()
+      })
+    },
     activated() {},
   }
 </script>
@@ -235,8 +314,9 @@
     padding-top 90px
     height 100%
     box-sizing border-box
-    overflow-y scroll
     background-color #fff
+    .product_info_wrapper
+      height 100%
     .overview
       background-color #f3f3f3
       padding-bottom 10px
@@ -248,7 +328,7 @@
       .product_title
         height 100px
         line-height 100px
-        padding-left 30px
+        padding-left 45px
         text-align left
         box-sizing border-box
         font-size 40px
@@ -341,7 +421,8 @@
       font-size 30px
       padding 10px 0
     .product_detail
-      height 300px
+      font-size 32px
+      line-height 1.5
     .el-tabs__nav
       width 100%
       .el-tabs__item

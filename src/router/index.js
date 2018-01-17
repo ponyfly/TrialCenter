@@ -13,7 +13,7 @@ const routes = [
   {path: '/', redirect: {name: 'TrialList'}, meta: {keepAlive: true}},
   {path: '/triallist', name: 'TrialList', component: TrialList, meta: {keepAlive: true}},
   {path: '/mytrial', name: 'MyTrial', component: MyTrial, meta: {keepAlive: true}},
-  {path: '/product', name: 'Product', component: Product, meta: {keepAlive: false}},
+  {path: '/product/:productId', name: 'Product', component: Product, meta: {keepAlive: false}},
   {path: '/trialrule', name: 'TrialRule', component: TrialRule, meta: {keepAlive: true}},
   {path: '/address', name: 'Address', component: Address, meta: {keepAlive: false}},
 ]

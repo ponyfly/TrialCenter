@@ -79,7 +79,7 @@ const trialList = {
   "totalPage": 3,
   "trialList": [
     {
-      "id": 7,
+      "id": 1,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://static4.j.cn/png/arcamera/180115/1701/5449a7cb252e4d10.jpg",
@@ -97,7 +97,7 @@ const trialList = {
       }
     },
     {
-      "id": 7,
+      "id": 3,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://static4.j.cn/png/arcamera/180115/1701/5449a7cb252e4d10.jpg",
@@ -117,7 +117,7 @@ const trialList = {
       }
     },
     {
-      "id": 7,
+      "id": 6,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://static4.j.cn/png/arcamera/180115/1701/5449a7cb252e4d10.jpg",
@@ -157,7 +157,7 @@ const trialList = {
       }
     },
     {
-      "id": 7,
+      "id": 8,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://static4.j.cn/png/arcamera/180115/1701/5449a7cb252e4d10.jpg",
@@ -180,7 +180,7 @@ const trialList1 = {
   "totalPage": 3,
   "trialList": [
     {
-      "id": 7,
+      "id": 1,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://cangdu.org:8001/img/1603437fa49285.jpg",
@@ -198,7 +198,7 @@ const trialList1 = {
       }
     },
     {
-      "id": 7,
+      "id": 3,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://cangdu.org:8001/img/1603437fa49285.jpg",
@@ -218,7 +218,7 @@ const trialList1 = {
       }
     },
     {
-      "id": 7,
+      "id": 6,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://cangdu.org:8001/img/1603437fa49285.jpg",
@@ -258,7 +258,7 @@ const trialList1 = {
       }
     },
     {
-      "id": 7,
+      "id": 8,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://cangdu.org:8001/img/1603437fa49285.jpg",
@@ -281,45 +281,7 @@ const trialList2 = {
   "totalPage": 3,
   "trialList": [
     {
-      "id": 7,
-      "title": "雀巢咖啡0115",
-      "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
-      "itemCoverUrl": "http://cangdu.org:8001/img/1607c3f4794988.jpg",
-      "startTime": 1516010400000,
-      "endTime": 1516370400000,
-      "applyTime": 1516083936000,
-      "stockNum": 10,
-      "detailGroupId": 50154,
-      "detailTagId": 1132,
-      "applyStatus": 0,
-      "shipping_id": 87,
-      "userApplyInfo": {
-        "applyStatus": 0,
-        "applyInfo": "申请中"
-      }
-    },
-    {
-      "id": 7,
-      "title": "雀巢咖啡0115",
-      "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
-      "itemCoverUrl": "http://cangdu.org:8001/img/1607c3f4794988.jpg",
-      "startTime": 1516010400000,
-      "endTime": 1516370400000,
-      "applyTime": 1516083936000,
-      "stockNum": 10,
-      "detailGroupId": 50154,
-      "detailTagId": 1132,
-      "applyStatus": 0,
-      "shipping_id": 87,
-      "userApplyInfo": {
-        "applyStatus": 1,
-        "applyInfo": "申请成功",
-        expressStatus: '0',//0未发货，1已发货
-        expressInfo: '未发货',//expressStatus 状态对应信息
-      }
-    },
-    {
-      "id": 7,
+      "id": 1,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://cangdu.org:8001/img/1607c3f4794988.jpg",
@@ -341,7 +303,51 @@ const trialList2 = {
       }
     },
     {
-      "id": 7,
+      "id": 3,
+      "title": "雀巢咖啡0115",
+      "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
+      "itemCoverUrl": "http://cangdu.org:8001/img/1607c3f4794988.jpg",
+      "startTime": 1516010400000,
+      "endTime": 1516370400000,
+      "applyTime": 1516083936000,
+      "stockNum": 10,
+      "detailGroupId": 50154,
+      "detailTagId": 1132,
+      "applyStatus": 0,
+      "shipping_id": 87,
+      "userApplyInfo": {
+        "applyStatus": 1,
+        "applyInfo": "申请成功",
+        expressStatus: '1',//0未发货，1已发货
+        expressInfo: '已发货',//expressStatus 状态对应信息
+        expressName: '三通',//快递名称
+        expressNo: '666'//快递单号
+      }
+    },
+    {
+      "id": 6,
+      "title": "雀巢咖啡0115",
+      "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
+      "itemCoverUrl": "http://cangdu.org:8001/img/1607c3f4794988.jpg",
+      "startTime": 1516010400000,
+      "endTime": 1516370400000,
+      "applyTime": 1516083936000,
+      "stockNum": 10,
+      "detailGroupId": 50154,
+      "detailTagId": 1132,
+      "applyStatus": 0,
+      "shipping_id": 87,
+      "userApplyInfo": {
+        "applyStatus": 1,
+        "applyInfo": "申请成功",
+        expressStatus: '1',//0未发货，1已发货
+        expressInfo: '已发货',//expressStatus 状态对应信息
+        expressName: '三通',//快递名称
+        expressNo: '666'//快递单号
+      }
+    },
+    {
+      "id": 1,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://cangdu.org:8001/img/1607c3f4794988.jpg",
@@ -359,7 +365,7 @@ const trialList2 = {
       }
     },
     {
-      "id": 7,
+      "id": 8,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://cangdu.org:8001/img/1607c3f4794988.jpg",
@@ -382,7 +388,7 @@ const trialList3 = {
   "totalPage": 3,
   "trialList": [
     {
-      "id": 7,
+      "id": 3,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://cangdu.org:8001/img/16018a6492334.jpeg",
@@ -395,54 +401,12 @@ const trialList3 = {
       "applyStatus": 0,
       "shipping_id": 87,
       "userApplyInfo": {
-        "applyStatus": 0,
-        "applyInfo": "申请中"
+        "applyStatus": -1,
+        "applyInfo": "申请失败"
       }
     },
     {
-      "id": 7,
-      "title": "雀巢咖啡0115",
-      "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
-      "itemCoverUrl": "http://cangdu.org:8001/img/16018a6492334.jpeg",
-      "startTime": 1516010400000,
-      "endTime": 1516370400000,
-      "applyTime": 1516083936000,
-      "stockNum": 10,
-      "detailGroupId": 50154,
-      "detailTagId": 1132,
-      "applyStatus": 0,
-      "shipping_id": 87,
-      "userApplyInfo": {
-        "applyStatus": 1,
-        "applyInfo": "申请成功",
-        expressStatus: '0',//0未发货，1已发货
-        expressInfo: '未发货',//expressStatus 状态对应信息
-      }
-    },
-    {
-      "id": 7,
-      "title": "雀巢咖啡0115",
-      "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
-      "itemCoverUrl": "http://cangdu.org:8001/img/16018a6492334.jpeg",
-      "startTime": 1516010400000,
-      "endTime": 1516370400000,
-      "applyTime": 1516083936000,
-      "stockNum": 10,
-      "detailGroupId": 50154,
-      "detailTagId": 1132,
-      "applyStatus": 0,
-      "shipping_id": 87,
-      "userApplyInfo": {
-        "applyStatus": 1,
-        "applyInfo": "申请成功",
-        expressStatus: '1',//0未发货，1已发货
-        expressInfo: '已发货',//expressStatus 状态对应信息
-        expressName: '三通',//快递名称
-        expressNo: '666'//快递单号
-      }
-    },
-    {
-      "id": 7,
+      "id": 6,
       "title": "雀巢咖啡0115",
       "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
       "itemCoverUrl": "http://cangdu.org:8001/img/16018a6492334.jpeg",
@@ -473,8 +437,44 @@ const trialList3 = {
       "applyStatus": 0,
       "shipping_id": 87,
       "userApplyInfo": {
-        "applyStatus": 0,
-        "applyInfo": "申请中"
+        "applyStatus": -1,
+        "applyInfo": "申请失败",
+      }
+    },
+    {
+      "id": 8,
+      "title": "雀巢咖啡0115",
+      "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
+      "itemCoverUrl": "http://cangdu.org:8001/img/16018a6492334.jpeg",
+      "startTime": 1516010400000,
+      "endTime": 1516370400000,
+      "applyTime": 1516083936000,
+      "stockNum": 10,
+      "detailGroupId": 50154,
+      "detailTagId": 1132,
+      "applyStatus": 0,
+      "shipping_id": 87,
+      "userApplyInfo": {
+        "applyStatus": -1,
+        "applyInfo": "申请失败",
+      }
+    },
+    {
+      "id": 1,
+      "title": "雀巢咖啡0115",
+      "itemTitle": "【免费试吃】雀巢：意犹未尽滴滴香浓",
+      "itemCoverUrl": "http://cangdu.org:8001/img/16018a6492334.jpeg",
+      "startTime": 1516010400000,
+      "endTime": 1516370400000,
+      "applyTime": 1516083936000,
+      "stockNum": 10,
+      "detailGroupId": 50154,
+      "detailTagId": 1132,
+      "applyStatus": 0,
+      "shipping_id": 87,
+      "userApplyInfo": {
+        "applyStatus": -1,
+        "applyInfo": "申请失败"
       }
     },
   ]

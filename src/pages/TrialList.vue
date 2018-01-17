@@ -131,8 +131,9 @@
             name: 'MyTrial'
           })
         } else {
-          alert('跳转登陆')
-          window.location.href = '#'
+          if(window.app_interface) {
+            window.app_interface.appLogin(0)
+          }
         }
       },
       goToProduct(productId) {

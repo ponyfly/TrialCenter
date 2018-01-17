@@ -25,9 +25,14 @@
   import Tool from '../plugins/tools.js'
   import {getMytrial } from '../api/index.js'
   export default {
+    props: {
+      userId: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       return {
-        userId: '',
         activeIndex: '999',
         trialList: [],
         firstEnter: true,
@@ -102,22 +107,22 @@
         getMytrial(this.curPage, this.userId, this.activeIndex)
           .then(res => {
             console.log('getmytrial')
-            this.totalPage = parseInt(res.data.data.totalPage, 10)
+            this.totalPage = parseInt(res.data.totalPage, 10)
             if(this.firstEnter) {
-              this.trialList = res.data.data.trialList
+              this.trialList = res.data.trialList
               this.firstEnter = false
             }
             if(this.isPulling) {
               if(this.isPullDown) {
                 this.scroll.finishPullDown()
                 this.trialList.splice(0)
-                this.trialList = res.data.data.trialList
+                this.trialList = res.data.trialList
                 this.isPullDown = false
                 console.log('finishdown')
               }
               if(this.isPullUp) {
                 this.scroll.finishPullUp()
-                this.trialList = [...this.trialList, ...res.data.data.trialList]
+                this.trialList = [...this.trialList, ...res.data.trialList]
                 this.isPullUp = false
                 console.log('finishup')
               }
@@ -137,7 +142,6 @@
       'self-mytrial-item': MyTrialItem
     },
     created() {
-      this.userId = Tool._GetQueryString('userId') || '17192'
       this.setTabsContentHeight()
       this.loadData()
     },

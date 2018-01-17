@@ -5,8 +5,6 @@ import App from './App.vue'
 import router from './router'
 import VueLazyload from 'vue-lazyload'
 
-import './mock/mockServer'
-
 import loading from './images/loading.gif'
 
 Vue.use(VueLazyload, {

@@ -86,7 +86,7 @@
       .item_title
         height 100px
         line-height 100px
-        padding-left 30px
+        padding-left 45px
         text-align left
         box-sizing border-box
         color #333

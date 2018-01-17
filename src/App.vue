@@ -13,11 +13,23 @@
     name: 'app',
     data() {
       return {
-        userId: ''
+        userId: '17192',
+        status: ''
+      }
+    },
+    methods: {
+      appLoginFinish(status, userId) {
+        if(parseInt(status) === 200) {
+          this.userId = userId
+          this.status = status
+        }
       }
     },
     created() {
-      this.userId = Tool._GetQueryString('userId') || '199999999999'
+      window.appLoginFinish = this.appLoginFinish
+      if (window.app_interface) {
+        window.app_interface.setTitleVisible(0)
+      }
     }
   }
 </script>

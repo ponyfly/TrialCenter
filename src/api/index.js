@@ -10,7 +10,7 @@ export function getProducts(pageNo) {
 }
 //获取我的试用
 export function getMytrial(pageNo, userId, status) {
-  return axios.get('/api/trialCenter/getMyTrial', {
+  return axios.get('http://114.112.164.36:64080/api/trialList', {
     params: {
       pageNo,
       userId,
