@@ -371,9 +371,9 @@
             display inline-block
             position: relative
             top 4px
-            wh(28px,28px)
+            wh(30px,30px)
             background url(../images/apply_state.png)  no-repeat
-            background-position 0 -28px
+            background-position 0 -112px
           span:nth-of-type(1)
             font-weight bold
           span:nth-of-type(2)
