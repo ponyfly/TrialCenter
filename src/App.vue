@@ -14,16 +14,16 @@
     data() {
       return {
         userId: '',
-        status: ''
+        status: '',
       }
     },
     methods: {
       appLoginFinish(status, userId) {
         if(parseInt(status) === 200) {
-          this.userId = userId
+          this.userId = userId || ''
           this.status = status
         }
-      }
+      },
     },
     created() {
       window.appLoginFinish = this.appLoginFinish

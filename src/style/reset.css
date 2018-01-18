@@ -110,3 +110,10 @@ em, i {
 input{
   outline: none;
 }
+
+.self_message {
+  font-size: 64px;
+}
+.self_message .el-message__content {
+  font-size: 32px;
+}

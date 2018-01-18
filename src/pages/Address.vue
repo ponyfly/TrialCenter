@@ -100,7 +100,6 @@
       onSubmit(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            console.log(this.form)
             const {itemId, userId, userName, telephone, address} = this.form
             const restStr = `itemId=${itemId}&userId=${userId}&userName=${userName}&telephone=${telephone}&address=${address}`
             postApplyItem(restStr)
@@ -110,7 +109,9 @@
                 } else if (parseInt(res.data.errorcode, 10) === -6) {
                   this.openFail()
                 }
-                this.$router.back()
+                setTimeout(() => {
+                  this.$router.back()
+                },1600)
               })
               .catch(console.log)
           } else {
@@ -142,7 +143,7 @@
       },
       openFail() {
         Message({
-          message: '申请失败',
+          message: '金币不足',
           type: 'warning',
           duration: 1600,
           customClass: 'self_message'
@@ -255,6 +256,4 @@
     .el-form-item.is-required .el-form-item__label:before
       content ''
       margin 0
-    .self_message
-      font-size 32px
 </style>

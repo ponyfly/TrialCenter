@@ -1,7 +1,7 @@
 <template>
   <div class="trial_list">
     <div class="header">
-      <i class="back el-icon-arrow-left"></i>
+      <i class="back el-icon-arrow-left" @click=backToApp></i>
       <h2>试用中心</h2>
       <el-button class="my_trial_btn" @click="goToMyTrial">我的试用
         <i class="el-icon-arrow-right"></i>
@@ -135,6 +135,13 @@
           params: {productId}
         })
       },
+      backToApp() {
+        if (window.app_interface) {
+          window.app_interface.onBackPressed()
+        } else {
+          console.log('goToBack')
+        }
+      }
     },
     components: {
       'el-button': Button,

@@ -12,8 +12,8 @@
         <div class="step">试用<br/>报告</div>
       </div>
       <ul class="questions">
-        <li v-for="(question, index) in questions" @click="toAnswer(index)">
-          <span>{{question.name}}</span>
+        <li v-for="(question, index) in questions" @click="toAnswer(question.mainPostId)" :key="question.mainPostId">
+          <span>{{question.title}}</span>
           <i class="el-icon-arrow-right"></i>
         </li>
       </ul>
@@ -23,30 +23,37 @@
 
 <script>
   import Header from '../components/header.vue'
+  import {getRules } from '../api/index.js'
   export default {
     data() {
       return {
-        questions: [
-          {name: '申请试用需要什么条件？', answer: 'answer0'},
-          {name: '在哪里可以看到申请进度？', answer: 'answer1'},
-          {name: '申请试用会扣除金币吗？', answer: 'answer2'},
-          {name: '试用冻结的金币什么时候返还？', answer: 'answer3'},
-          {name: '如何提试用中奖率？', answer: 'answer4'},
-          {name: '如何提交试用报告？', answer: 'answer5'},
-          {name: '申请免费试用需要邮费吗？', answer: 'answer6'},
-          {name: '免职声明', answer: 'answer7'},
-        ]
+        questions: []
       }
     },
     computed: {},
     methods: {
-      toAnswer(index) {
-        console.log(this.questions[index].answer)
-        //window.location.href = '#'
+      toAnswer(mainPostId) {
+        let targetUrl = ''
+        if (location.href.indexOf('jcnhers') !== -1){
+          targetUrl = `jcnhers://detail_post/postId=${mainPostId}`
+        } else {
+          targetUrl = `http://bbs.j.cn/#/posts/${mainPostId}`
+        }
+        window.location.href = targetUrl
+      },
+      _initData() {
+        getRules()
+          .then(res => {
+            this.questions = res.data
+          })
+          .catch(console.log)
       }
     },
     components: {
       'self-header': Header
+    },
+    created() {
+      this._initData()
     }
   }
 </script>

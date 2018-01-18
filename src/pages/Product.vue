@@ -81,7 +81,6 @@
   import BScroll from 'better-scroll'
   import Header from '../components/header.vue'
   import BackTime from '../components/backtime.vue'
-  import Slide from '../components/slide.vue'
   import {getDetail, getProductDesc, getProductReports } from  '../api/index.js'
   import Tool from '../plugins/tools.js'
   export default {
@@ -183,7 +182,6 @@
       'el-tab-pane': TabPane,
       'el-carousel': Carousel,
       'el-carousel-item': CarouselItem,
-      'self-slide': Slide,
     },
     methods: {
       _initScroll() {
@@ -287,9 +285,12 @@
           .catch(console.log)
       }
     },
-    watch: {},
+    watch: {
+      userId() {
+        this._initData()
+      }
+    },
     created() {
-      appLoginFinish()
       this.itemId = this.$route.params.productId
       if(!this.itemId) return
       console.log(this.itemId, this.userId)
@@ -422,7 +423,11 @@
       padding 10px 0
     .product_detail
       font-size 32px
-      line-height 1.5
+      line-height 50px
+      margin 0 10px
+      text-align left
+      img
+        margin 10px 0
     .el-tabs__nav
       width 100%
       .el-tabs__item
