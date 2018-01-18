@@ -4,9 +4,11 @@
     <div class="product_info_wrapper" ref="productInfoWrapper">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
-          <self-slide :autoPlay='autoPlay' :interval="interval">
-            <img v-for="(bannerItem, index) in bannerCarousel" :src="bannerItem" class="slider-item" :key="index">
-          </self-slide>
+          <el-carousel trigger="click" height="750px" class="banner_carousel">
+            <el-carousel-item v-for="(bannerItem, index) in bannerCarousel" :key="index">
+              <img :src="bannerItem" alt="">
+            </el-carousel-item>
+          </el-carousel>
           <h3 class="product_title">{{item.itemTitle}}</h3>
           <div class="product_body">
             <div class="info_1">
@@ -315,6 +317,9 @@
       background-color #f3f3f3
       padding-bottom 10px
       font-size 28px
+      .banner_carousel
+        img
+          wh(100%, 100%)
       .banner
         height 750px
         img
