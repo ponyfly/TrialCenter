@@ -4,14 +4,14 @@
     <div class="product_info_wrapper" ref="productInfoWrapper">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
-          <div class="banner">
-            <img :src="item.itemCoverUrl" alt="">
-          </div>
+          <self-slide :autoPlay='autoPlay' :interval="interval">
+            <img v-for="(bannerItem, index) in bannerCarousel" :src="bannerItem" class="slider-item" :key="index">
+          </self-slide>
           <h3 class="product_title">{{item.itemTitle}}</h3>
           <div class="product_body">
             <div class="info_1">
               <span class="limit_num">限量：{{item.stockNum}}份</span>
-              <span>申请人数：{{item.applyNum}}人</span>
+              <span>申请人数：{{item.applyNum * 1 + item.eatMelonNum * 1}}人</span>
             </div>
             <div class="info_2 clearfix">
               <self-backtime
@@ -79,6 +79,7 @@
   import BScroll from 'better-scroll'
   import Header from '../components/header.vue'
   import BackTime from '../components/backtime.vue'
+  import Slide from '../components/slide.vue'
   import {getDetail, getProductDesc, getProductReports } from  '../api/index.js'
   import Tool from '../plugins/tools.js'
   export default {
@@ -99,6 +100,8 @@
         reportCurPage: 1,
         reportTotalPage: 0,
         lastPostY: 0,
+        autoPlay:true,
+        interval: 2000
       }
     },
     computed: {
@@ -162,6 +165,12 @@
           tmpText = expressInfo
         }
         return tmpText
+      },
+      //轮播图
+      bannerCarousel() {
+        if(this.item.itemDetailUrl) {
+          return this.item.itemDetailUrl.split(';')
+        }
       }
     },
     components: {
@@ -172,6 +181,7 @@
       'el-tab-pane': TabPane,
       'el-carousel': Carousel,
       'el-carousel-item': CarouselItem,
+      'self-slide': Slide,
     },
     methods: {
       _initScroll() {
@@ -200,7 +210,6 @@
         getDetail(this.itemId, this.userId)
           .then(res => {
             console.log('getItemDetail')
-            console.log(res.data)
             this.errorcode = parseInt(res.data.errorcode, 10)
             if(this.errorcode === -1) {
               return new Error('没有商品')
@@ -233,9 +242,7 @@
               return new Error('没有详情')
             }
             if (res.data.content.indexOf('[img]') !== -1) {
-//              console.log(res.data.content)
               let desc = res.data.content.replace(/(jpeg|png|jpg|gif).*?(\[\/img\])/ig,'$1$2')
-//              console.log(desc)
               desc = desc.replace(/\[img\]([^\[]*)\[\/img\]/ig,'<img src="$1" border="0" width="100%"/>')
               this.productDesc = desc
             } else {
@@ -264,20 +271,8 @@
         }
       },
       handleClick(tab, event) {
-        this.setInfoPostHeight()
         if (tab.name === 'second') {
           this.getReports()
-        }
-      },
-      setInfoPostHeight() {
-        if (this.activeName === 'second') {
-          this.tabInfoHeight = this.$refs.infoPost.clientHeight
-        }
-        if (this.tabInfoHeight) {
-          if (this.activeName === 'first') {
-            this.tabPostHeight = this.$refs.infoPost.clientHeight
-            this.$refs.infoPost.style.height = `${this.tabInfoHeight > this.tabPostHeight ? this.tabInfoHeight : this.tabPostHeight}px`
-          }
         }
       },
       getReports() {
@@ -285,7 +280,6 @@
           .then(res => {
             this.reportCurPage ++
             this.reportTotalPage = parseInt(res.data.totalPage, 10)
-            console.log(res) //试用报告帖子列表
             this.reports = [...this.reports, ...res.data.postList]
           })
           .catch(console.log)
@@ -324,7 +318,7 @@
       .banner
         height 750px
         img
-          wh(100%, 100%)
+          wh(750px,750px)
       .product_title
         height 100px
         line-height 100px
@@ -395,6 +389,7 @@
             border-radius 27px
             color #fefefe
     .info_post
+      min-height 1244px
       .post_list
         padding 0 42px
         font-size 30px

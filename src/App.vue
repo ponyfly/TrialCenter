@@ -13,7 +13,7 @@
     name: 'app',
     data() {
       return {
-        userId: '17192',
+        userId: '',
         status: ''
       }
     },

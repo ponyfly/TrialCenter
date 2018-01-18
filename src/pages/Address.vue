@@ -136,14 +136,16 @@
         Message({
           message: '申请成功',
           type: 'success',
-          duration: 1600
+          duration: 1600,
+          customClass: 'self_message'
         })
       },
       openFail() {
         Message({
-          message: '申请成功',
+          message: '申请失败',
           type: 'warning',
-          duration: 1600
+          duration: 1600,
+          customClass: 'self_message'
         })
       },
       onCancelApply() {
@@ -248,7 +250,11 @@
             .el-button--info:active
               background #a6a9ad
               border-color #a6a9ad
+        .el-form-item__error
+          font-size 16px
     .el-form-item.is-required .el-form-item__label:before
       content ''
       margin 0
+    .self_message
+      font-size 32px
 </style>

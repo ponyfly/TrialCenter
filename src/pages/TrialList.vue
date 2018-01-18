@@ -52,7 +52,6 @@
     methods: {
       _initScroll() {
         if(!this.scroll) {
-          console.log('initscroll');
           this.scroll = new BScroll(this.$refs.wrapper, {
             click: true,
             probeType: 3,
@@ -66,7 +65,6 @@
             },
           })
           this.scroll.on('pullingDown', () => {
-            console.log('pullingDown');
             this.curPage = 1
             this.totalPage = 0
             this.isPulling = true
@@ -74,7 +72,6 @@
             this.loadData()
           })
           this.scroll.on('pullingUp', () => {
-            console.log('pullingUp');
             if(this.curPage !== this.totalPage){
               this.isPulling = true
               this.isPullUp = true
@@ -89,7 +86,6 @@
             this.scrollPositionY = pos.y
           })
         } else {
-          console.log('refresh');
           this.scroll.refresh()
         }
       },
@@ -108,14 +104,11 @@
                 this.productLists.splice(0)
                 this.productLists = res.data.items
                 this.isPullDown = false
-                console.log('finishdown')
               }
               if(this.isPullUp) {
                 this.scroll.finishPullUp()
                 this.productLists = [...this.productLists, ...res.data.items]
                 this.isPullUp = false
-                console.log('finishup')
-
               }
               this.isPulling = false
             }
@@ -137,7 +130,6 @@
         }
       },
       goToProduct(productId) {
-        console.log(this);
         this.$router.push({
           name: 'Product',
           params: {productId}
@@ -149,15 +141,12 @@
       'self-item': Item
     },
     created() {
-      console.log('created')
       this.loadData()
     },
     mounted() {
-      console.log('mounted')
     },
     watch: {},
     activated() {
-      console.log('activated')
       if (this.scroll) {
         this.scroll.scrollTo(0, this.scrollPositionY)
       }

@@ -54,7 +54,6 @@
         })
       },
       handleSelect(key, keyPath) {
-        console.log(key, keyPath, this.activeIndex);
         this.activeIndex = key
         this.curPage = 1
         this.firstEnter = true
@@ -62,7 +61,6 @@
       },
       _initScroll() {
         if(!this.scroll) {
-          console.log('initscroll');
           this.scroll = new BScroll(this.$refs.myTrialWrapper, {
             click: true,
             probeType: 3,
@@ -76,7 +74,6 @@
             },
           })
           this.scroll.on('pullingDown', () => {
-            console.log('pullingDown');
             this.curPage = 1
             this.totalPage = 0
             this.isPulling = true
@@ -84,7 +81,6 @@
             this.loadData()
           })
           this.scroll.on('pullingUp', () => {
-            console.log('pullingUp');
             if(this.curPage !== this.totalPage){
               this.isPulling = true
               this.isPullUp = true
@@ -99,7 +95,6 @@
             this.scrollPositionY = pos.y
           })
         } else {
-          console.log('refresh');
           this.scroll.refresh()
         }
       },
@@ -118,13 +113,11 @@
                 this.trialList.splice(0)
                 this.trialList = res.data.trialList
                 this.isPullDown = false
-                console.log('finishdown')
               }
               if(this.isPullUp) {
                 this.scroll.finishPullUp()
                 this.trialList = [...this.trialList, ...res.data.trialList]
                 this.isPullUp = false
-                console.log('finishup')
               }
               this.isPulling = false
             }
@@ -145,7 +138,11 @@
       this.setTabsContentHeight()
       this.loadData()
     },
-    mounted() {
+    mounted() {},
+    activated() {
+      if (this.scroll) {
+        this.scroll.scrollTo(0, this.scrollPositionY)
+      }
     }
   }
 </script>
