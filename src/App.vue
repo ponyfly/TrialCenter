@@ -24,12 +24,37 @@
           this.status = status
         }
       },
+      getUserInfos() {
+        const ua = navigator.userAgent.toLowerCase()
+        const isAndroid = ua.indexOf('android') > -1
+        const isIphone = ua.indexOf('iphone') > -1
+        if(!window.app_interface) return
+        if(isAndroid) {
+          this.userId = JSON.parse(window.app_interface.getUserInfo()).id || ''
+        }
+        if(isIphone) {
+          const ver = ua.match(/(?:os\s)(\d+)(?:_\d+)/)[1]
+          if (ver < 8) {
+            this.userId = JSON.parse(window.app_interface.getUserInfo()).id || ''
+          }else{
+            window.app_interface.getHersUserInfo("callback")
+          }
+        }
+      },
+      callback(data) {
+        this.userId = JSON.parse(data).id || ''
+      }
     },
     created() {
       window.appLoginFinish = this.appLoginFinish
+      window.callback = this.callback
       if (window.app_interface) {
         window.app_interface.setTitleVisible(0)
       }
+    },
+    watch: {},
+    mounted() {
+      this.getUserInfos()
     }
   }
 </script>

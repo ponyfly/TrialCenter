@@ -251,7 +251,10 @@
           })
           .catch(console.log)
       },
-      goToAdressOrPost() {
+      goToAdressOrPost(event) {
+        if(!event._constructed) {
+          return
+        }
         if(!this.userId) {
           if(window.app_interface) {
             window.app_interface.appLogin(0)
