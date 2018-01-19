@@ -10,8 +10,7 @@
   </div>
 </template>
 
-<script type="text/ecmascript-6">
-  import { addClass } from 'common/js/dom'
+<script>
   import BScroll from 'better-scroll'
 
   const COMPONENT_NAME = 'slide'
@@ -19,6 +18,9 @@
   export default {
     name: COMPONENT_NAME,
     props: {
+      length: {
+        type: Number
+      },
       loop: {
         type: Boolean,
         default: true
@@ -133,7 +135,6 @@
         let slideWidth = this.$refs.slide.clientWidth
         for (let i = 0; i < this.children.length; i++) {
           let child = this.children[i]
-          addClass(child, 'slide-item')
 
           child.style.width = slideWidth + 'px'
           width += slideWidth
@@ -190,6 +191,9 @@
       }
     },
     watch: {
+      length() {
+        this.update()
+      },
       loop() {
         this.update()
       },
@@ -207,27 +211,29 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-  @import "~common/stylus/variable"
-
   .slide
+    position: relative
     min-height: 1px
     .slide-group
       position: relative
       overflow: hidden
       white-space: nowrap
       .slide-item
+        width: 750px
+        height: 750px
         float: left
         box-sizing: border-box
         overflow: hidden
         text-align: center
         a
           display: block
-          width: 100%
+          height 100%
           overflow: hidden
           text-decoration: none
         img
           display: block
           width: 100%
+          height: 100%
     .dots
       position: absolute
       right: 0
@@ -242,9 +248,9 @@
         width: 8px
         height: 8px
         border-radius: 50%
-        background: $color-light-grey-s
+        background: #ccc
         &.active
           width: 20px
           border-radius: 5px
-          background: $color-white
+          background: #f66
 </style>

@@ -4,11 +4,11 @@
     <div class="product_info_wrapper" ref="productInfoWrapper">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
-          <el-carousel trigger="click" height="750px" class="banner_carousel">
-            <el-carousel-item v-for="(bannerItem, index) in bannerCarousel" :key="index">
-              <img :src="bannerItem" alt="">
-            </el-carousel-item>
-          </el-carousel>
+          <self-slide ref="slide" :autoPlay="isAutoPlay" :length="bannerCarousel.length" :loop="isLoop" :showDot="isShowDot" :interval="interval" :threshold="threshold" :speed="speed">
+            <div v-for="item in bannerCarousel" class="slide-item">
+              <img :src="item">
+            </div>
+          </self-slide>
           <h3 class="product_title">{{item.itemTitle}}</h3>
           <div class="product_body">
             <div class="info_1">
@@ -75,14 +75,13 @@
     Button,
     Tabs,
     TabPane,
-    Carousel,
-    CarouselItem,
   } from 'element-ui'
   import BScroll from 'better-scroll'
   import Header from '../components/header.vue'
   import BackTime from '../components/backtime.vue'
   import {getDetail, getProductDesc, getProductReports } from  '../api/index.js'
   import Tool from '../plugins/tools.js'
+  import Slide from './slideme.vue'
   export default {
     props: {
       userId: {
@@ -101,8 +100,17 @@
         reportCurPage: 1,
         reportTotalPage: 0,
         lastPostY: 0,
+
         autoPlay:true,
-        interval: 2000
+        index: 0,
+        turnToPrev: false,
+        turnToNext: false,
+        isAutoPlay: true,
+        isLoop: true,
+        isShowDot: true,
+        speed: 400,
+        threshold: 0.3,
+        interval: 2000,
       }
     },
     computed: {
@@ -180,8 +188,7 @@
       'el-button': Button,
       'el-tabs': Tabs,
       'el-tab-pane': TabPane,
-      'el-carousel': Carousel,
-      'el-carousel-item': CarouselItem,
+      'self-slide': Slide
     },
     methods: {
       _initScroll() {
