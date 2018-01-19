@@ -156,7 +156,7 @@
       },
       backToApp() {
         if (window.app_interface) {
-          window.app_interface.onBackPressed()
+          window.app_interface.backToApp()
         } else {
           console.log('goToBack')
         }
