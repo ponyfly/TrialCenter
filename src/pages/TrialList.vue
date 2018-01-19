@@ -99,6 +99,15 @@
         } else {
           this.scroll.refresh()
         }
+        if (this.productLists.length < 3) {
+          this.totalPage = 0
+          this.actType = -1
+          this.curPage = 1
+          this.totalPage = 0
+          this.isPulling = true
+          this.isPullUp = true
+          this.loadData()
+        }
       },
       loadData() {
         getProducts(this.curPage, this.actType)
@@ -175,9 +184,12 @@
   .trial_list
     font-size 34px
     wh(100%, 100%)
+    box-sizing border-box
+    padding-top 90px
     .header
       width 750px
       position fixed
+      top 0
       height 90px
       background-color #fff
       line-height 90px
@@ -199,11 +211,9 @@
         i
           color #ff1653
     .wrapper
+      overflow hidden
       background-color #fff
       wh(100%, 100%)
-      padding-top 90px
-      overflow-y scroll
       .content
         font-size 36px
-        padding-bottom 180px
 </style>
