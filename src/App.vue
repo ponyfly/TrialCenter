@@ -28,6 +28,7 @@
         const ua = navigator.userAgent.toLowerCase()
         const isAndroid = ua.indexOf('android') > -1
         const isIphone = ua.indexOf('iphone') > -1
+        this.userId = '9806914'
         if(!window.app_interface) return
         if(isAndroid) {
           this.userId = JSON.parse(window.app_interface.getUserInfo()).id || ''

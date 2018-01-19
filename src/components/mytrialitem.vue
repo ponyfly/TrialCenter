@@ -1,6 +1,6 @@
 <template>
-  <div class="my_trial_item" v-if="Object.keys(product).length" @click="goToProduct(product.id)">
-    <div class="item_banner">
+  <div class="my_trial_item" v-if="Object.keys(product).length">
+    <div class="item_banner" @click="goToProduct(product.id)">
       <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl" alt="">
     </div>
     <div class="item_info">
@@ -43,19 +43,14 @@
       //申请时间：2018年01月10日15时 快递信息：顺丰 20180192873
       applyInfos() {
         let {userApplyInfo} = this.product
-        let applyStatus = parseInt(userApplyInfo.applyStatus, 10)
+        let applyStatus = parseInt(this.product.applyStatus, 10)
         if(applyStatus === -1) {
           return {
             text: userApplyInfo.applyInfo,
             stateClass: 'icon_fail'
           }
         } else if (applyStatus === 1 || applyStatus >= 2) {
-          let tmpText = ''
-          if (userApplyInfo.expressStatus) {
-            tmpText = parseInt(userApplyInfo.expressStatus, 10) ? userApplyInfo.expressName + ' ' + userApplyInfo.expressNo : userApplyInfo.expressInfo
-          } else {
-            tmpText = userApplyInfo.applyInfo
-          }
+          let tmpText = userApplyInfo.applyInfo || userApplyInfo.expressInfo
           return {
             text: tmpText,
             stateClass: 'icon_success'

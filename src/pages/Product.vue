@@ -31,7 +31,7 @@
               <span v-if="applySuccess" class="express_info">快递信息：{{expressContent}}</span>
             </div>
             <div class="write_post">
-              <span class="deductCoin">{{item.deductCoin}}</span>金币
+              <span  v-if="userApplyInfo.applyStatus < 0"><span class="deductCoin">{{item.deductCoin}}</span> 金币</span>
               <el-button
                   type="danger"
                   round
@@ -49,7 +49,7 @@
             </el-tab-pane>
             <el-tab-pane label="试用报告" name="second">
               <ul class="post_list" v-if="reports.length">
-                <li v-for="report in reports">
+                <li v-for="report in reports" @click="goToReport">
                   <p>{{report.content}}</p>
                   <div v-if="report.picUrls.length" class="img_wrapper clearfix">
                     <div v-for="picUrl in report.picUrls" class="img_item">
@@ -211,7 +211,6 @@
       _initData() {
         getDetail(this.itemId, this.userId)
           .then(res => {
-            console.log('getItemDetail')
             this.errorcode = parseInt(res.data.errorcode, 10)
             if(this.errorcode === -1) {
               return new Error('没有商品')
@@ -241,7 +240,7 @@
             return getProductDesc(detailPostId, 1)
           })
           .then(res => {
-            if(res.error) {
+            if(!res.data.content) {
               return new Error('没有详情')
             }
             if (res.data.content.indexOf('[img]') !== -1) {
@@ -289,6 +288,9 @@
             this.reports = [...this.reports, ...res.data.postList]
           })
           .catch(console.log)
+      },
+      goToReport() {
+        window.location.href = `jcnhers://detail_post/postId=${this.item.detailPostId}`
       }
     },
     watch: {
@@ -299,7 +301,6 @@
     created() {
       this.itemId = this.$route.params.productId
       if(!this.itemId) return
-      console.log(this.itemId, this.userId)
       this._initData()
     },
     mounted() {

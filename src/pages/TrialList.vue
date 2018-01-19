@@ -103,7 +103,6 @@
       loadData() {
         getProducts(this.curPage, this.actType)
           .then(res => {
-            console.log('getList')
             this.totalPage = parseInt(res.data.totalPage, 10)
             if(this.firstEnter) {
               this.productLists = res.data.items
