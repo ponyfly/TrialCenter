@@ -79,9 +79,9 @@
   import BScroll from 'better-scroll'
   import Header from '../components/header.vue'
   import BackTime from '../components/backtime.vue'
+  import Slide from '../components/slide.vue'
   import {getDetail, getProductDesc, getProductReports } from  '../api/index.js'
   import Tool from '../plugins/tools.js'
-  import Slide from './slideme.vue'
   export default {
     props: {
       userId: {
@@ -111,6 +111,7 @@
         speed: 400,
         threshold: 0.3,
         interval: 2000,
+        bannerCarousel: [],
       }
     },
     computed: {
@@ -175,12 +176,6 @@
         }
         return tmpText
       },
-      //轮播图
-      bannerCarousel() {
-        if(this.item.itemDetailUrl) {
-          return this.item.itemDetailUrl.split(';')
-        }
-      }
     },
     components: {
       'self-header': Header,
@@ -222,6 +217,7 @@
               return new Error('没有商品')
             }
             this.item = res.data.item
+            this.bannerCarousel = this.item.itemDetailUrl.split(';')
             this.userApplyInfo = this.userId ? res.data.userApplyInfo : {
               applyStatus: '-999', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
               applyInfo: '未申请', //applyStatus状态的对应信息
