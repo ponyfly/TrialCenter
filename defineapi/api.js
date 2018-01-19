@@ -1,6 +1,6 @@
 /trialCenter
 /**
- param:int pageNo
+ param:int pageNo,actType,0,1,-1
  * 商品列表
  * @type {[null]}
  */

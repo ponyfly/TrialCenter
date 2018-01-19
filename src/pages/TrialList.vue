@@ -40,6 +40,7 @@
         firstEnter: true,
         curPage:1,
         totalPage: 0,
+        actType: 1,
         productLists: [],
         isPullUp: false,
         isPullDown: false,
@@ -67,6 +68,7 @@
           this.scroll.on('pullingDown', () => {
             this.curPage = 1
             this.totalPage = 0
+            this.actType = 1
             this.isPulling = true
             this.isPullDown = true
             this.loadData()
@@ -77,9 +79,18 @@
               this.isPullUp = true
               this.curPage++
               this.loadData()
-            }else {
-              console.log('我们是有底线的');
-              this.scroll.finishPullUp()
+            } else {
+              if (this.actType === 1) {
+                this.actType = -1
+                this.curPage = 1
+                this.totalPage = 0
+                this.isPulling = true
+                this.isPullUp = true
+                this.loadData()
+              } else {
+                console.log('我们是有底线的');
+                this.scroll.finishPullUp()
+              }
             }
           })
           this.scroll.on('scrollEnd', (pos) => {
@@ -90,7 +101,7 @@
         }
       },
       loadData() {
-        getProducts(this.curPage)
+        getProducts(this.curPage, this.actType)
           .then(res => {
             console.log('getList')
             this.totalPage = parseInt(res.data.totalPage, 10)
@@ -150,8 +161,7 @@
     created() {
       this.loadData()
     },
-    mounted() {
-    },
+    mounted() {},
     watch: {},
     activated() {
       if (this.scroll) {

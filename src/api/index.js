@@ -12,9 +12,12 @@ const test = {
   tagId: 1139,
 }
 
-export function getProducts(pageNo) {
+export function getProducts(pageNo, actType) {
   return axios.get(`${test.origin}/api/listItems`, {
-    params: {pageNo}
+    params: {
+      pageNo,
+      actType,
+    }
   })
 }
 //获取我的试用
