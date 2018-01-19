@@ -151,7 +151,7 @@
       },
       onCancelApply() {
         this.$router.back()
-      }
+      },
     },
     components: {
       'self-header': Header,
