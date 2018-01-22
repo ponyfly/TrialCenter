@@ -49,7 +49,7 @@
             </el-tab-pane>
             <el-tab-pane label="试用报告" name="second">
               <ul class="post_list" v-if="reports.length">
-                <li v-for="report in reports" @click="goToReport">
+                <li v-for="report in reports" @click="goToReport(report.postId)" :key="report.postId">
                   <p>{{report.content}}</p>
                   <div v-if="report.picUrls.length" class="img_wrapper clearfix">
                     <div v-for="picUrl in report.picUrls" class="img_item">
@@ -289,8 +289,9 @@
           })
           .catch(console.log)
       },
-      goToReport() {
-        window.location.href = `jcnhers://detail_post/postId=${this.item.detailPostId}`
+      goToReport(reportId) {
+        console.log(reportId)
+        window.location.href = `jcnhers://detail_post/postId=${reportId}`
       }
     },
     watch: {
@@ -389,6 +390,8 @@
           .express_info
             position absolute
             left 0
+            top 40px
+            white-space nowrap
         .apply_success
           top -12px
           line-height 43px

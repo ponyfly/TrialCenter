@@ -33,13 +33,7 @@
     computed: {},
     methods: {
       toAnswer(mainPostId) {
-        let targetUrl = ''
-        if (location.href.indexOf('jcnhers') !== -1){
-          targetUrl = `jcnhers://detail_post/postId=${mainPostId}`
-        } else {
-          targetUrl = `http://bbs.j.cn/#/posts/${mainPostId}`
-        }
-        window.location.href = targetUrl
+        window.location.href = `jcnhers://detail_post/postId=${mainPostId}`
       },
       _initData() {
         getRules()
