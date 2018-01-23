@@ -246,6 +246,7 @@
             if (res.data.content.indexOf('[img]') !== -1) {
               let desc = res.data.content.replace(/(jpeg|png|jpg|gif).*?(\[\/img\])/ig,'$1$2')
               desc = desc.replace(/\[img\]([^\[]*)\[\/img\]/ig,'<img src="$1" border="0" width="100%"/>')
+              desc = desc.replace(/\n/ig, '<br>')
               this.productDesc = desc
             } else {
               this.productDesc = res.data.content
@@ -434,7 +435,7 @@
     .product_detail
       font-size 32px
       line-height 50px
-      margin 0 10px
+      margin 0 20px
       text-align left
       img
         margin 10px 0
