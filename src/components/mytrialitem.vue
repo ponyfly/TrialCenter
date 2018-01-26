@@ -138,9 +138,8 @@
         border-bottom-color #fff
     .item_info
       .item_title
-        height 100px
-        line-height 100px
-        padding-left 30px
+        line-height 56px
+        padding 20px 45px
         text-align left
         box-sizing border-box
         color #333

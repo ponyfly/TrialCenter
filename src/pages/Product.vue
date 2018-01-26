@@ -343,9 +343,8 @@
         img
           wh(750px,750px)
       .product_title
-        height 100px
-        line-height 100px
-        padding-left 45px
+        line-height 56px
+        padding 20px 45px
         text-align left
         box-sizing border-box
         font-size 40px
