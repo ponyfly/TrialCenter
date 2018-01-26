@@ -22,7 +22,6 @@
   import BScroll from 'better-scroll'
   import Header from '../components/header.vue'
   import MyTrialItem from '../components/mytrialitem.vue'
-  import Tool from '../plugins/tools.js'
   import {getMytrial } from '../api/index.js'
   export default {
     props: {
@@ -138,7 +137,9 @@
       this.setTabsContentHeight()
       this.loadData()
     },
-    mounted() {},
+    mounted() {
+      this.Tool._send1_1('try', 'try-mine')
+    },
     activated() {
       if (this.scroll) {
         this.scroll.scrollTo(0, this.scrollPositionY)

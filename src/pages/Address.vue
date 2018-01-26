@@ -10,7 +10,7 @@
         <el-input v-model.number="form.telephone"></el-input>
       </el-form-item>
         <el-form-item label="详细地址：" label-width="175px" prop="address">
-          <el-input v-model="form.address" placeholder="街道、楼牌号等"></el-input>
+          <el-input type="textarea" :rows="2" v-model="form.address" placeholder="街道、楼牌号等"></el-input>
         </el-form-item>
         <el-form-item prop="checked">
           <el-checkbox name="type" v-model="form.checked">我已了解</el-checkbox>
@@ -106,6 +106,7 @@
               .then(res => {
                 if(parseInt(res.data.errorcode, 10) === 1) {
                   this.openSuccess()
+                  this.Tool._send1_1('try', 'try-detail-apply')
                 } else if (parseInt(res.data.errorcode, 10) === -6) {
                   this.openFail()
                 }
@@ -189,7 +190,6 @@
         .el-form-item
           box-sizing border-box
           margin 0
-          height 120px
           padding 40px 20px
           border-bottom 1px solid #e2e2e2
           .el-form-item__label
@@ -203,6 +203,14 @@
             input
               border none
               font-size 32px
+          .el-textarea
+            textarea
+              resize none
+              border none
+              font-size 32px
+          &:nth-of-type(3)
+            .el-form-item__label
+              line-height 58px
           &:nth-of-type(4)
             .el-checkbox__inner
               wh(25px, 25px)

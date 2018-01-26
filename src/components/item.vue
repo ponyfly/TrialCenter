@@ -1,7 +1,7 @@
 <template>
   <div class="item" v-if="Object.keys(product).length">
     <div class="item_banner">
-      <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl" alt="">
+      <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl + '?imageView2/0/w/750/format/jpg/q/60'" alt="">
     </div>
     <div class="item_info">
       <h3 class="item_title">{{product.itemTitle}}</h3>

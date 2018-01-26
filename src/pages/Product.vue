@@ -81,7 +81,6 @@
   import BackTime from '../components/backtime.vue'
   import Slide from '../components/slide.vue'
   import {getDetail, getProductDesc, getProductReports } from  '../api/index.js'
-  import Tool from '../plugins/tools.js'
   export default {
     props: {
       userId: {
@@ -216,7 +215,7 @@
               return new Error('没有商品')
             }
             this.item = res.data.item
-            this.bannerCarousel = this.item.itemDetailUrl.split(';')
+            this.bannerCarousel = this.item.itemDetailUrl.split(';').map(t => t + '?imageView2/0/w/750/format/jpg/q/60')
             this.userApplyInfo = this.userId ? res.data.userApplyInfo : {
               applyStatus: '-999', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
               applyInfo: '未申请', //applyStatus状态的对应信息
@@ -264,12 +263,14 @@
           }
         }else {
           if(parseInt(this.userApplyInfo.applyStatus, 10) === -999) {
-            this.$router.push({
-              name: 'Address',
-              params: {
-                itemId: this.itemId,
-                addressList: this.userApplyInfo.addressList
-              },
+            this.Tool._send1_1('try','try-detail-applyclick',() => {
+              this.$router.push({
+                name: 'Address',
+                params: {
+                  itemId: this.itemId,
+                  addressList: this.userApplyInfo.addressList
+                },
+              })
             })
           } else if (parseInt(this.userApplyInfo.applyStatus, 10) === 1) {
             window.location.href = `jcnhers://list_post/groupId=${this.item.detailGroupId}`
@@ -278,6 +279,7 @@
       },
       handleClick(tab, event) {
         if (tab.name === 'second') {
+          this.Tool._send1_1('try', 'try-report')
           this.getReports()
         }
       },
@@ -310,7 +312,13 @@
         this._initScroll()
       })
     },
-    activated() {},
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        if(from.name === 'TrialList') {
+          vm.Tool._send1_1('try', 'try-detail')
+        }
+      })
+    }
   }
 </script>
 

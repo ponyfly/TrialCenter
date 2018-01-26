@@ -24,9 +24,7 @@
   import {Button} from 'element-ui'
   import BScroll from 'better-scroll'
   import {getProducts} from '../api/index'
-
   import Item from '../components/item.vue'
-  import Tool from '../plugins/tools.js'
 
   export default {
     props: {
@@ -48,8 +46,7 @@
         scrollPositionY: 0,
       }
     },
-    computed: {
-    },
+    computed: {},
     methods: {
       _initScroll() {
         if(!this.scroll) {
@@ -169,7 +166,9 @@
     created() {
       this.loadData()
     },
-    mounted() {},
+    mounted() {
+      this.Tool._send1_1('try','try-list')
+    },
     watch: {},
     activated() {
       if (this.scroll) {

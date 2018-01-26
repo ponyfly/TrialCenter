@@ -48,6 +48,9 @@
     },
     created() {
       this._initData()
+    },
+    mounted() {
+      this.Tool._send1_1('try', 'try-rule')
     }
   }
 </script>

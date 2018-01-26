@@ -8,7 +8,6 @@
 </template>
 
 <script>
-  import Tool from './plugins/tools.js'
   export default {
     name: 'app',
     data() {
