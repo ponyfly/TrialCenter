@@ -7,16 +7,21 @@
         <i class="el-icon-arrow-right"></i>
       </el-button>
     </div>
+    <self-slide :length="slideBanners.length">
+      <div v-for="slideBanner in slideBanners" class="slide-item">
+        <img :src="slideBanner" alt="">
+      </div>
+    </self-slide>
     <div class="wrapper" ref="wrapper">
-    <ul class="content">
-      <li is="self-item"
-          v-for="(product, index) in productLists"
-          :product="product"
-          :key="product.id"
-          @click.native="goToProduct(product.id)">
-      </li>
-    </ul>
-  </div>
+      <ul class="content">
+        <li is="self-item"
+            v-for="(product, index) in productLists"
+            :product="product"
+            :key="product.id"
+            @click.native="goToProduct(product.id)">
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -25,6 +30,7 @@
   import BScroll from 'better-scroll'
   import {getProducts} from '../api/index'
   import Item from '../components/item.vue'
+  import Slide from '../components/slide.vue'
 
   export default {
     props: {
@@ -44,6 +50,14 @@
         isPullDown: false,
         isPulling: true,
         scrollPositionY: 0,
+
+        autoPlay: true,
+        slideBanners :[
+          'http://static4.j.cn/png/arcamera/180131/1851/a7c986b96023494a.png?imageView2/0/w/750/format/jpg/q/60',
+          'http://static3.j.cn/png/arcamera/180126/1014/2aba86d45053434e.png?imageView2/0/w/750/format/jpg/q/60',
+          'http://static3.j.cn/png/arcamera/180126/1823/e6b3d65c482b4753.jpg?imageView2/0/w/750/format/jpg/q/60',
+          'http://static4.j.cn/png/arcamera/180131/1529/93e7fe2f9fef455c.png?imageView2/0/w/750/format/jpg/q/60'
+        ]
       }
     },
     computed: {},
@@ -161,7 +175,8 @@
     },
     components: {
       'el-button': Button,
-      'self-item': Item
+      'self-item': Item,
+      'self-slide': Slide
     },
     created() {
       this.loadData()
@@ -183,36 +198,35 @@
   .trial_list
     font-size 34px
     wh(100%, 100%)
-    box-sizing border-box
-    padding-top 90px
+    display flex
+    flex-direction column
     .header
-      width 750px
+      wh(750px, 90px)
       position fixed
       top 0
-      height 90px
+      z-index 999
       background-color #fff
       line-height 90px
-      z-index 999
       .back
-        position: absolute;
-        top: 0;
-        left: 0;
-        font-size: 44px;
+        tl(0, 0)
         padding: 23px;
+        font-size: 44px;
       .my_trial_btn
-        position: absolute;
-        top: 20px;
-        right: 20px;
+        tr(20px, 20px)
         width: 180px;
         font-size: 30px;
         border: none;
         color: #ff6666
         i
           color #ff1653
+    .slide
+      margin-top 90px
+      height 350px
+      flex-basis 350px
+      flex none
     .wrapper
-      overflow hidden
       background-color #fff
-      wh(100%, 100%)
+      overflow hidden
       .content
         font-size 36px
 </style>

@@ -4,7 +4,7 @@
     <div class="product_info_wrapper" ref="productInfoWrapper">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
-          <self-slide ref="slide" :autoPlay="isAutoPlay" :length="bannerCarousel.length" :loop="isLoop" :showDot="isShowDot" :interval="interval" :threshold="threshold" :speed="speed">
+          <self-slide ref="slide" :length="bannerCarousel.length" :interval="interval">
             <div v-for="item in bannerCarousel" class="slide-item">
               <img :src="item">
             </div>
@@ -100,15 +100,7 @@
         reportTotalPage: 0,
         lastPostY: 0,
 
-        autoPlay:true,
         index: 0,
-        turnToPrev: false,
-        turnToNext: false,
-        isAutoPlay: true,
-        isLoop: true,
-        isShowDot: true,
-        speed: 400,
-        threshold: 0.3,
         interval: 2000,
         bannerCarousel: [],
       }

@@ -211,6 +211,7 @@
 
 <style lang="stylus" rel="stylesheet/stylus">
   .slide
+    height: 750px
     position: relative
     min-height: 1px
     .slide-group
@@ -218,8 +219,6 @@
       overflow: hidden
       white-space: nowrap
       .slide-item
-        width: 750px
-        height: 750px
         float: left
         box-sizing: border-box
         overflow: hidden

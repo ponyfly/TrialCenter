@@ -66,7 +66,7 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../style/mixin.styl"
   .item
-    margin-bottom 60px
+    padding-bottom 60px
     .item_banner
       position relative
       .item_banner_img
