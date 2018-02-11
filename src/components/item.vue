@@ -1,7 +1,7 @@
 <template>
   <div class="item" v-if="Object.keys(product).length">
     <div class="item_banner">
-      <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl + '?imageView2/0/w/750/format/jpg/q/60'" alt="">
+      <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl + '?imageView2/1/w/690/h/294/format/jpg/q/60'" alt="">
     </div>
     <div class="item_info">
       <h3 class="item_title">{{product.itemTitle}}</h3>
@@ -66,12 +66,12 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../style/mixin.styl"
   .item
-    padding-bottom 60px
+    margin 0 30px 40px
+    background-color #fff
     .item_banner
       position relative
       .item_banner_img
         display block
-        wh(100%, 350px)
         margin 0 auto
       .item_banner_img[lazy=loading]
         border none
