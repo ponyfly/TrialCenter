@@ -36,9 +36,11 @@
                   type="danger"
                   round
                   class="write_post_btn"
+                  :class="{'fix_apply':parseInt(userApplyInfo.applyStatus, 10) === -999}"
                   v-if="showAddressOrPostBtn.isShow"
                   @click="goToAdressOrPost">
-                {{showAddressOrPostBtn.btnText}}</el-button>
+                {{showAddressOrPostBtn.btnText}}
+              </el-button>
             </div>
           </div>
         </div>
@@ -58,7 +60,10 @@
                   </div>
                 </li>
               </ul>
-              <div class="no_post" v-else>暂时没有报告，小主等等再来看吧~</div>
+              <div class="no_post" v-else>
+                <img src="../images/hers-logo@2x.png" alt="">
+                <p>暂时没有报告，小主等等再来看吧~</p>
+              </div>
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -255,7 +260,7 @@
           }
         }else {
           if(parseInt(this.userApplyInfo.applyStatus, 10) === -999) {
-            this.Tool._send1_1('try','try-detail-applyclick',() => {
+            this.Tool._send1_1('ontrial','try-detail-applyclick',() => {
               this.$router.push({
                 name: 'Address',
                 params: {
@@ -271,7 +276,7 @@
       },
       handleClick(tab, event) {
         if (tab.name === 'second') {
-          this.Tool._send1_1('try', 'try-report')
+          this.Tool._send1_1('ontrial', 'try-report')
           this.getReports()
         }
       },
@@ -307,7 +312,7 @@
     beforeRouteEnter(to, from, next) {
       next(vm => {
         if(from.name === 'TrialList') {
-          vm.Tool._send1_1('try', 'try-detail')
+          vm.Tool._send1_1('ontrial', 'try-detail')
         }
       })
     }
@@ -404,6 +409,17 @@
             font-size 28px
             border-radius 27px
             color #fefefe
+          .fix_apply
+            position: fixed!important;
+            z-index 998
+            top: 1041px;
+            left: 50%;
+            width: 670px;
+            height: 90px;
+            border-radius: 45px;
+            margin-left: -335px;
+            font-size: 36px;
+            background-color rgba(255, 117, 117, .8)
     .info_post
       min-height 1244px
       .post_list
@@ -431,6 +447,9 @@
     .no_post
       font-size 30px
       padding 10px 0
+      img
+        margin-top 130px
+        margin-bottom 60px
     .product_detail
       font-size 32px
       line-height 50px

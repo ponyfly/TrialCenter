@@ -187,7 +187,7 @@
       this.loadData()
     },
     mounted() {
-      this.Tool._send1_1('try','try-list')
+      this.Tool._send1_1('ontrial','try-list')
     },
     watch: {},
     activated() {
