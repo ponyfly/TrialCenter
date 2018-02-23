@@ -36,8 +36,7 @@
                   type="danger"
                   round
                   class="write_post_btn"
-                  :class="{'fix_apply':parseInt(userApplyInfo.applyStatus, 10) === -999}"
-                  v-if="showAddressOrPostBtn.isShow"
+                  v-if="showAddressOrPostBtn.isShow && parseInt(userApplyInfo.applyStatus, 10) !== -999"
                   @click="goToAdressOrPost">
                 {{showAddressOrPostBtn.btnText}}
               </el-button>
@@ -71,6 +70,14 @@
           找不到商品
         </div>
       </div>
+      <el-button
+          type="danger"
+          round
+          :class="{'fix_apply':parseInt(userApplyInfo.applyStatus, 10) === -999}"
+          v-if="showAddressOrPostBtn.isShow"
+          @click="goToAdressOrPost">
+        {{showAddressOrPostBtn.btnText}}
+      </el-button>
     </div>
   </div>
 </template>
@@ -328,6 +335,17 @@
     background-color #fff
     .product_info_wrapper
       height 100%
+    .fix_apply
+      position fixed
+      top 1021px
+      left 50%
+      width 670px
+      height 90px
+      border-radius 45px
+      margin-left -335px
+      font-size 36px
+      background-color rgba(255, 117, 117, .8)
+      color #fefefe
     .overview
       background-color #f3f3f3
       padding-bottom 10px
@@ -409,17 +427,6 @@
             font-size 28px
             border-radius 27px
             color #fefefe
-          .fix_apply
-            position: fixed!important;
-            z-index 998
-            top: 1041px;
-            left: 50%;
-            width: 670px;
-            height: 90px;
-            border-radius: 45px;
-            margin-left: -335px;
-            font-size: 36px;
-            background-color rgba(255, 117, 117, .8)
     .info_post
       min-height 1244px
       .post_list
