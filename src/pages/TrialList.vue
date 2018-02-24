@@ -72,6 +72,7 @@
           this.scroll = new BScroll(this.$refs.wrapper, {
             click: true,
             probeType: 3,
+            swipeTime: 1000,
             pullDownRefresh: {
               threshold:80,
               stop:60,

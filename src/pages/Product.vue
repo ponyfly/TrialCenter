@@ -46,7 +46,7 @@
         <div class="info_post" ref="infoPost" v-if="errorcode !== -1">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="商品详情" name="first">
-              <div class="product_detail" v-html="productDesc"></div>
+              <div class="product_detail" v-html="productDesc" @click="linkToOutter($event)"></div>
             </el-tab-pane>
             <el-tab-pane label="试用报告" name="second">
               <ul class="post_list" v-if="reports.length">
@@ -194,6 +194,8 @@
           this.scroll = new BScroll(this.$refs.productInfoWrapper, {
             click: true,
             probeType: 3,
+            bounce: false,
+            swipeTime: 1000,
           })
           this.scroll.on('touchEnd', (pos) => {
             if (this.activeName === 'second') {
@@ -249,6 +251,7 @@
             if (res.data.content.indexOf('[img]') !== -1) {
               let desc = res.data.content.replace(/(jpeg|png|jpg|gif).*?(\[\/img\])/ig,'$1$2')
               desc = desc.replace(/\[img\]([^\[]*)\[\/img\]/ig,'<img src="$1" border="0" width="100%"/>')
+              desc = desc.replace(/\[url=([^\]]+)\]([^\[]+)\[\/url\]/ig, '<a href="$1">'+'$2'+'</a>')
               desc = desc.replace(/\n/ig, '<br>')
               this.productDesc = desc
             } else {
@@ -299,6 +302,13 @@
       goToReport(reportId) {
         console.log(reportId)
         window.location.href = `jcnhers://detail_post/postId=${reportId}`
+      },
+      linkToOutter(event) {
+        if (event.target.tagName === 'A') {
+          if (window.app_interface) {
+            window.app_interface.setTitleVisible(1)
+          }
+        }
       }
     },
     watch: {
