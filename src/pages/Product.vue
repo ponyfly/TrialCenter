@@ -1,7 +1,7 @@
 <template>
   <div class="product_info">
     <self-header headerTitle="详情"></self-header>
-    <div class="product_info_wrapper" ref="productInfoWrapper">
+    <div class="product_info_wrapper" ref="productInfoWrapper" v-if="item">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
           <self-slide ref="slide" :length="bannerCarousel.length" :interval="interval">
@@ -104,9 +104,9 @@
       return {
         activeName: 'first',
         reports: [],
-        item: {},
+        item: null,
         userApplyInfo: {},
-        errorcode:'',
+        errorcode: '',
         productDesc: '',
         reportCurPage: 1,
         reportTotalPage: 0,
@@ -251,12 +251,15 @@
             if (res.data.content.indexOf('[img]') !== -1) {
               let desc = res.data.content.replace(/(jpeg|png|jpg|gif).*?(\[\/img\])/ig,'$1$2')
               desc = desc.replace(/\[img\]([^\[]*)\[\/img\]/ig,'<img src="$1" border="0" width="100%"/>')
-              desc = desc.replace(/\[url=([^\]]+)\]([^\[]+)\[\/url\]/ig, '<a href="$1">'+'$2'+'</a>')
+              desc = desc.replace(/\[url=([^\]]+)\]([^\[]+)\[\/url\]/ig, '<a href="$1" style="color: #ff6666">'+'$2'+'</a>')
               desc = desc.replace(/\n/ig, '<br>')
               this.productDesc = desc
             } else {
               this.productDesc = res.data.content
             }
+            this.$nextTick(() => {
+              this._initScroll()
+            })
           })
           .catch(console.log)
       },
@@ -320,11 +323,6 @@
       this.itemId = this.$route.params.productId
       if(!this.itemId) return
       this._initData()
-    },
-    mounted() {
-      this.$nextTick(() => {
-        this._initScroll()
-      })
     },
     beforeRouteEnter(to, from, next) {
       next(vm => {
