@@ -48,22 +48,22 @@
     },
     data() {
       return {
-        firstEnter: true,
-        curPage:1,
-        totalPage: 0,
-        actType: 1,
         productLists: [],
-        isPullUp: false,
-        isPullDown: false,
-        isPulling: true,
-        scrollPositionY: 0,
-
-        autoPlay: true,
         slideBanners :[]
       }
     },
     computed: {},
     methods: {
+      initUnInteract() {
+        this.firstEnter = true
+        this.curPage = 1
+        this.totalPage = 0
+        this.actType = 1
+        this.isPullUp = false
+        this.isPullDown = false
+        this.isPulling = true
+        this.scrollPositionY = 0
+      },
       _initScroll() {
         if(!this.scroll) {
           this.scroll = new BScroll(this.$refs.wrapper, {
@@ -151,6 +151,13 @@
           })
           .catch(console.log)
       },
+      initData() {
+        getProducts(this.curPage,this.actType)
+          .then(res => {
+            this.totalPage = parseInt(res.data.totalPage, 10)
+            this.productLists = res.data.items
+          })
+      },
       goToMyTrial() {
         if (this.userId) {
           this.$router.push({
@@ -168,14 +175,6 @@
           params: {productId}
         })
       },
-      bannerGoToProduct(event) {
-        if(!event._constructed) {
-          return
-        }
-        event.stopPropagation()
-        event.preventDefault()
-        console.log(123)
-      },
       backToApp() {
         if (window.app_interface) {
           window.app_interface.backToApp()
@@ -186,7 +185,6 @@
       getSlideBanners() {
         getPics()
           .then(res => {
-            console.log(res)
             if (res.data.length) {
               this.slideBanners = res.data
             }
@@ -199,6 +197,7 @@
       'self-slide': Slide
     },
     created() {
+      this.initUnInteract()
       this.getSlideBanners()
       this.loadData()
     },
