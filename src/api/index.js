@@ -5,6 +5,7 @@ import axios from 'axios'
 //获取列表
 const isLocal = /(192\.168|127\.0\.0\.1|localhost)/.test(location.href)
 const API_origin = isLocal ? 'http://bbs.j.cn' : ''
+const API_origin_lunbo = isLocal ? 'http://114.112.164.34:7365' : 'http://other.com'
 const API = {
   listItems: `${API_origin}/api/listItems`,
   trialList: `${API_origin}/api/trialList`,
@@ -13,6 +14,7 @@ const API = {
   trialReports: `${API_origin}/api/trialReports`,
   summitApply: `${API_origin}/api/summitApply`,
   getFaceBackBeans: `${API_origin}/api/getFaceBackBeans`,
+  getPics: `${API_origin_lunbo}/carousel/getPics`
 }
 
 let tagId = ''
@@ -66,5 +68,11 @@ export function postApplyItem(formData) {
 export function getRules() {
   return axios.get(API.getFaceBackBeans, {
     params: {tagId}
+  })
+}
+//获取首页轮播图
+export function getPics() {
+  return axios.get(API.getPics, {
+    params: {type: 3}
   })
 }

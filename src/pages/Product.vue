@@ -74,7 +74,7 @@
           type="danger"
           round
           :class="{'fix_apply':parseInt(userApplyInfo.applyStatus, 10) === -999}"
-          v-if="showAddressOrPostBtn.isShow"
+          v-if="showAddressOrPostBtn.isShow && parseInt(userApplyInfo.applyStatus, 10) === -999"
           @click="goToAdressOrPost">
         {{showAddressOrPostBtn.btnText}}
       </el-button>
