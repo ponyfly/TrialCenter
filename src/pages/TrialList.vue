@@ -7,8 +7,10 @@
     <div class="wrapper" ref="wrapper">
       <div class="slide-content">
         <self-slide :length="slideBanners.length">
-          <div v-for="slideBanner in slideBanners" class="slide-item">
-            <img :src="slideBanner" alt="">
+          <div v-for="slideBanner in slideBanners" class="slide-item" :key="slideBanner.id">
+            <router-link :to="{name: 'Product',params: {productId: slideBanner.id}}">
+              <img :src="`${slideBanner.banner_pic}?imageView2/0/w/750/format/jpg/q/60`" alt="">
+            </router-link>
           </div>
         </self-slide>
         <div class="wrapper-title">
@@ -33,7 +35,7 @@
 <script>
   import {Button} from 'element-ui'
   import BScroll from 'better-scroll'
-  import {getProducts} from '../api/index'
+  import {getProducts, getPics} from '../api/index'
   import Item from '../components/item.vue'
   import Slide from '../components/slide.vue'
 
@@ -57,12 +59,7 @@
         scrollPositionY: 0,
 
         autoPlay: true,
-        slideBanners :[
-          'http://static4.j.cn/png/arcamera/180131/1851/a7c986b96023494a.png?imageView2/0/w/750/format/jpg/q/60',
-          'http://static3.j.cn/png/arcamera/180126/1014/2aba86d45053434e.png?imageView2/0/w/750/format/jpg/q/60',
-          'http://static3.j.cn/png/arcamera/180126/1823/e6b3d65c482b4753.jpg?imageView2/0/w/750/format/jpg/q/60',
-          'http://static4.j.cn/png/arcamera/180131/1529/93e7fe2f9fef455c.png?imageView2/0/w/750/format/jpg/q/60'
-        ]
+        slideBanners :[]
       }
     },
     computed: {},
@@ -72,6 +69,7 @@
           this.scroll = new BScroll(this.$refs.wrapper, {
             click: true,
             probeType: 3,
+            swipeTime: 1000,
             pullDownRefresh: {
               threshold:80,
               stop:60,
@@ -170,12 +168,29 @@
           params: {productId}
         })
       },
+      bannerGoToProduct(event) {
+        if(!event._constructed) {
+          return
+        }
+        event.stopPropagation()
+        event.preventDefault()
+        console.log(123)
+      },
       backToApp() {
         if (window.app_interface) {
           window.app_interface.backToApp()
         } else {
           console.log('goToBack')
         }
+      },
+      getSlideBanners() {
+        getPics()
+          .then(res => {
+            console.log(res)
+            if (res.data.length) {
+              this.slideBanners = res.data
+            }
+          })
       }
     },
     components: {
@@ -184,10 +199,11 @@
       'self-slide': Slide
     },
     created() {
+      this.getSlideBanners()
       this.loadData()
     },
     mounted() {
-      this.Tool._send1_1('try','try-list')
+      this.Tool._send1_1('ontrial','try-list')
     },
     watch: {},
     activated() {

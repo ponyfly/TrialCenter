@@ -6,7 +6,7 @@
     <div class="item_info">
       <h3 class="item_title">{{product.itemTitle}}</h3>
       <div class="item_detail clearfix">
-        <span class="limit_num" :style="isOverDeadline ? '' : {color: '#ff6666'}">限{{product.stockNum}}份</span>
+        <span class="limit_num">限{{product.stockNum}}份</span>
         <div class="deadline">
           <i class="icon_clock"></i>
           <span>{{isOverDeadline ? '已结束' : '距结束：'}}</span>
@@ -67,6 +67,7 @@
   @import "../style/mixin.styl"
   .item
     margin 0 30px 40px
+    padding-bottom 30px
     background-color #fff
     .item_banner
       position relative
@@ -104,9 +105,7 @@
             top 4px
             wh(28px,28px)
             background url(../images/apply_state.png)  no-repeat
-            background-position 0 -28px
+            background-position 0 -142px
           .time_wrapper
             display inline
-            .time
-              color: #ff6666
 </style>

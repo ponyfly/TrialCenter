@@ -50,7 +50,7 @@
       this._initData()
     },
     mounted() {
-      this.Tool._send1_1('try', 'try-rule')
+      this.Tool._send1_1('ontrial', 'try-rule')
     }
   }
 </script>

@@ -138,7 +138,7 @@
       this.loadData()
     },
     mounted() {
-      this.Tool._send1_1('try', 'try-mine')
+      this.Tool._send1_1('ontrial', 'try-mine')
     },
     activated() {
       if (this.scroll) {
