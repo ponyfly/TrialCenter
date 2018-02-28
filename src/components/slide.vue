@@ -4,7 +4,7 @@
       <slot>
       </slot>
     </div>
-    <div v-if="showDot" class="dots">
+    <div v-if="showDot && length > 1" class="dots">
       <span class="dot" :class="{active: currentPageIndex === index }" v-for="(item, index) in dots"></span>
     </div>
   </div>
@@ -146,7 +146,7 @@
       },
       _initSlide() {
         this.slide = new BScroll(this.$refs.slide, {
-          scrollX: true,
+          scrollX: this.length === 1 ? false : true,
           scrollY: false,
           momentum: false,
           snap: {

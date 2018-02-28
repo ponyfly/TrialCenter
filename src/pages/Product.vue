@@ -1,7 +1,7 @@
 <template>
   <div class="product_info">
     <self-header headerTitle="详情"></self-header>
-    <div class="product_info_wrapper" ref="productInfoWrapper">
+    <div class="product_info_wrapper" ref="productInfoWrapper" v-if="item">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
           <self-slide ref="slide" :length="bannerCarousel.length" :interval="interval">
@@ -36,16 +36,17 @@
                   type="danger"
                   round
                   class="write_post_btn"
-                  v-if="showAddressOrPostBtn.isShow"
+                  v-if="showAddressOrPostBtn.isShow && parseInt(userApplyInfo.applyStatus, 10) !== -999"
                   @click="goToAdressOrPost">
-                {{showAddressOrPostBtn.btnText}}</el-button>
+                {{showAddressOrPostBtn.btnText}}
+              </el-button>
             </div>
           </div>
         </div>
         <div class="info_post" ref="infoPost" v-if="errorcode !== -1">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="商品详情" name="first">
-              <div class="product_detail" v-html="productDesc"></div>
+              <div class="product_detail" v-html="productDesc" @click="linkToOutter($event)"></div>
             </el-tab-pane>
             <el-tab-pane label="试用报告" name="second">
               <ul class="post_list" v-if="reports.length">
@@ -58,7 +59,10 @@
                   </div>
                 </li>
               </ul>
-              <div class="no_post" v-else>暂时没有报告，小主等等再来看吧~</div>
+              <div class="no_post" v-else>
+                <img src="../images/hers-logo@2x.png" alt="">
+                <p>暂时没有报告，小主等等再来看吧~</p>
+              </div>
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -66,6 +70,14 @@
           找不到商品
         </div>
       </div>
+      <el-button
+          type="danger"
+          round
+          :class="{'fix_apply':parseInt(userApplyInfo.applyStatus, 10) === -999}"
+          v-if="showAddressOrPostBtn.isShow && parseInt(userApplyInfo.applyStatus, 10) === -999"
+          @click="goToAdressOrPost">
+        {{showAddressOrPostBtn.btnText}}
+      </el-button>
     </div>
   </div>
 </template>
@@ -92,9 +104,9 @@
       return {
         activeName: 'first',
         reports: [],
-        item: {},
+        item: null,
         userApplyInfo: {},
-        errorcode:'',
+        errorcode: '',
         productDesc: '',
         reportCurPage: 1,
         reportTotalPage: 0,
@@ -182,6 +194,8 @@
           this.scroll = new BScroll(this.$refs.productInfoWrapper, {
             click: true,
             probeType: 3,
+            bounce: false,
+            swipeTime: 1000,
           })
           this.scroll.on('touchEnd', (pos) => {
             if (this.activeName === 'second') {
@@ -237,11 +251,15 @@
             if (res.data.content.indexOf('[img]') !== -1) {
               let desc = res.data.content.replace(/(jpeg|png|jpg|gif).*?(\[\/img\])/ig,'$1$2')
               desc = desc.replace(/\[img\]([^\[]*)\[\/img\]/ig,'<img src="$1" border="0" width="100%"/>')
+              desc = desc.replace(/\[url=([^\]]+)\]([^\[]+)\[\/url\]/ig, '<a href="$1" style="color: #ff6666">'+'$2'+'</a>')
               desc = desc.replace(/\n/ig, '<br>')
               this.productDesc = desc
             } else {
               this.productDesc = res.data.content
             }
+            this.$nextTick(() => {
+              this._initScroll()
+            })
           })
           .catch(console.log)
       },
@@ -255,7 +273,7 @@
           }
         }else {
           if(parseInt(this.userApplyInfo.applyStatus, 10) === -999) {
-            this.Tool._send1_1('try','try-detail-applyclick',() => {
+            this.Tool._send1_1('ontrial','try-detail-applyclick',() => {
               this.$router.push({
                 name: 'Address',
                 params: {
@@ -271,7 +289,7 @@
       },
       handleClick(tab, event) {
         if (tab.name === 'second') {
-          this.Tool._send1_1('try', 'try-report')
+          this.Tool._send1_1('ontrial', 'try-report')
           this.getReports()
         }
       },
@@ -287,6 +305,13 @@
       goToReport(reportId) {
         console.log(reportId)
         window.location.href = `jcnhers://detail_post/postId=${reportId}`
+      },
+      linkToOutter(event) {
+        if (event.target.tagName === 'A') {
+          if (window.app_interface) {
+            window.app_interface.setTitleVisible(1)
+          }
+        }
       }
     },
     watch: {
@@ -299,15 +324,10 @@
       if(!this.itemId) return
       this._initData()
     },
-    mounted() {
-      this.$nextTick(() => {
-        this._initScroll()
-      })
-    },
     beforeRouteEnter(to, from, next) {
       next(vm => {
         if(from.name === 'TrialList') {
-          vm.Tool._send1_1('try', 'try-detail')
+          vm.Tool._send1_1('ontrial', 'try-detail')
         }
       })
     }
@@ -323,6 +343,17 @@
     background-color #fff
     .product_info_wrapper
       height 100%
+    .fix_apply
+      position fixed
+      top 1021px
+      left 50%
+      width 670px
+      height 90px
+      border-radius 45px
+      margin-left -335px
+      font-size 36px
+      background-color rgba(255, 117, 117, .8)
+      color #fefefe
     .overview
       background-color #f3f3f3
       padding-bottom 10px
@@ -431,6 +462,9 @@
     .no_post
       font-size 30px
       padding 10px 0
+      img
+        margin-top 130px
+        margin-bottom 60px
     .product_detail
       font-size 32px
       line-height 50px

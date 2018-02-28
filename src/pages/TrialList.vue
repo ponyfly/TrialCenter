@@ -3,24 +3,31 @@
     <div class="header">
       <i class="back el-icon-arrow-left" @click=backToApp></i>
       <h2>试用中心</h2>
-      <el-button class="my_trial_btn" @click="goToMyTrial">我的试用
-        <i class="el-icon-arrow-right"></i>
-      </el-button>
     </div>
-    <self-slide :length="slideBanners.length">
-      <div v-for="slideBanner in slideBanners" class="slide-item">
-        <img :src="slideBanner" alt="">
-      </div>
-    </self-slide>
     <div class="wrapper" ref="wrapper">
-      <ul class="content">
-        <li is="self-item"
-            v-for="(product, index) in productLists"
-            :product="product"
-            :key="product.id"
-            @click.native="goToProduct(product.id)">
-        </li>
-      </ul>
+      <div class="slide-content">
+        <self-slide :length="slideBanners.length">
+          <div v-for="slideBanner in slideBanners" class="slide-item" :key="slideBanner.id">
+            <router-link :to="{name: 'Product',params: {productId: slideBanner.id}}">
+              <img :src="`${slideBanner.banner_pic}?imageView2/0/w/750/format/jpg/q/60`" alt="">
+            </router-link>
+          </div>
+        </self-slide>
+        <div class="wrapper-title">
+          <div class="hot-try">热门试用</div>
+          <el-button class="my_trial_btn" @click="goToMyTrial">我的试用
+            <i class="el-icon-arrow-right"></i>
+          </el-button>
+        </div>
+        <ul class="content">
+          <li is="self-item"
+              v-for="(product, index) in productLists"
+              :product="product"
+              :key="product.id"
+              @click.native="goToProduct(product.id)">
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -28,7 +35,7 @@
 <script>
   import {Button} from 'element-ui'
   import BScroll from 'better-scroll'
-  import {getProducts} from '../api/index'
+  import {getProducts, getPics} from '../api/index'
   import Item from '../components/item.vue'
   import Slide from '../components/slide.vue'
 
@@ -52,12 +59,7 @@
         scrollPositionY: 0,
 
         autoPlay: true,
-        slideBanners :[
-          'http://static4.j.cn/png/arcamera/180131/1851/a7c986b96023494a.png?imageView2/0/w/750/format/jpg/q/60',
-          'http://static3.j.cn/png/arcamera/180126/1014/2aba86d45053434e.png?imageView2/0/w/750/format/jpg/q/60',
-          'http://static3.j.cn/png/arcamera/180126/1823/e6b3d65c482b4753.jpg?imageView2/0/w/750/format/jpg/q/60',
-          'http://static4.j.cn/png/arcamera/180131/1529/93e7fe2f9fef455c.png?imageView2/0/w/750/format/jpg/q/60'
-        ]
+        slideBanners :[]
       }
     },
     computed: {},
@@ -67,6 +69,7 @@
           this.scroll = new BScroll(this.$refs.wrapper, {
             click: true,
             probeType: 3,
+            swipeTime: 1000,
             pullDownRefresh: {
               threshold:80,
               stop:60,
@@ -165,12 +168,29 @@
           params: {productId}
         })
       },
+      bannerGoToProduct(event) {
+        if(!event._constructed) {
+          return
+        }
+        event.stopPropagation()
+        event.preventDefault()
+        console.log(123)
+      },
       backToApp() {
         if (window.app_interface) {
           window.app_interface.backToApp()
         } else {
           console.log('goToBack')
         }
+      },
+      getSlideBanners() {
+        getPics()
+          .then(res => {
+            console.log(res)
+            if (res.data.length) {
+              this.slideBanners = res.data
+            }
+          })
       }
     },
     components: {
@@ -179,10 +199,11 @@
       'self-slide': Slide
     },
     created() {
+      this.getSlideBanners()
       this.loadData()
     },
     mounted() {
-      this.Tool._send1_1('try','try-list')
+      this.Tool._send1_1('ontrial','try-list')
     },
     watch: {},
     activated() {
@@ -198,8 +219,6 @@
   .trial_list
     font-size 34px
     wh(100%, 100%)
-    display flex
-    flex-direction column
     .header
       wh(750px, 90px)
       position fixed
@@ -209,24 +228,35 @@
       line-height 90px
       .back
         tl(0, 0)
-        padding: 23px;
-        font-size: 44px;
-      .my_trial_btn
-        tr(20px, 20px)
-        width: 180px;
-        font-size: 30px;
-        border: none;
-        color: #ff6666
-        i
-          color #ff1653
-    .slide
-      margin-top 90px
-      height 350px
-      flex-basis 350px
-      flex none
+        padding 23px
+        font-size 44px
     .wrapper
-      background-color #fff
-      overflow hidden
-      .content
-        font-size 36px
+      margin-top 90px
+      height calc(100% - 90px)
+      box-sizing border-box
+      background-color #efefef
+      .slide-content
+        .wrapper-title
+          height 80px
+          line-height 80px
+          display flex
+          padding 0 30px
+          justify-content space-between
+          .hot-try
+            color #f66
+            font-size 32px
+          .my_trial_btn
+            width 180px
+            font-size 30px
+            background-color #efefef
+            border none
+            color #666
+            i
+              color #666
+        .slide
+          height 550px
+          background-color #fff
+          overflow hidden
+        .content
+          font-size 36px
 </style>

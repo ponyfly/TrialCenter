@@ -1,12 +1,12 @@
 <template>
   <div class="item" v-if="Object.keys(product).length">
     <div class="item_banner">
-      <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl + '?imageView2/0/w/750/format/jpg/q/60'" alt="">
+      <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl + '?imageView2/1/w/690/h/294/format/jpg/q/60'" alt="">
     </div>
     <div class="item_info">
       <h3 class="item_title">{{product.itemTitle}}</h3>
       <div class="item_detail clearfix">
-        <span class="limit_num" :style="isOverDeadline ? '' : {color: '#ff6666'}">限{{product.stockNum}}份</span>
+        <span class="limit_num">限{{product.stockNum}}份</span>
         <div class="deadline">
           <i class="icon_clock"></i>
           <span>{{isOverDeadline ? '已结束' : '距结束：'}}</span>
@@ -66,12 +66,13 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../style/mixin.styl"
   .item
-    padding-bottom 60px
+    margin 0 30px 40px
+    padding-bottom 30px
+    background-color #fff
     .item_banner
       position relative
       .item_banner_img
         display block
-        wh(100%, 350px)
         margin 0 auto
       .item_banner_img[lazy=loading]
         border none
@@ -104,9 +105,7 @@
             top 4px
             wh(28px,28px)
             background url(../images/apply_state.png)  no-repeat
-            background-position 0 -28px
+            background-position 0 -142px
           .time_wrapper
             display inline
-            .time
-              color: #ff6666
 </style>

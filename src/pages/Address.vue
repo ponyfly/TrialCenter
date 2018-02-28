@@ -106,7 +106,7 @@
               .then(res => {
                 if(parseInt(res.data.errorcode, 10) === 1) {
                   this.openSuccess()
-                  this.Tool._send1_1('try', 'try-detail-apply')
+                  this.Tool._send1_1('ontrial', 'try-detail-apply')
                 } else if (parseInt(res.data.errorcode, 10) === -6) {
                   this.openFail()
                 }
