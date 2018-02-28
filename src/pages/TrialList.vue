@@ -54,17 +54,7 @@
     },
     computed: {},
     methods: {
-      initUnInteract() {
-        this.firstEnter = true
-        this.curPage = 1
-        this.totalPage = 0
-        this.actType = 1
-        this.isPullUp = false
-        this.isPullDown = false
-        this.isPulling = true
-        this.scrollPositionY = 0
-      },
-      _initScroll() {
+      /*_initScroll() {
         if(!this.scroll) {
           this.scroll = new BScroll(this.$refs.wrapper, {
             click: true,
@@ -150,12 +140,115 @@
             })
           })
           .catch(console.log)
+      },*/
+      _initUnInteract() {
+        this.firstEnter = true
+        this.curPage = 1
+        this.totalPage = 0
+        this.actType = 1
+        this.isPullUp = false
+        this.isPullDown = false
+        this.isPulling = true
+        this.scrollPositionY = 0
       },
-      initData() {
+      _initData() {
         getProducts(this.curPage,this.actType)
           .then(res => {
             this.totalPage = parseInt(res.data.totalPage, 10)
             this.productLists = res.data.items
+            if (this.productLists.length < 2) {
+              this.actType = -1
+              getProducts(this.curPage,this.actType)
+                .then(res => {
+                  this.totalPage = parseInt(res.data.totalPage, 10)
+                  this.productLists = [...this.productLists, ...res.data.items]
+                  if(!this.trialScroll) {
+                    this.$nextTick(() => {
+                      this._initScroll()
+                    })
+                  } else {
+                    this.trialScroll.refresh()
+                  }
+                })
+            } else {
+              if(!this.trialScroll) {
+                this.$nextTick(() => {
+                  this._initScroll()
+                })
+              } else {
+                this.trialScroll.refresh()
+              }
+            }
+          })
+      },
+      _loadMoreData() {
+        getProducts(this.curPage, this.actType)
+          .then(res => {
+            this.totalPage = parseInt(res.data.totalPage, 10)
+            if (this.isPullUp) {
+              this.productLists = [...this.productLists, ...res.data.items]
+              this.isPullUp = false
+              this.trialScroll.finishPullUp()
+            }
+            if (this.isPullDown) {
+              this.isPullDown = false
+              this.trialScroll.finishPullDown()
+            }
+            this.$nextTick(() => {
+              this.trialScroll.refresh()
+            })
+          })
+      },
+      _initScroll() {
+        this.trialScroll = new BScroll(this.$refs.wrapper, {
+          click: true,
+          probeType: 3,
+          swipeTime: 1000,
+          pullDownRefresh: {
+            threshold:80,
+            stop:60,
+          },
+          pullUpLoad: {
+            threshold: -60,
+            stop: 60
+          },
+        })
+        this.trialScroll.on('pullingDown', () => {
+          this.curPage = 1
+          this.totalPage = 0
+          this.actType = 1
+          this.isPulling = true
+          this.isPullDown = true
+          this.loadData()
+        })
+        this.trialScroll.on('pullingUp', () => {
+          if(this.curPage !== this.totalPage){
+            this.isPullUp = true
+            this.curPage++
+            this._loadMoreData()
+          } else {
+            if(this.actType === 1) {
+              this.actType = -1
+              this.curPage = 1
+              this.totalPage = 0
+              this.isPullUp = true
+              this._loadMoreData()
+            } else {
+              console.log('我们是有底线的');
+              this.trialScroll.finishPullUp()
+            }
+          }
+        })
+        this.trialScroll.on('scrollEnd', (pos) => {
+          this.scrollPositionY = pos.y
+        })
+      },
+      _initSlideBanners() {
+        getPics()
+          .then(res => {
+            if (res.data.length) {
+              this.slideBanners = res.data
+            }
           })
       },
       goToMyTrial() {
@@ -182,14 +275,6 @@
           console.log('goToBack')
         }
       },
-      getSlideBanners() {
-        getPics()
-          .then(res => {
-            if (res.data.length) {
-              this.slideBanners = res.data
-            }
-          })
-      }
     },
     components: {
       'el-button': Button,
@@ -197,9 +282,10 @@
       'self-slide': Slide
     },
     created() {
-      this.initUnInteract()
-      this.getSlideBanners()
-      this.loadData()
+      this._initUnInteract()
+      this._initSlideBanners()
+//      this.loadData()
+      this._initData()
     },
     mounted() {
       this.Tool._send1_1('ontrial','try-list')
@@ -235,6 +321,7 @@
       box-sizing border-box
       background-color #efefef
       .slide-content
+        min-height calc(100% + 1px)
         .wrapper-title
           height 80px
           line-height 80px
