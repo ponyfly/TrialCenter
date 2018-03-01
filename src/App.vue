@@ -17,7 +17,6 @@
       }
     },
     created() {
-//      this.userId = Tool._GetQueryString('userId') || '17192'
     }
   }
 </script>
