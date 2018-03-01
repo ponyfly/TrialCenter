@@ -6,13 +6,7 @@
     </div>
     <div class="wrapper" ref="wrapper">
       <div class="slide-content">
-        <self-slide :length="slideBanners.length" v-if="slideBanners.length" @click="linkToOutter">
-          <div v-for="slideBanner in slideBanners" class="slide-item" :key="slideBanner.id">
-            <a :href="slideBanner.url">
-              <img :src="`${slideBanner.banner_pic}?imageView2/0/w/750/format/jpg/q/60`" alt="">
-            </a>
-          </div>
-        </self-slide>
+        <self-slide :data="slideBanners"/>
         <div class="wrapper-title">
           <div class="hot-try">热门试用</div>
           <el-button class="my_trial_btn" @click="goToMyTrial">我的试用
@@ -50,7 +44,7 @@
     data() {
       return {
         productLists: [],
-        slideBanners :[]
+        slideBanners : {}
       }
     },
     computed: {},
@@ -135,7 +129,12 @@
         getPics()
           .then(res => {
             if (res.data.length) {
-              this.slideBanners = res.data
+              this.slideBanners = res.data.map(t => {
+                return {
+                  url: t.url,
+                  image: t.banner_pic
+                }
+              })
             }
           })
       },

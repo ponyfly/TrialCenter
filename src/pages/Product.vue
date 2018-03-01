@@ -1,15 +1,10 @@
 <template>
   <div class="product_info">
     <self-header headerTitle="详情" @backToApp="backToApp"></self-header>
-    <!--<cube-input v-model="activeName"></cube-input>-->
     <div class="product_info_wrapper" ref="productInfoWrapper" v-if="item">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
-          <self-slide ref="slide" :length="bannerCarousel.length" :interval="interval">
-            <div v-for="item in bannerCarousel" class="slide-item">
-              <img :src="item">
-            </div>
-          </self-slide>
+          <self-slide :data="bannerCarousel"/>
           <h3 class="product_title">{{item.itemTitle}}</h3>
           <div class="product_body">
             <div class="info_1">
@@ -224,7 +219,7 @@
               return new Error('没有商品')
             }
             this.item = res.data.item
-            this.bannerCarousel = this.item.itemDetailUrl.split(';').map(t => t + '?imageView2/0/w/750/format/jpg/q/60')
+            this.bannerCarousel = this.getSlidesArray(this.item.itemDetailUrl)
             this.userApplyInfo = this.userId ? res.data.userApplyInfo : {
               applyStatus: '-999', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
               applyInfo: '未申请', //applyStatus状态的对应信息
@@ -297,6 +292,14 @@
           this.reports = []
           this.getReports()
         }
+      },
+      getSlidesArray(slides) {
+        return slides.split(';').map(t => {
+          return {
+            url: 'javascript:void(0)',
+            image: t + '?imageView2/0/w/750/format/jpg/q/60'
+          }
+        })
       },
       getReports() {
         getProductReports(this.item.detailTagId, this.reportCurPage)
