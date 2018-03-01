@@ -6,7 +6,7 @@
     </div>
     <div class="wrapper" ref="wrapper">
       <div class="slide-content">
-        <self-slide :length="slideBanners.length">
+        <self-slide :length="slideBanners.length" v-if="slideBanners.length">
           <div v-for="slideBanner in slideBanners" class="slide-item" :key="slideBanner.id">
             <router-link :to="{name: 'Product',params: {productId: slideBanner.id}}">
               <img :src="`${slideBanner.banner_pic}?imageView2/0/w/750/format/jpg/q/60`" alt="">
@@ -27,6 +27,7 @@
               @click.native="goToProduct(product.id)">
           </li>
         </ul>
+        <div class="no-more">我们是有底线的</div>
       </div>
     </div>
   </div>
@@ -48,108 +49,96 @@
     },
     data() {
       return {
-        firstEnter: true,
-        curPage:1,
-        totalPage: 0,
-        actType: 1,
         productLists: [],
-        isPullUp: false,
-        isPullDown: false,
-        isPulling: true,
-        scrollPositionY: 0,
-
-        autoPlay: true,
         slideBanners :[]
       }
     },
     computed: {},
     methods: {
-      _initScroll() {
-        if(!this.scroll) {
-          this.scroll = new BScroll(this.$refs.wrapper, {
-            click: true,
-            probeType: 3,
-            swipeTime: 1000,
-            pullDownRefresh: {
-              threshold:80,
-              stop:60,
-            },
-            pullUpLoad: {
-              threshold: -60,
-              stop: 60
-            },
-          })
-          this.scroll.on('pullingDown', () => {
-            this.curPage = 1
-            this.totalPage = 0
-            this.actType = 1
-            this.isPulling = true
-            this.isPullDown = true
-            this.loadData()
-          })
-          this.scroll.on('pullingUp', () => {
-            if(this.curPage !== this.totalPage){
-              this.isPulling = true
-              this.isPullUp = true
-              this.curPage++
-              this.loadData()
+      _initUnInteract() {
+        this.curPage = 1
+        this.totalPage = 0
+        this.actType = 1
+        this.isPullUp = false
+        this.scrollPositionY = 0
+      },
+      _initData() {
+        getProducts(this.curPage,this.actType)
+          .then(res => {
+            this.totalPage = parseInt(res.data.totalPage, 10)
+            this.productLists = res.data.items
+            if (this.productLists.length < 2) {
+              this.actType = -1
+              getProducts(this.curPage,this.actType)
+                .then(res => {
+                  this.totalPage = parseInt(res.data.totalPage, 10)
+                  this.productLists = [...this.productLists, ...res.data.items]
+                  this.$nextTick(() => {
+                    this._initScroll()
+                  })
+                })
             } else {
-              if (this.actType === 1) {
-                this.actType = -1
-                this.curPage = 1
-                this.totalPage = 0
-                this.isPulling = true
-                this.isPullUp = true
-                this.loadData()
-              } else {
-                console.log('我们是有底线的');
-                this.scroll.finishPullUp()
-              }
+              this.$nextTick(() => {
+                this._initScroll()
+              })
             }
           })
-          this.scroll.on('scrollEnd', (pos) => {
-            this.scrollPositionY = pos.y
-          })
-        } else {
-          this.scroll.refresh()
-        }
-        if (this.productLists.length < 3) {
-          this.totalPage = 0
-          this.actType = -1
-          this.curPage = 1
-          this.totalPage = 0
-          this.isPulling = true
-          this.isPullUp = true
-          this.loadData()
-        }
       },
-      loadData() {
+      _loadMoreData() {
         getProducts(this.curPage, this.actType)
           .then(res => {
             this.totalPage = parseInt(res.data.totalPage, 10)
-            if(this.firstEnter) {
-              this.productLists = res.data.items
-              this.firstEnter = false
-            }
-            if(this.isPulling) {
-              if(this.isPullDown) {
-                this.scroll.finishPullDown()
-                this.productLists.splice(0)
-                this.productLists = res.data.items
-                this.isPullDown = false
-              }
-              if(this.isPullUp) {
-                this.scroll.finishPullUp()
-                this.productLists = [...this.productLists, ...res.data.items]
-                this.isPullUp = false
-              }
-              this.isPulling = false
+            if (this.isPullUp) {
+              this.productLists = [...this.productLists, ...res.data.items]
+              console.log(this.productLists)
+              this.isPullUp = false
+              this.trialScroll.finishPullUp()
             }
             this.$nextTick(() => {
-              this._initScroll()
+              this.trialScroll.refresh()
             })
           })
-          .catch(console.log)
+      },
+      _initScroll() {
+        this.trialScroll = new BScroll(this.$refs.wrapper, {
+          click: true,
+          bounce: false,
+          probeType: 3,
+          swipeTime: 1000,
+          deceleration: 0.002,
+          momentumLimitTime: 200,
+          pullUpLoad: {
+            threshold: 300,
+          },
+        })
+        this.trialScroll.on('pullingUp', () => {
+          if(this.curPage !== this.totalPage){
+            this.isPullUp = true
+            this.curPage++
+            this._loadMoreData()
+          } else {
+            if(this.actType === 1) {
+              this.actType = -1
+              this.curPage = 1
+              this.totalPage = 0
+              this.isPullUp = true
+              this._loadMoreData()
+            } else {
+              this.trialScroll.finishPullUp()
+            }
+          }
+        })
+        this.trialScroll.on('scrollEnd', (pos) => {
+          this.scrollPositionY = pos.y
+        })
+      },
+      _initSlideBanners() {
+        getPics()
+          .then(res => {
+            if (res.data.length) {
+              this.slideBanners = res.data
+            }
+          })
       },
       goToMyTrial() {
         if (this.userId) {
@@ -168,14 +157,6 @@
           params: {productId}
         })
       },
-      bannerGoToProduct(event) {
-        if(!event._constructed) {
-          return
-        }
-        event.stopPropagation()
-        event.preventDefault()
-        console.log(123)
-      },
       backToApp() {
         if (window.app_interface) {
           window.app_interface.backToApp()
@@ -183,15 +164,6 @@
           console.log('goToBack')
         }
       },
-      getSlideBanners() {
-        getPics()
-          .then(res => {
-            console.log(res)
-            if (res.data.length) {
-              this.slideBanners = res.data
-            }
-          })
-      }
     },
     components: {
       'el-button': Button,
@@ -199,8 +171,10 @@
       'self-slide': Slide
     },
     created() {
-      this.getSlideBanners()
-      this.loadData()
+      this._initUnInteract()
+      this._initSlideBanners()
+//      this.loadData()
+      this._initData()
     },
     mounted() {
       this.Tool._send1_1('ontrial','try-list')
@@ -236,6 +210,7 @@
       box-sizing border-box
       background-color #efefef
       .slide-content
+        min-height calc(100% + 1px)
         .wrapper-title
           height 80px
           line-height 80px
@@ -259,4 +234,9 @@
           overflow hidden
         .content
           font-size 36px
+        .no-more
+          height 60px
+          line-height 60px
+          border-top 1px solid #8c8c8c
+          font-size 24px
 </style>

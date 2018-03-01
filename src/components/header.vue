@@ -11,7 +11,7 @@
     props:{
       headerTitle: {
         type: String
-      }
+      },
     },
     data() {
       return {}
@@ -20,6 +20,7 @@
     methods: {
       goBack() {
         this.$router.back()
+        this.$emit('backToApp')
       }
     },
     components: {

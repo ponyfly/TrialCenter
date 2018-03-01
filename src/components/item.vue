@@ -74,9 +74,9 @@
       .item_banner_img
         display block
         margin 0 auto
-      .item_banner_img[lazy=loading]
         border none
-      .item_banner_img[lazy=loaded]
+        height 294px
+      .item_banner_img[lazy=loading]
         border none
       &:after
         content ''

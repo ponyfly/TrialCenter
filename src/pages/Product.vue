@@ -1,6 +1,6 @@
 <template>
   <div class="product_info">
-    <self-header headerTitle="详情"></self-header>
+    <self-header headerTitle="详情" @backToApp="backToApp"></self-header>
     <div class="product_info_wrapper" ref="productInfoWrapper" v-if="item">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
@@ -74,7 +74,7 @@
           type="danger"
           round
           :class="{'fix_apply':parseInt(userApplyInfo.applyStatus, 10) === -999}"
-          v-if="showAddressOrPostBtn.isShow && parseInt(userApplyInfo.applyStatus, 10) === -999"
+          v-if="showAddressOrPostBtn.isShow"
           @click="goToAdressOrPost">
         {{showAddressOrPostBtn.btnText}}
       </el-button>
@@ -111,7 +111,6 @@
         reportCurPage: 1,
         reportTotalPage: 0,
         lastPostY: 0,
-
         index: 0,
         interval: 2000,
         bannerCarousel: [],
@@ -128,6 +127,7 @@
       //是否显示右侧按钮
       showAddressOrPostBtn() {
         const applyStatus = parseInt(this.userApplyInfo.applyStatus, 10)
+
         if (this.isOverDeadLine) {
           if (applyStatus === 1) {
             return {
@@ -290,6 +290,7 @@
       handleClick(tab, event) {
         if (tab.name === 'second') {
           this.Tool._send1_1('ontrial', 'try-report')
+          this.reportCurPage = 1
           this.getReports()
         }
       },
@@ -312,6 +313,13 @@
             window.app_interface.setTitleVisible(1)
           }
         }
+      },
+      backToApp() {
+        if(!this.fromName) {
+          if (window.app_interface) {
+            window.app_interface.backToApp()
+          }
+        }
       }
     },
     watch: {
@@ -326,11 +334,12 @@
     },
     beforeRouteEnter(to, from, next) {
       next(vm => {
+        vm.fromName = from.name
         if(from.name === 'TrialList') {
           vm.Tool._send1_1('ontrial', 'try-detail')
         }
       })
-    }
+    },
   }
 </script>
 
@@ -414,9 +423,10 @@
             background url(../images/apply_state.png)  no-repeat
             background-position 0 -112px
           span:nth-of-type(1)
-            font-weight bold
+            color #707070
           span:nth-of-type(2)
             font-size 22px
+            font-weight bold
             color #969696
           .express_info
             position absolute
@@ -454,7 +464,7 @@
           margin-top 20px
           .img_item
             float left
-            wh(212px, 148px)
+            wh(212px, 212px)
             &+.img_item
               margin-left 15px
             img
