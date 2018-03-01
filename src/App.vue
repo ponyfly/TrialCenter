@@ -16,8 +16,7 @@
         userId: ''
       }
     },
-    created() {
-    }
+    created() {}
   }
 </script>
 
