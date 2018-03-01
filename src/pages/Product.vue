@@ -1,6 +1,7 @@
 <template>
   <div class="product_info">
     <self-header headerTitle="详情" @backToApp="backToApp"></self-header>
+    <!--<cube-input v-model="activeName"></cube-input>-->
     <div class="product_info_wrapper" ref="productInfoWrapper" v-if="item">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
@@ -54,7 +55,7 @@
                   <p>{{report.content}}</p>
                   <div v-if="report.picUrls.length" class="img_wrapper clearfix">
                     <div v-for="picUrl in report.picUrls" class="img_item">
-                      <img :src="picUrl" alt="">
+                      <img :src="`${picUrl}?imageView2/0/w/212/q/60`" alt="">
                     </div>
                   </div>
                 </li>
@@ -186,7 +187,7 @@
       'el-button': Button,
       'el-tabs': Tabs,
       'el-tab-pane': TabPane,
-      'self-slide': Slide
+      'self-slide': Slide,
     },
     methods: {
       _initScroll() {
@@ -196,6 +197,8 @@
             probeType: 3,
             bounce: false,
             swipeTime: 1000,
+            deceleration: 0.002,
+            momentumLimitTime: 200,
           })
           this.scroll.on('touchEnd', (pos) => {
             if (this.activeName === 'second') {
@@ -291,6 +294,7 @@
         if (tab.name === 'second') {
           this.Tool._send1_1('ontrial', 'try-report')
           this.reportCurPage = 1
+          this.reports = []
           this.getReports()
         }
       },
@@ -464,7 +468,7 @@
           margin-top 20px
           .img_item
             float left
-            wh(212px, 212px)
+            wh(212px, 148px)
             &+.img_item
               margin-left 15px
             img

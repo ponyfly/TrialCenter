@@ -6,11 +6,11 @@
     </div>
     <div class="wrapper" ref="wrapper">
       <div class="slide-content">
-        <self-slide :length="slideBanners.length" v-if="slideBanners.length">
+        <self-slide :length="slideBanners.length" v-if="slideBanners.length" @click="linkToOutter">
           <div v-for="slideBanner in slideBanners" class="slide-item" :key="slideBanner.id">
-            <router-link :to="{name: 'Product',params: {productId: slideBanner.id}}">
+            <a :href="slideBanner.url">
               <img :src="`${slideBanner.banner_pic}?imageView2/0/w/750/format/jpg/q/60`" alt="">
-            </router-link>
+            </a>
           </div>
         </self-slide>
         <div class="wrapper-title">
@@ -27,7 +27,7 @@
               @click.native="goToProduct(product.id)">
           </li>
         </ul>
-        <div class="no-more">我们是有底线的</div>
+        <div class="no-more" v-if="productLists.length">我们是有底线的</div>
       </div>
     </div>
   </div>
@@ -90,7 +90,6 @@
             this.totalPage = parseInt(res.data.totalPage, 10)
             if (this.isPullUp) {
               this.productLists = [...this.productLists, ...res.data.items]
-              console.log(this.productLists)
               this.isPullUp = false
               this.trialScroll.finishPullUp()
             }
@@ -162,6 +161,11 @@
           window.app_interface.backToApp()
         } else {
           console.log('goToBack')
+        }
+      },
+      linkToOutter() {
+        if (window.app_interface) {
+          window.app_interface.setTitleVisible(1)
         }
       },
     },
