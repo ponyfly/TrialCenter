@@ -33,7 +33,7 @@
                   round
                   class="write_post_btn"
                   v-if="showAddressOrPostBtn.isShow && parseInt(userApplyInfo.applyStatus, 10) !== -999"
-                  @click="goToAdressOrPost">
+                  @click.native="goToAdressOrPost">
                 {{showAddressOrPostBtn.btnText}}
               </el-button>
             </div>
@@ -71,7 +71,7 @@
           round
           :class="{'fix_apply':parseInt(userApplyInfo.applyStatus, 10) === -999}"
           v-if="showAddressOrPostBtn.isShow"
-          @click="goToAdressOrPost">
+          @click.native="goToAdressOrPost">
         {{showAddressOrPostBtn.btnText}}
       </el-button>
     </div>
@@ -332,6 +332,7 @@
       if(!this.itemId) return
       this._initData()
     },
+    mounted(){},
     beforeRouteEnter(to, from, next) {
       next(vm => {
         vm.fromName = from.name

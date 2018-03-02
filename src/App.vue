@@ -42,6 +42,11 @@
       },
       callback(data) {
         this.userId = JSON.parse(data).id || ''
+      },
+      reloadPage(e) {
+        if (e.persisted) {
+          window.location.reload(true)
+        }
       }
     },
     created() {
@@ -50,6 +55,7 @@
       if (window.app_interface) {
         window.app_interface.setTitleVisible(0)
       }
+      window.onpageshow = this.reloadPage
     },
     watch: {},
     mounted() {
