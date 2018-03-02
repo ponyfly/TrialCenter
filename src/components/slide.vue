@@ -125,7 +125,7 @@
       },
       _initSlide() {
         this.slide = new BScroll(this.$refs.slide, {
-          scrollX: true,
+          scrollX: this.data.length > 1,
           scrollY: false,
           momentum: false,
           bounce: false,
