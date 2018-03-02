@@ -6,7 +6,7 @@
     </div>
     <div class="wrapper" ref="wrapper">
       <div class="slide-content">
-        <self-slide :data="slideBanners"/>
+        <self-slide :data="slideBanners" @click.native="linkToOutter"/>
         <div class="wrapper-title">
           <div class="hot-try">热门试用</div>
           <el-button class="my_trial_btn" @click="goToMyTrial">我的试用
@@ -132,7 +132,7 @@
               this.slideBanners = res.data.map(t => {
                 return {
                   url: t.url,
-                  image: t.banner_pic
+                  image: `${t.banner_pic}?imageView2/0/w/750/q/60`
                 }
               })
             }

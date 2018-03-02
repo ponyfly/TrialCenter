@@ -1,6 +1,6 @@
 <template>
   <div class="product_info">
-    <self-header headerTitle="详情" @backToApp="backToApp"></self-header>
+    <self-header headerTitle="详情"></self-header>
     <div class="product_info_wrapper" ref="productInfoWrapper" v-if="item">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
@@ -321,13 +321,6 @@
           }
         }
       },
-      backToApp() {
-        if(!this.fromName) {
-          if (window.app_interface) {
-            window.app_interface.backToApp()
-          }
-        }
-      }
     },
     watch: {
       userId() {
@@ -368,7 +361,7 @@
       border-radius 45px
       margin-left -335px
       font-size 36px
-      background-color rgba(255, 117, 117, .8)
+      background-color rgba(255, 117, 117, .95)
       color #fefefe
     .overview
       background-color #f3f3f3

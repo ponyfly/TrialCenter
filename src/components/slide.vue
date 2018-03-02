@@ -241,7 +241,7 @@
 
   .cube-slide-dots
     position: absolute
-    bottom: 6px
+    bottom: 20px
     right: 0
     left: 0
     padding: 0 6px
