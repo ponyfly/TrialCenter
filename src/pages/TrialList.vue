@@ -44,7 +44,7 @@
     data() {
       return {
         productLists: [],
-        slideBanners : {}
+        slideBanners : []
       }
     },
     computed: {},
@@ -176,7 +176,6 @@
     created() {
       this._initUnInteract()
       this._initSlideBanners()
-//      this.loadData()
       this._initData()
     },
     mounted() {
@@ -184,8 +183,8 @@
     },
     watch: {},
     activated() {
-      if (this.scroll) {
-        this.scroll.scrollTo(0, this.scrollPositionY)
+      if (this.trialScroll) {
+        this.trialScroll.scrollTo(0, this.scrollPositionY)
       }
     }
   }

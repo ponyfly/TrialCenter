@@ -241,7 +241,7 @@
 
   .cube-slide-dots
     position: absolute
-    bottom: 2px
+    bottom: 6px
     right: 0
     left: 0
     padding: 0 6px
@@ -251,10 +251,11 @@
     > span
       display: inline-block
       vertical-align: bottom
-      margin: 0 1px
-      width: 10px
-      height: 1px
-      background: grey
+      margin: 0 6px
+      width: 18px
+      height: 18px
+      background: rgba(0,0,0,.4)
+      border-radius: 50%
       &.active
-        background: orange
+        background: #fff
 </style>
