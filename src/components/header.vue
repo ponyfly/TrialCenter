@@ -24,7 +24,6 @@
         } else {
           this.$router.back()
         }
-        this.$emit('backToApp')
       }
     },
     components: {

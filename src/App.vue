@@ -47,15 +47,17 @@
         if (e.persisted) {
           window.location.reload(true)
         }
-      }
+      },
+      unloadHandler() {
+        window.app_interface && window.app_interface.setTitleVisible(1)
+      },
     },
     created() {
       window.appLoginFinish = this.appLoginFinish
       window.callback = this.callback
-      if (window.app_interface) {
-        window.app_interface.setTitleVisible(0)
-      }
+      window.app_interface && window.app_interface.setTitleVisible(0)
       window.onpageshow = this.reloadPage
+      window.onunload = this.unloadHandler
     },
     watch: {},
     mounted() {

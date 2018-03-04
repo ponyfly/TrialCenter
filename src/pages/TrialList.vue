@@ -6,7 +6,7 @@
     </div>
     <div class="wrapper" ref="wrapper">
       <div class="slide-content">
-        <self-slide :data="slideBanners" @click.native="linkToOutter"/>
+        <self-slide :data="slideBanners" :ableClick="ableClick" @click.native="linkToOutter"/>
         <div class="wrapper-title">
           <div class="hot-try">热门试用</div>
           <el-button class="my_trial_btn" @click="goToMyTrial">我的试用
@@ -44,7 +44,8 @@
     data() {
       return {
         productLists: [],
-        slideBanners : []
+        slideBanners : [],
+        ableClick: false,
       }
     },
     computed: {},
@@ -156,16 +157,7 @@
         })
       },
       backToApp() {
-        if (window.app_interface) {
-          window.app_interface.backToApp()
-        } else {
-          console.log('goToBack')
-        }
-      },
-      linkToOutter() {
-        if (window.app_interface) {
-          window.app_interface.setTitleVisible(1)
-        }
+        window.app_interface && window.app_interface.backToApp()
       },
     },
     components: {

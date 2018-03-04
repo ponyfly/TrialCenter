@@ -42,7 +42,7 @@
         <div class="info_post" ref="infoPost" v-if="errorcode !== -1">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="商品详情" name="first">
-              <div class="product_detail" v-html="productDesc" @click="linkToOutter($event)"></div>
+              <div class="product_detail" v-html="productDesc"></div>
             </el-tab-pane>
             <el-tab-pane label="试用报告" name="second">
               <ul class="post_list" v-if="reports.length">
@@ -88,7 +88,7 @@
   import Header from '../components/header.vue'
   import BackTime from '../components/backtime.vue'
   import Slide from '../components/slide.vue'
-  import {getDetail, getProductDesc, getProductReports } from  '../api/index.js'
+  import {getDetail, _getProductDesc, getProductReports } from  '../api/index.js'
   export default {
     props: {
       userId: {
@@ -107,8 +107,6 @@
         reportCurPage: 1,
         reportTotalPage: 0,
         lastPostY: 0,
-        index: 0,
-        interval: 2000,
         bannerCarousel: [],
       }
     },
@@ -200,7 +198,7 @@
               if(this.reportCurPage !== this.reportTotalPage) {
                 if(Math.abs(pos.y) - this.lastPostY > 300) {
                   this.lastPostY = Math.abs(pos.y)
-                  this.getReports()
+                  this._getReports()
                 }
               } else {
                 console.log('没有报告了')
@@ -219,7 +217,7 @@
               return new Error('没有商品')
             }
             this.item = res.data.item
-            this.bannerCarousel = this.getSlidesArray(this.item.itemDetailUrl)
+            this.bannerCarousel = this._getSlidesArray(this.item.itemDetailUrl)
             this.userApplyInfo = this.userId ? res.data.userApplyInfo : {
               applyStatus: '-999', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
               applyInfo: '未申请', //applyStatus状态的对应信息
@@ -240,7 +238,7 @@
             return this.item.detailPostId
           })
           .then(detailPostId => {
-            return getProductDesc(detailPostId, 1)
+            return _getProductDesc(detailPostId, 1)
           })
           .then(res => {
             if(!res.data.content) {
@@ -258,6 +256,23 @@
             this.$nextTick(() => {
               this._initScroll()
             })
+          })
+          .catch(console.log)
+      },
+      _getSlidesArray(slides) {
+        return slides.split(';').map(t => {
+          return {
+            url: 'javascript:void(0)',
+            image: t + '?imageView2/0/w/750/format/jpg/q/60'
+          }
+        })
+      },
+      _getReports() {
+        getProductReports(this.item.detailTagId, this.reportCurPage)
+          .then(res => {
+            this.reportCurPage ++
+            this.reportTotalPage = parseInt(res.data.totalPage, 10)
+            this.reports = [...this.reports, ...res.data.postList]
           })
           .catch(console.log)
       },
@@ -290,36 +305,12 @@
           this.Tool._send1_1('ontrial', 'try-report')
           this.reportCurPage = 1
           this.reports = []
-          this.getReports()
+          this._getReports()
         }
-      },
-      getSlidesArray(slides) {
-        return slides.split(';').map(t => {
-          return {
-            url: 'javascript:void(0)',
-            image: t + '?imageView2/0/w/750/format/jpg/q/60'
-          }
-        })
-      },
-      getReports() {
-        getProductReports(this.item.detailTagId, this.reportCurPage)
-          .then(res => {
-            this.reportCurPage ++
-            this.reportTotalPage = parseInt(res.data.totalPage, 10)
-            this.reports = [...this.reports, ...res.data.postList]
-          })
-          .catch(console.log)
       },
       goToReport(reportId) {
         console.log(reportId)
         window.location.href = `jcnhers://detail_post/postId=${reportId}`
-      },
-      linkToOutter(event) {
-        if (event.target.tagName === 'A') {
-          if (window.app_interface) {
-            window.app_interface.setTitleVisible(1)
-          }
-        }
       },
     },
     watch: {
@@ -335,7 +326,6 @@
     mounted(){},
     beforeRouteEnter(to, from, next) {
       next(vm => {
-        vm.fromName = from.name
         if(from.name === 'TrialList') {
           vm.Tool._send1_1('ontrial', 'try-detail')
         }

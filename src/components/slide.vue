@@ -57,6 +57,10 @@
       allowVertical: {
         type: Boolean,
         default: false
+      },
+      ableClick: {
+        type: Boolean,
+        default: true
       }
     },
     data() {
@@ -135,7 +139,7 @@
             threshold: this.threshold,
             speed: this.speed
           },
-          click: true,
+          click: this.ableClick,
           observeDOM: false
         })
 

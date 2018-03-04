@@ -5,7 +5,7 @@ import axios from 'axios'
 //获取列表
 const isLocal = /(192\.168|127\.0\.0\.1|localhost)/.test(location.href)
 const API_origin = isLocal ? 'http://bbs.j.cn' : ''
-const API_origin_lunbo = isLocal ? 'http://114.112.164.34:7365' : 'http://opentest.j.cn'
+const API_origin_lunbo = isLocal ? 'http://opentest.j.cn' : 'http://opentest.j.cn'
 const API = {
   listItems: `${API_origin}/api/listItems`,
   trialList: `${API_origin}/api/trialList`,
