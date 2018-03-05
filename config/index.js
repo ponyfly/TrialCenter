@@ -14,7 +14,7 @@ try {
     localhost = network[Object.keys(network)[0]][1].address
   }
 } catch (e) {
-  localhost = '192.168.0.108'
+  localhost = 'localhost'
 }
 
 module.exports = {

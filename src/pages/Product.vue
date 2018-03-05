@@ -88,7 +88,7 @@
   import Header from '../components/header.vue'
   import BackTime from '../components/backtime.vue'
   import Slide from '../components/slide.vue'
-  import {getDetail, _getProductDesc, getProductReports } from  '../api/index.js'
+  import {getDetail, getProductDesc, getProductReports } from  '../api/index.js'
   export default {
     props: {
       userId: {
@@ -97,7 +97,7 @@
       }
     },
     data() {
-      return {
+      return{
         activeName: 'first',
         reports: [],
         item: null,
@@ -185,6 +185,7 @@
     methods: {
       _initScroll() {
         if (!this.scroll) {
+          console.log(123456)
           this.scroll = new BScroll(this.$refs.productInfoWrapper, {
             click: true,
             probeType: 3,
@@ -238,7 +239,7 @@
             return this.item.detailPostId
           })
           .then(detailPostId => {
-            return _getProductDesc(detailPostId, 1)
+            return getProductDesc(detailPostId, 1)
           })
           .then(res => {
             if(!res.data.content) {
