@@ -42,7 +42,7 @@
         <div class="info_post" ref="infoPost" v-if="errorcode !== -1">
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="商品详情" name="first">
-              <div class="product_detail" v-html="productDesc"></div>
+              <div class="product_detail" v-html="productDesc" @click="linkToOuter($event)"></div>
             </el-tab-pane>
             <el-tab-pane label="试用报告" name="second">
               <ul class="post_list" v-if="reports.length">
@@ -185,7 +185,6 @@
     methods: {
       _initScroll() {
         if (!this.scroll) {
-          console.log(123456)
           this.scroll = new BScroll(this.$refs.productInfoWrapper, {
             click: true,
             probeType: 3,
@@ -313,6 +312,11 @@
         console.log(reportId)
         window.location.href = `jcnhers://detail_post/postId=${reportId}`
       },
+      linkToOuter(e) {
+        if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName === 'A') {
+          window.app_interface && window.app_interface.setTitleVisible(1)
+        }
+      }
     },
     watch: {
       userId() {

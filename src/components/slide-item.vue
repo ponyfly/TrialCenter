@@ -2,7 +2,7 @@
   <div class="cube-slide-item">
     <slot>
       <a :href="item.url">
-        <img :src="item.image">
+        <img :src="item.image" :data-id="item.id">
       </a>
     </slot>
   </div>

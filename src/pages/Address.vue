@@ -1,6 +1,6 @@
 <template>
   <div class="address">
-    <self-header headerTitle="我的收获地址"></self-header>
+    <self-header headerTitle="我的收货地址"></self-header>
     <div class="content">
       <el-form ref="addressForm" :model="form" :rules="rules">
         <el-form-item label="收货人：" label-width="172px" prop="userName">

@@ -6,7 +6,7 @@
     </div>
     <div class="wrapper" ref="wrapper">
       <div class="slide-content">
-        <self-slide :data="slideBanners" :ableClick="ableClick" @click.native="linkToOutter"/>
+        <self-slide :data="slideBanners" :ableClick="ableClick" @click.native="linkToOuter($event)"/>
         <div class="wrapper-title">
           <div class="hot-try">热门试用</div>
           <el-button class="my_trial_btn" @click="goToMyTrial">我的试用
@@ -133,7 +133,8 @@
               this.slideBanners = res.data.map(t => {
                 return {
                   url: t.url,
-                  image: `${t.banner_pic}?imageView2/0/w/750/q/60`
+                  image: `${t.banner_pic}?imageView2/0/w/750/q/60`,
+                  id: t.id
                 }
               })
             }
@@ -159,6 +160,12 @@
       backToApp() {
         window.app_interface && window.app_interface.backToApp()
       },
+      linkToOuter(e) {
+        this.Tool._send1_1('ontrial', `ontrial-carousel-${e.target.getAttribute('data-id')}`)
+        if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName.toLowerCase() === 'img') {
+          window.app_interface && window.app_interface.setTitleVisible(1)
+        }
+      }
     },
     components: {
       'el-button': Button,
