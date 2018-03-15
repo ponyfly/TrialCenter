@@ -277,23 +277,19 @@
           .catch(console.log)
       },
       goToAdressOrPost(event) {
-        if(!event._constructed) {
-          return
-        }
         if(!this.userId) {
           if(window.app_interface) {
             window.app_interface.appLogin(0)
           }
         }else {
           if(parseInt(this.userApplyInfo.applyStatus, 10) === -999) {
-            this.Tool._send1_1('ontrial','try-detail-applyclick',() => {
-              this.$router.push({
-                name: 'Address',
-                params: {
-                  itemId: this.itemId,
-                  addressList: this.userApplyInfo.addressList
-                },
-              })
+            this.Tool._send1_1('ontrial','try-detail-applyclick')
+            this.$router.push({
+              name: 'Address',
+              params: {
+                itemId: this.itemId,
+                addressList: this.userApplyInfo.addressList
+              },
             })
           } else if (parseInt(this.userApplyInfo.applyStatus, 10) === 1) {
             window.location.href = `jcnhers://list_post/groupId=${this.item.detailGroupId}`
