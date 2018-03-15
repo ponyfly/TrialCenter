@@ -63,7 +63,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/pages/trialcenter/',
+    assetsPublicPath: 'http://image.guang.j.cn/bbs/pages/trialcentertest/',
 
     /**
      * Source Maps

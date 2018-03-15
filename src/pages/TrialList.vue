@@ -1,10 +1,10 @@
 <template>
   <div class="trial_list">
-    <div class="header">
+    <div class="header" v-if="!clicked">
       <i class="back el-icon-arrow-left" @click=backToApp></i>
       <h2>试用中心</h2>
     </div>
-    <div class="wrapper" ref="wrapper">
+    <div class="wrapper" ref="wrapper" :class="clicked">
       <div class="slide-content">
         <self-slide class="self-slide"
                     :data="slideBanners"
@@ -46,6 +46,7 @@
     },
     data() {
       return {
+        clicked: '',
         productLists: [],
         slideBanners : [],
         ableClick: false,
@@ -165,7 +166,8 @@
       },
       linkToOuter(e) {
         this.Tool._send1_1('ontrial', `ontrial-carousel-${e.target.getAttribute('data-id')}`)
-        if (e.target.parentNode.getAttribute('href').indexOf('trialcenter') !== -1) {
+        if (e.target.parentNode.getAttribute('href').indexOf('192.168') === -1) {
+          this.clicked = 'myclass-clicked'
           if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName.toLowerCase() === 'img') {
             window.app_interface && window.app_interface.setTitleVisible(1)
           }
@@ -247,4 +249,6 @@
           line-height 60px
           border-top 1px solid #8c8c8c
           font-size 24px
+  .myclass-clicked
+    margin-top 0
 </style>

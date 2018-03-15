@@ -1,7 +1,7 @@
 <template>
   <div class="product_info">
-    <self-header headerTitle="详情"></self-header>
-    <div class="product_info_wrapper" ref="productInfoWrapper" v-if="item">
+    <self-header headerTitle="详情" v-if="!clicked"></self-header>
+    <div class="product_info_wrapper" :class="clicked" ref="productInfoWrapper" v-if="item">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
           <self-slide class="self-slide" :data="bannerCarousel"/>
@@ -98,6 +98,7 @@
     },
     data() {
       return{
+        clicked: '',
         activeName: 'first',
         reports: [],
         item: null,
@@ -309,6 +310,7 @@
         window.location.href = `jcnhers://detail_post/postId=${reportId}`
       },
       linkToOuter(e) {
+        this.clicked = 'myclass-clicked'
         if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName === 'A') {
           window.app_interface && window.app_interface.setTitleVisible(1)
         }
@@ -489,4 +491,6 @@
       background-color #f66
     .no_product
       font-size 32px
+  .myclass-clicked
+    margin-top 0
 </style>
