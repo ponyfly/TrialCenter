@@ -6,7 +6,10 @@
     </div>
     <div class="wrapper" ref="wrapper">
       <div class="slide-content">
-        <self-slide :data="slideBanners" :ableClick="ableClick" @click.native="linkToOuter($event)"/>
+        <self-slide class="self-slide"
+                    :data="slideBanners"
+                    :ableClick="ableClick"
+                    @click.native="linkToOuter($event)"/>
         <div class="wrapper-title">
           <div class="hot-try">热门试用</div>
           <el-button class="my_trial_btn" @click="goToMyTrial">我的试用
@@ -162,8 +165,10 @@
       },
       linkToOuter(e) {
         this.Tool._send1_1('ontrial', `ontrial-carousel-${e.target.getAttribute('data-id')}`)
-        if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName.toLowerCase() === 'img') {
-          window.app_interface && window.app_interface.setTitleVisible(1)
+        if (e.target.parentNode.getAttribute('href').indexOf('trialcenter') !== -1) {
+          if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName.toLowerCase() === 'img') {
+            window.app_interface && window.app_interface.setTitleVisible(1)
+          }
         }
       }
     },
@@ -212,6 +217,8 @@
       background-color #efefef
       .slide-content
         min-height calc(100% + 1px)
+        .self-slide
+          height 550px
         .wrapper-title
           height 80px
           line-height 80px

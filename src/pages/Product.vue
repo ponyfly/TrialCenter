@@ -4,7 +4,7 @@
     <div class="product_info_wrapper" ref="productInfoWrapper" v-if="item">
       <div class="productScrollContent">
         <div class="overview" v-if="errorcode !== -1">
-          <self-slide :data="bannerCarousel"/>
+          <self-slide class="self-slide" :data="bannerCarousel"/>
           <h3 class="product_title">{{item.itemTitle}}</h3>
           <div class="product_body">
             <div class="info_1">
@@ -363,6 +363,8 @@
       background-color #f3f3f3
       padding-bottom 10px
       font-size 28px
+      .self-slide
+        height 750px
       .banner_carousel
         img
           wh(100%, 100%)
