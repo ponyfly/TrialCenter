@@ -310,9 +310,11 @@
         window.location.href = `jcnhers://detail_post/postId=${reportId}`
       },
       linkToOuter(e) {
-        this.clicked = 'myclass-clicked'
-        if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName === 'A') {
-          window.app_interface && window.app_interface.setTitleVisible(1)
+        if (e.target.parentNode.getAttribute('href').indexOf('trialcentertest') === -1) {
+          this.clicked = 'myclass-clicked'
+          if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName === 'A') {
+            window.app_interface && window.app_interface.setTitleVisible(1)
+          }
         }
       }
     },

@@ -4,7 +4,12 @@
       <i class="back el-icon-arrow-left" @click=backToApp></i>
       <h2>试用中心</h2>
     </div>
-    <div class="wrapper" ref="wrapper" :class="clicked">
+    <div @click.passive ="linkToOuter($event)">
+      <a href="http://www.baidu.com" style="display: block; margin-top: 300px;font-size: 60px; color: #000;" :class="clicked">
+        <img src="../images/hers-logo@2x.png" alt="">
+      </a>
+    </div>
+    <!--<div class="wrapper" ref="wrapper" :class="clicked">
       <div class="slide-content">
         <self-slide class="self-slide"
                     :data="slideBanners"
@@ -26,7 +31,7 @@
         </ul>
         <div class="no-more" v-if="productLists.length">我们是有底线的</div>
       </div>
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -166,7 +171,7 @@
       },
       linkToOuter(e) {
         this.Tool._send1_1('ontrial', `ontrial-carousel-${e.target.getAttribute('data-id')}`)
-        if (e.target.parentNode.getAttribute('href').indexOf('192.168') === -1) {
+        if (e.target.parentNode.getAttribute('href').indexOf('trialcentertest') === -1) {
           this.clicked = 'myclass-clicked'
           if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName.toLowerCase() === 'img') {
             window.app_interface && window.app_interface.setTitleVisible(1)
