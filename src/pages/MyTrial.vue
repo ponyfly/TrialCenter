@@ -1,86 +1,149 @@
 <template>
   <div class="my_trial">
     <self-header headerTitle="我的试用"></self-header>
-    <el-tabs class="tab_wrapper" v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane class="tab_pane" label="全部" name="first">
-        <ul>
-          <li is="self-mytrial-item" v-for="myTrial in myTrials" :product="myTrial"></li>
-        </ul>
-      </el-tab-pane>
-      <el-tab-pane class="tab_pane" label="申请中" name="second">
-        <ul>
-          <li is="self-mytrial-item" v-for="myTrialAppling in applying" :product="myTrialAppling"></li>
-        </ul>
-      </el-tab-pane>
-      <el-tab-pane class="tab_pane" label="申请成功" name="third">
-        <ul>
-          <li is="self-mytrial-item" v-for="myTrialSuccess in successApply" :product="myTrialSuccess"></li>
-        </ul>
-      </el-tab-pane>
-      <el-tab-pane class="tab_pane" label="申请失败" name="fourth">
-        <ul>
-          <li is="self-mytrial-item" v-for="myTrialFail in failApply" :product="myTrialFail"></li>
-        </ul>
-      </el-tab-pane>
-    </el-tabs>
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+      <el-menu-item index="999">全部</el-menu-item>
+      <el-menu-item index="0">申请中</el-menu-item>
+      <el-menu-item index="1">申请成功</el-menu-item>
+      <el-menu-item index="-1">申请失败</el-menu-item>
+    </el-menu>
+    <div class="my_trial_wrapper" ref="myTrialWrapper">
+      <ul>
+        <li is="self-mytrial-item" v-for="myTrial in trialList" :product="myTrial"></li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
-  import {Tabs, TabPane} from 'element-ui'
+  import {
+    Menu,
+    MenuItem } from 'element-ui'
+  import BScroll from 'better-scroll'
   import Header from '../components/header.vue'
   import MyTrialItem from '../components/mytrialitem.vue'
+  import {getMytrial } from '../api/index.js'
   export default {
+    props: {
+      userId: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       return {
-        activeName: 'first',
-        //申请时间：2018年01月10日15时 申请状态：审核中 0失败 1成功 2审核
-        myTrials: [
-          {id: 12, name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-            applyTime: '2018年01月10日21时', applyState: 0},
-          {id: 13, name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-            applyTime: '2018年01月12日16时', applyState: 1},
-          {id: 14, name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-            applyTime: '2018年01月05日01时', applyState: 2},
-          {id: 15, name: '【免费试用】网易严选，每日坚果', src: 'http://fuss10.elemecdn.com/7/72/9a580c1462ca1e4d3c07e112bc035jpeg.jpeg?imageView2/1/w/114/h/114',
-            applyTime: '2018年01月01日15时', applyState: 1},
-        ]
+        activeIndex: '999',
+        trialList: [],
+        firstEnter: true,
+        curPage:1,
+        totalPage: 0,
+        isPullUp: false,
+        isPullDown: false,
+        isPulling: true,
+        scrollPositionY: 0,
       }
     },
-    computed: {
-      successApply() {
-        return this.myTrials.filter(item => parseInt(item.applyState, 10) === 1)
-      },
-      failApply() {
-        return this.myTrials.filter(item => parseInt(item.applyState, 10) === 0)
-      },
-      applying() {
-        return this.myTrials.filter(item => parseInt(item.applyState, 10) === 2)
-      }
-    },
+    computed: {},
     methods: {
-      handleClick(tab, event) {
-        console.log(tab, event);
-      },
       setTabsContentHeight() {
         const bodyHeight = document.body.clientHeight || document.documentElement.clientHeight
-        console.log(bodyHeight)
         this.$nextTick(() => {
-          document.querySelector('.el-tabs__content').style.height = `${bodyHeight - 180}px`
-          document.querySelector('.el-tabs__content').style.overflow = 'scroll'
+          document.querySelector('.my_trial_wrapper').style.height = `${bodyHeight - 180}px`
+          document.querySelector('.my_trial_wrapper').style.overflow = 'scroll'
         })
-      }
+      },
+      handleSelect(key, keyPath) {
+        this.activeIndex = key
+        this.curPage = 1
+        this.firstEnter = true
+        this.loadData()
+      },
+      _initScroll() {
+        if(!this.scroll) {
+          this.scroll = new BScroll(this.$refs.myTrialWrapper, {
+            click: true,
+            probeType: 3,
+            pullDownRefresh: {
+              threshold:80,
+              stop:60,
+            },
+            pullUpLoad: {
+              threshold: -60,
+              stop: 60
+            },
+          })
+          this.scroll.on('pullingDown', () => {
+            this.curPage = 1
+            this.totalPage = 0
+            this.isPulling = true
+            this.isPullDown = true
+            this.loadData()
+          })
+          this.scroll.on('pullingUp', () => {
+            if(this.curPage !== this.totalPage){
+              this.isPulling = true
+              this.isPullUp = true
+              this.curPage++
+              this.loadData()
+            }else {
+              console.log('我们是有底线的');
+              this.scroll.finishPullUp()
+            }
+          })
+          this.scroll.on('scrollEnd', (pos) => {
+            this.scrollPositionY = pos.y
+          })
+        } else {
+          this.scroll.refresh()
+        }
+      },
+      loadData() {
+        getMytrial(this.curPage, this.userId, this.activeIndex)
+          .then(res => {
+            console.log('getmytrial')
+            this.totalPage = parseInt(res.data.totalPage, 10)
+            if(this.firstEnter) {
+              this.trialList = res.data.trialList
+              this.firstEnter = false
+            }
+            if(this.isPulling) {
+              if(this.isPullDown) {
+                this.scroll.finishPullDown()
+                this.trialList.splice(0)
+                this.trialList = res.data.trialList
+                this.isPullDown = false
+              }
+              if(this.isPullUp) {
+                this.scroll.finishPullUp()
+                this.trialList = [...this.trialList, ...res.data.trialList]
+                this.isPullUp = false
+              }
+              this.isPulling = false
+            }
+            this.$nextTick(() => {
+              this._initScroll()
+            })
+          })
+          .catch(console.log)
+      },
     },
     components: {
       'self-header': Header,
-      'el-tabs': Tabs,
-      'el-tab-pane': TabPane,
+      'el-menu': Menu,
+      'el-menu-item': MenuItem,
       'self-mytrial-item': MyTrialItem
     },
     created() {
       this.setTabsContentHeight()
+      this.loadData()
     },
     mounted() {
+      this.Tool._send1_1('ontrial', 'try-mine')
+    },
+    activated() {
+      if (this.scroll) {
+        this.scroll.scrollTo(0, this.scrollPositionY)
+      }
     }
   }
 </script>
@@ -89,20 +152,22 @@
   @import "../style/mixin.styl"
   .my_trial
     background-color #fff
-    .tab_wrapper
+    height 100%
+    .el-menu-demo
       position fixed
       top 90px
       width 750px
-      .el-tabs__nav
-        background-color: #f8f8f8;
-        width 100%
-        .el-tabs__item
-          width 25%
-          font-size 30px
-          height 90px
-          line-height 90px
-          &.is-active
-            color #e93369
-    .el-tabs__active-bar
-      background-color #e93369
+      background-color #fff
+      z-index 999
+      .el-menu-item
+        width 25%
+        font-size 30px
+        height 90px
+        line-height 90px
+    .my_trial_wrapper
+      wh(100%, 100%)
+      margin-top 180px
+    .el-menu--horizontal>.el-menu-item.is-active, .el-menu--horizontal>.el-submenu.is-active .el-submenu__title
+      border-bottom 2px solid #f66
+      color #f66
 </style>

@@ -12,8 +12,8 @@
         <div class="step">试用<br/>报告</div>
       </div>
       <ul class="questions">
-        <li v-for="question in questions" @click="toAnswer">
-          <span>{{question}}</span>
+        <li v-for="(question, index) in questions" @click="toAnswer(question.mainPostId)" :key="question.mainPostId">
+          <span>{{question.title}}</span>
           <i class="el-icon-arrow-right"></i>
         </li>
       </ul>
@@ -23,31 +23,34 @@
 
 <script>
   import Header from '../components/header.vue'
+  import {getRules } from '../api/index.js'
   export default {
     data() {
       return {
-        questions: [
-          '申请试用需要什么条件？',
-          '在哪里可以看到申请进度？',
-          '申请试用会扣除金币吗？',
-          '试用冻结的金币什么时候返还？',
-          '如何提试用中奖率？',
-          '如何提交试用报告？',
-          '申请免费试用需要邮费吗？',
-          '免职声明',
-          '免职声明',
-          '免职声明',
-        ]
+        questions: []
       }
     },
     computed: {},
     methods: {
-      toAnswer() {
-        console.log('go to answer')
+      toAnswer(mainPostId) {
+        window.location.href = `jcnhers://detail_post/postId=${mainPostId}`
+      },
+      _initData() {
+        getRules()
+          .then(res => {
+            this.questions = res.data
+          })
+          .catch(console.log)
       }
     },
     components: {
       'self-header': Header
+    },
+    created() {
+      this._initData()
+    },
+    mounted() {
+      this.Tool._send1_1('ontrial', 'try-rule')
     }
   }
 </script>

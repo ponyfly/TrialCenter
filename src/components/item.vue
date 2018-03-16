@@ -1,12 +1,12 @@
 <template>
   <div class="item" v-if="Object.keys(product).length">
     <div class="item_banner">
-      <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl" alt="">
+      <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl + '?imageView2/1/w/690/h/294/format/jpg/q/60'" alt="">
     </div>
     <div class="item_info">
       <h3 class="item_title">{{product.itemTitle}}</h3>
       <div class="item_detail clearfix">
-        <span class="limit_num" :style="isOverDeadline ? '' : {color: '#ff6666'}">限{{product.stockNum}}份</span>
+        <span class="limit_num">限{{product.stockNum}}份</span>
         <div class="deadline">
           <i class="icon_clock"></i>
           <span>{{isOverDeadline ? '已结束' : '距结束：'}}</span>
@@ -36,17 +36,12 @@
     computed: {
       isOverDeadline() {
         if(!Object.keys(this.product).length) return
-        let deadlineArr = this.deadline.match(/(\d{4})-(\d{1,2})-(\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})/).slice(1)
-        deadlineArr.splice(1,1,deadlineArr[1] - 1)
-        return new Date(...deadlineArr) < new Date()
+        return this.deadline < new Date()
       }
     },
     methods: {
       getRemainingTime() {
-        //2018-01-15 18:26:36
-        let deadlineArr = this.deadline.match(/(\d{4})-(\d{1,2})-(\d{1,2})\s(\d{1,2}):(\d{1,2}):(\d{1,2})/).slice(1)
-        deadlineArr.splice(1,1,deadlineArr[1] - 1)
-        const leftTime = new Date(...deadlineArr) - new Date()
+        const leftTime = this.deadline - new Date()
         let leftDays = parseInt(leftTime/1000/60/60/24, 10)
         let leftHours = parseInt(leftTime/1000/60/60%24, 10)
         let leftMinutes = parseInt(leftTime/1000/60%60, 10)
@@ -71,16 +66,17 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../style/mixin.styl"
   .item
-    margin-bottom 60px
+    margin 0 30px 40px
+    padding-bottom 30px
+    background-color #fff
     .item_banner
       position relative
       .item_banner_img
         display block
-        wh(100%, 350px)
         margin 0 auto
-      .item_banner_img[lazy=loading]
         border none
-      .item_banner_img[lazy=loaded]
+        height 294px
+      .item_banner_img[lazy=loading]
         border none
       &:after
         content ''
@@ -89,9 +85,8 @@
         border-bottom-color #fff
     .item_info
       .item_title
-        height 100px
-        line-height 100px
-        padding-left 30px
+        line-height 56px
+        padding 20px 45px
         text-align left
         box-sizing border-box
         color #333
@@ -110,9 +105,7 @@
             top 4px
             wh(28px,28px)
             background url(../images/apply_state.png)  no-repeat
-            background-position 0 -28px
+            background-position 0 -142px
           .time_wrapper
             display inline
-            .time
-              color: #ff6666
 </style>

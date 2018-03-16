@@ -1,6 +1,6 @@
 <template>
-  <div class="my_trial_item" v-if="Object.keys(product).length" @click="goToProduct(product.id)">
-    <div class="item_banner">
+  <div class="my_trial_item" v-if="Object.keys(product).length">
+    <div class="item_banner" @click="goToProduct(product.id)">
       <img class="item_banner_img" src="" v-lazy="product.itemCoverUrl" alt="">
     </div>
     <div class="item_info">
@@ -13,6 +13,13 @@
         <div class="apply_state">
           <i class="icon_state" :class="applyInfos.stateClass"></i>
           {{applyInfos.text}}
+          <el-button
+              type="danger"
+              round
+              class="write_post_btn"
+              v-if="showGoToPost"
+              @click="goToGroup"
+          >填写报告</el-button>
         </div>
       </div>
     </div>
@@ -20,6 +27,7 @@
 </template>
 
 <script>
+  import {Button } from 'element-ui'
   export default {
     props: {
       product: {
@@ -35,37 +43,43 @@
       //申请时间：2018年01月10日15时 快递信息：顺丰 20180192873
       applyInfos() {
         let {userApplyInfo} = this.product
-        let applyStatus = parseInt(userApplyInfo.applyStatus, 10)
+        let applyStatus = parseInt(this.product.applyStatus, 10)
         if(applyStatus === -1) {
           return {
             text: userApplyInfo.applyInfo,
             stateClass: 'icon_fail'
           }
-        } else if(applyStatus === 1) {
-          let tmpText = ''
-          if (userApplyInfo.expressStatus) {
-            tmpText = parseInt(userApplyInfo.expressStatus, 10) ? userApplyInfo.expressName + ' ' + userApplyInfo.expressNo : userApplyInfo.expressInfo
-          } else {
-            tmpText = userApplyInfo.applyInfo
-          }
+        } else if (applyStatus === 1 || applyStatus >= 2) {
+          let tmpText = userApplyInfo.applyInfo || userApplyInfo.expressInfo
           return {
             text: tmpText,
             stateClass: 'icon_success'
           }
-        } else if(applyStatus === 0) {
+        } else if (applyStatus === 0) {
           return {
             text: userApplyInfo.applyInfo,
             stateClass: 'icon_applying'
           }
         }
+      },
+      showGoToPost() {
+        let {userApplyInfo} = this.product
+        return parseInt(userApplyInfo.applyStatus, 10) === 1
       }
+    },
+    components: {
+      'el-button': Button,
     },
     methods: {
       goToProduct(productId) {
         console.log(productId)
         this.$router.push({
           name: 'Product',
+          params: {productId}
         })
+      },
+      goToGroup() {
+        window.location.href = `jcnhers://list_post/groupId=${this.product.detailGroupId}`
       }
     },
     created() {
@@ -124,9 +138,8 @@
         border-bottom-color #fff
     .item_info
       .item_title
-        height 100px
-        line-height 100px
-        padding-left 30px
+        line-height 56px
+        padding 20px 45px
         text-align left
         box-sizing border-box
         color #333
@@ -148,8 +161,9 @@
           background url(../images/apply_state.png)  no-repeat
           background-position 0 -28px
       .apply_state
-        height 46px
-        line-height 46px
+        position relative
+        height 54px
+        line-height 54px
         .icon_state
           display inline-block
           position: relative
@@ -162,6 +176,12 @@
           background-position 0 -84px
         .icon_applying
           background-position 0 -56px
+        .write_post_btn
+          position absolute
+          right 0
+          font-size 28px
+          border-radius 27px
+          color #fefefe
 
 
 </style>

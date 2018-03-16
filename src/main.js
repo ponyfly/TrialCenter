@@ -4,11 +4,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import VueLazyload from 'vue-lazyload'
-
-import './mock/mockServer'
+import toolPlugin from './plugins/tools.js'
 
 import loading from './images/loading.gif'
 
+Vue.use(toolPlugin)
 Vue.use(VueLazyload, {
   preload: 1,
   loading: loading,

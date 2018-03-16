@@ -1,6 +1,6 @@
 /trialCenter
 /**
- param:int pageNo
+ param:int pageNo,actType,0,1,-1
  * 商品列表
  * @type {[null]}
  */
@@ -40,6 +40,7 @@ const itemDetail = {
     itemDetailUrl: ''//滚动图，逗号分隔
   },
   userApplyInfo: {
+    totalCoin: '',
     applyStatus: '', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
     applyInfo: '', //applyStatus状态的对应信息
     expressStatus: '',//0未发货，1已发货
@@ -74,6 +75,7 @@ const trialList = {
       endTime: '',//商品结束时间
       stockNum: '',//商品限制数量
       detailGroupId: '', //发验收报告圈子id
+      applyTime: '',//申请时间毫秒数
       userApplyInfo: {
         applyStatus: '', //申请状态 状态:status=-999未申请，status=0->申请中;status=-1->申请失败;status=1->申请成功;
         applyInfo: '', //applyStatus状态的对应信息
@@ -87,20 +89,18 @@ const trialList = {
   ],
   totalPage: ''//总页数
 }
-//postId,isDetail//查询详情1，0是返回文本内容，和三图
+// 根据帖子id查询内容 param: postId,isDetail//查询详情1，0是返回文本内容，和三图
 postContent = {
   content: "",//内容isDetail==0 返回纯文本
   picUrls: []//图片，isDetail==0才有此值
 }
 
-
-//tagId
+//param:tagId 获取试用报告帖子id
 trialReports = {
   trialReports: []//tagId==0,返回空串
 }
 
-
-//userId,itemId,userName,address,telephone
+// 提交申请 param: userId,itemId,userName,address,telephone
 summitApply = {
   errorcode: 1,//1成功
   msg: "申请成功"

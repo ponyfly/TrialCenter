@@ -11,7 +11,7 @@
     props:{
       headerTitle: {
         type: String
-      }
+      },
     },
     data() {
       return {}
@@ -19,7 +19,11 @@
     computed: {},
     methods: {
       goBack() {
-        this.$router.back()
+        if (this.$route.name === 'Product') {
+          this.$router.push({ name: 'TrialList'})
+        } else {
+          this.$router.back()
+        }
       }
     },
     components: {

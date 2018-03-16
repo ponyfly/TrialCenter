@@ -1,6 +1,6 @@
 <template>
   <div class="address">
-    <self-header headerTitle="我的收获地址"></self-header>
+    <self-header headerTitle="我的收货地址"></self-header>
     <div class="content">
       <el-form ref="addressForm" :model="form" :rules="rules">
         <el-form-item label="收货人：" label-width="172px" prop="userName">
@@ -9,8 +9,8 @@
         <el-form-item label="手机号码：" label-width="172px" prop="telephone">
         <el-input v-model.number="form.telephone"></el-input>
       </el-form-item>
-        <el-form-item label="详细地址：" label-width="175px" prop="detailAddress">
-          <el-input v-model="form.detailAddress" placeholder="街道、楼牌号等"></el-input>
+        <el-form-item label="详细地址：" label-width="175px" prop="address">
+          <el-input type="textarea" :rows="2" v-model="form.address" placeholder="街道、楼牌号等"></el-input>
         </el-form-item>
         <el-form-item prop="checked">
           <el-checkbox name="type" v-model="form.checked">我已了解</el-checkbox>
@@ -18,7 +18,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="danger" @click="onSubmit('addressForm')" class="confirm">确定</el-button>
-          <el-button type="info" class="cancel">取消</el-button>
+          <el-button type="info" class="cancel" @click="onCancelApply">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -38,6 +38,12 @@
   import Header from '../components/header.vue'
   import {postApplyItem } from '../api/index.js'
   export default {
+    props: {
+      userId: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       const validateTel = (rule, value, callback) => {
         if (!value) {
@@ -71,13 +77,13 @@
           telephone: '',
           checked: true,
           addressId: '',
-          detailAddress: '',
+          address: '',
         },
         rules: {
           userName: [
             {required: true, message: '请输入姓名', trigger: 'blur'}
           ],
-          detailAddress: [
+          address: [
             {required: true, message: '请输入收货地址', trigger: 'blur'}
           ],
           telephone: [
@@ -94,13 +100,19 @@
       onSubmit(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            console.log(this.form)
-            postApplyItem(this.form)
+            const {itemId, userId, userName, telephone, address} = this.form
+            const restStr = `itemId=${itemId}&userId=${userId}&userName=${userName}&telephone=${telephone}&address=${address}`
+            postApplyItem(restStr)
               .then(res => {
-                if(parseInt(res.data.status, 10) === 1) {
+                if(parseInt(res.data.errorcode, 10) === 1) {
                   this.openSuccess()
-                  this.$router.back()
+                  this.Tool._send1_1('ontrial', 'try-detail-apply')
+                } else if (parseInt(res.data.errorcode, 10) === -6) {
+                  this.openFail()
                 }
+                setTimeout(() => {
+                  this.$router.back()
+                },1600)
               })
               .catch(console.log)
           } else {
@@ -110,26 +122,37 @@
         });
       },
       _initData() {
-        const {userId, itemId, addressList} = this.$route.params
-        console.log(userId, itemId, addressList)
-        if(!userId || !itemId) return
+        const {itemId, addressList} = this.$route.params
+        if(!this.userId || !itemId) return
         this.form.itemId = itemId
-        this.form.userId = userId
+        this.form.userId = this.userId
         if (addressList !== 'null' && addressList.length) {
           const {id, userName, address, telephone} = addressList[0]
           this.form.addressId = id
           this.form.userName = userName
-          this.form.detailAddress = address
+          this.form.address = address
           this.form.telephone = parseInt(telephone, 10)
         }
       },
       openSuccess() {
         Message({
-          message: '牛逼了，申请成功',
+          message: '申请成功',
           type: 'success',
-          duration: 1600
+          duration: 1600,
+          customClass: 'self_message'
         })
-      }
+      },
+      openFail() {
+        Message({
+          message: '金币不足',
+          type: 'warning',
+          duration: 1600,
+          customClass: 'self_message'
+        })
+      },
+      onCancelApply() {
+        this.$router.back()
+      },
     },
     components: {
       'self-header': Header,
@@ -167,7 +190,6 @@
         .el-form-item
           box-sizing border-box
           margin 0
-          height 120px
           padding 40px 20px
           border-bottom 1px solid #e2e2e2
           .el-form-item__label
@@ -181,6 +203,14 @@
             input
               border none
               font-size 32px
+          .el-textarea
+            textarea
+              resize none
+              border none
+              font-size 32px
+          &:nth-of-type(3)
+            .el-form-item__label
+              line-height 58px
           &:nth-of-type(4)
             .el-checkbox__inner
               wh(25px, 25px)
@@ -229,6 +259,8 @@
             .el-button--info:active
               background #a6a9ad
               border-color #a6a9ad
+        .el-form-item__error
+          font-size 16px
     .el-form-item.is-required .el-form-item__label:before
       content ''
       margin 0
