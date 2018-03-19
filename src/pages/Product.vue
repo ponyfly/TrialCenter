@@ -188,7 +188,7 @@
         if (!this.scroll) {
           this.scroll = new BScroll(this.$refs.productInfoWrapper, {
             click: true,
-            probeType: 3,
+            probeType: 0,
             bounce: false,
             swipeTime: 1000,
             deceleration: 0.002,
@@ -310,9 +310,10 @@
         window.location.href = `jcnhers://detail_post/postId=${reportId}`
       },
       linkToOuter(e) {
-        if (e.target.parentNode.getAttribute('href').indexOf('trialcentertest') === -1) {
-          this.clicked = 'myclass-clicked'
-          if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName === 'A') {
+        const targetHref = e.target.parentNode.getAttribute('href')
+        if (!(/trialcenter/.test(targetHref))) {
+          if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName.toLowerCase() === 'img') {
+            this.clicked = 'myclass-clicked'
             window.app_interface && window.app_interface.setTitleVisible(1)
           }
         }
@@ -342,12 +343,14 @@
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../style/mixin.styl"
   .product_info
-    padding-top 90px
+    padding-top 104px
     height 100%
     box-sizing border-box
     background-color #fff
     .product_info_wrapper
       height 100%
+      &.myclass-clicked
+        margin-top 0
     .fix_apply
       position fixed
       top 1021px
@@ -493,6 +496,4 @@
       background-color #f66
     .no_product
       font-size 32px
-  .myclass-clicked
-    margin-top 0
 </style>

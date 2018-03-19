@@ -37,8 +37,8 @@
     width 750px
     position fixed
     top 0
-    height 90px
-    line-height 90px
+    height 104px
+    line-height 104px
     font-size 34px
     background-color #fff
     z-index 999
@@ -47,7 +47,7 @@
       top: 0;
       left: 0;
       font-size: 44px;
-      padding: 23px;
+      padding: 30px;
     h2
       color #000
 </style>

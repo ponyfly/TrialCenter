@@ -53,10 +53,12 @@
       },
     },
     created() {
+      if (navigator.userAgent.toLowerCase().indexOf('iphone') > -1) {
+        window.onpageshow = this.reloadPage
+      }
       window.appLoginFinish = this.appLoginFinish
       window.callback = this.callback
       window.app_interface && window.app_interface.setTitleVisible(0)
-      window.onpageshow = this.reloadPage
       window.onunload = this.unloadHandler
     },
     watch: {},

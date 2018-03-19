@@ -166,9 +166,10 @@
       },
       linkToOuter(e) {
         this.Tool._send1_1('ontrial', `ontrial-carousel-${e.target.getAttribute('data-id')}`)
-        if (e.target.parentNode.getAttribute('href').indexOf('trialcentertest') === -1) {
-          this.clicked = 'myclass-clicked'
+        const targetHref = e.target.parentNode.getAttribute('href')
+        if (!(/trialcenter/.test(targetHref))) {
           if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName.toLowerCase() === 'img') {
+            this.clicked = 'myclass-clicked'
             window.app_interface && window.app_interface.setTitleVisible(1)
           }
         }
@@ -202,21 +203,23 @@
     font-size 34px
     wh(100%, 100%)
     .header
-      wh(750px, 90px)
+      wh(750px, 104px)
       position fixed
       top 0
       z-index 999
       background-color #fff
-      line-height 90px
+      line-height 104px
       .back
         tl(0, 0)
-        padding 23px
+        padding 30px
         font-size 44px
     .wrapper
-      margin-top 90px
-      height calc(100% - 90px)
+      margin-top 104px
+      height calc(100% - 104px)
       box-sizing border-box
       background-color #efefef
+      &.myclass-clicked
+        margin-top 0
       .slide-content
         min-height calc(100% + 1px)
         .self-slide
@@ -249,6 +252,4 @@
           line-height 60px
           border-top 1px solid #8c8c8c
           font-size 24px
-  .myclass-clicked
-    margin-top 0
 </style>
