@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <keep-alive>
-      <router-view v-if="$route.meta.keepAlive" :userId="userId" />
+      <router-view v-if="$route.meta.keepAlive" :userId="userId" @getUserInfos="onGetUserInfos" />
     </keep-alive>
     <router-view v-if="!$route.meta.keepAlive" :userId="userId" ></router-view>
   </div>
@@ -23,7 +23,7 @@
           this.status = status
         }
       },
-      getUserInfos() {
+      onGetUserInfos() {
         const ua = navigator.userAgent.toLowerCase()
         const isAndroid = ua.indexOf('android') > -1
         const isIphone = ua.indexOf('iphone') > -1
@@ -33,14 +33,17 @@
         }
         if(isIphone) {
           const ver = ua.match(/(?:os\s)(\d+)(?:_\d+)/)[1]
-          if (ver < 8) {
-            this.userId = JSON.parse(window.app_interface.getUserInfo()).id || ''
-          }else{
-            window.app_interface.getHersUserInfo("callback")
-          }
+          alert(new Date().getTime())
+          window.app_interface.getHersUserInfo("userInfoCallback")
+//          if (ver < 8) {
+//            this.userId = JSON.parse(window.app_interface.getUserInfo()).id || ''
+//          }else{
+//            window.app_interface.getHersUserInfo("callback")
+//          }
         }
       },
-      callback(data) {
+      userInfoCallback(data) {
+        alert(new Date().getTime())
         this.userId = JSON.parse(data).id || ''
       },
       reloadPage(e) {
@@ -57,14 +60,16 @@
         window.onpageshow = this.reloadPage
       }
       window.appLoginFinish = this.appLoginFinish
-      window.callback = this.callback
+      window.userInfoCallback = this.userInfoCallback
       window.app_interface && window.app_interface.setTitleVisible(0)
       window.onunload = this.unloadHandler
     },
     watch: {},
     mounted() {
-      this.getUserInfos()
-    }
+//      setTimeout(() => {
+//        this.onGetUserInfos()
+//      }, 500)
+    },
   }
 </script>
 

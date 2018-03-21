@@ -187,6 +187,9 @@
     },
     mounted() {
       this.Tool._send1_1('ontrial','try-list')
+      this.$nextTick(() => {
+        this.$emit('getUserInfos')
+      })
     },
     watch: {},
     activated() {
