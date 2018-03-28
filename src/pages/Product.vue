@@ -312,7 +312,7 @@
       linkToOuter(e) {
         const targetHref = e.target.parentNode.getAttribute('href')
         if (!(/trialcenter/.test(targetHref))) {
-          if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName.toLowerCase() === 'img') {
+          if(navigator.userAgent.toLowerCase().indexOf('iphone') > -1 && e.target.nodeName.toLowerCase() === 'a') {
             this.clicked = 'myclass-clicked'
             window.app_interface && window.app_interface.setTitleVisible(1)
           }
