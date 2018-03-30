@@ -1,6 +1,6 @@
 <template>
-  <div class="header">
-    <i class="back el-icon-arrow-left" @click="goBack"></i>
+  <div class="header" :style="isIphoneX ? iphoneX30.padding30 : ''">
+    <i class="back el-icon-arrow-left" @click="goBack" :style="isIphoneX ? iphoneX30.top30 : ''"></i>
     <h2>{{headerTitle}}</h2>
   </div>
 </template>
@@ -14,7 +14,17 @@
       },
     },
     data() {
-      return {}
+      return {
+        isIphoneX: false,
+        iphoneX30: {
+          padding30: {
+            paddingTop: '30px'
+          },
+          top30: {
+            top: '30px'
+          }
+        }
+      }
     },
     computed: {},
     methods: {
@@ -28,6 +38,9 @@
     },
     components: {
       'el-button': Button
+    },
+    created() {
+      this.isIphoneX = this.Tool._isIphoneX()
     }
   }
 </script>
